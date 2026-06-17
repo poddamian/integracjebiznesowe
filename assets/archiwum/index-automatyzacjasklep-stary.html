@@ -1,0 +1,1380 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AutomatyzacjaSklep.pl — Automatyzacja dla e-commerce | Shopify & WooCommerce</title>
+<meta name="description" content="Automatyzuję procesy w sklepach Shopify i WooCommerce. Oszczędzasz czas, eliminujesz błędy, zwiększasz sprzedaż. Sprawdź ofertę i wygeneruj wycenę online.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0f'/%3E%3Crect x='10' y='28' width='18' height='3' rx='1.5' fill='%2300e5a0'/%3E%3Crect x='10' y='34' width='12' height='3' rx='1.5' fill='%2300e5a0' opacity='.6'/%3E%3Crect x='10' y='40' width='15' height='3' rx='1.5' fill='%2300e5a0' opacity='.3'/%3E%3Cpath d='M36 20 L50 32 L36 44' stroke='%2300e5a0' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0f'/%3E%3Crect x='10' y='28' width='18' height='3' rx='1.5' fill='%2300e5a0'/%3E%3Crect x='10' y='34' width='12' height='3' rx='1.5' fill='%2300e5a0' opacity='.6'/%3E%3Crect x='10' y='40' width='15' height='3' rx='1.5' fill='%2300e5a0' opacity='.3'/%3E%3Cpath d='M36 20 L50 32 L36 44' stroke='%2300e5a0' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f1a;
+    --bg3: #141425;
+    --accent: #00e5a0;
+    --accent2: #7c6dfa;
+    --accent3: #ff6b6b;
+    --text: #f0f0f8;
+    --text2: #9898b8;
+    --border: rgba(255,255,255,0.07);
+    --card: rgba(255,255,255,0.04);
+    --card-hover: rgba(255,255,255,0.07);
+    --radius: 16px;
+    --font-head: 'Plus Jakarta Sans', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 0 5%;
+    height: 68px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(10,10,15,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--font-head);
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo .logo-icon {
+    width: 30px; height: 30px; border-radius: 7px;
+    background: var(--bg3); border: 1px solid rgba(0,229,160,0.25);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .nav-logo span { color: var(--accent); }
+
+  .nav-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .nav-links a {
+    color: var(--text2); text-decoration: none;
+    font-size: 0.9rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #0a0a0f !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 8px;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+  }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px; cursor: pointer;
+    background: none; border: none; padding: 4px;
+  }
+  .hamburger span { width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
+
+  .mobile-menu {
+    display: none; position: fixed; top: 68px; left: 0; right: 0;
+    background: var(--bg2); border-bottom: 1px solid var(--border);
+    padding: 1.5rem 5%; flex-direction: column; gap: 1rem; z-index: 99;
+  }
+  .mobile-menu a { color: var(--text2); text-decoration: none; font-size: 1rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+  .mobile-menu.open { display: flex; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    padding: 120px 5% 80px;
+    display: flex; align-items: center;
+    position: relative; overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 60% 40%, rgba(0,229,160,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 60% 40% at 20% 80%, rgba(124,109,250,0.08) 0%, transparent 60%);
+  }
+
+  .hero-grid {
+    position: absolute; inset: 0; opacity: 0.04;
+    background-image: linear-gradient(var(--text) 1px, transparent 1px),
+                      linear-gradient(90deg, var(--text) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content { position: relative; max-width: 700px; }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(0,229,160,0.1); border: 1px solid rgba(0,229,160,0.25);
+    color: var(--accent); padding: 0.4rem 1rem; border-radius: 100px;
+    font-size: 0.8rem; font-weight: 600; letter-spacing: 0.5px;
+    text-transform: uppercase; margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: var(--font-head);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.08;
+    letter-spacing: -1.5px; margin-bottom: 1.5rem;
+  }
+
+  .hero h1 em { font-style: normal; color: var(--accent); }
+  .hero h1 .line2 { color: var(--text2); }
+
+  .hero p {
+    font-size: 1.15rem; color: var(--text2); max-width: 540px;
+    margin-bottom: 2.5rem; font-weight: 300; line-height: 1.7;
+  }
+
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn-primary {
+    background: var(--accent); color: #0a0a0f;
+    padding: 0.9rem 2rem; border-radius: 10px;
+    font-weight: 700; font-size: 0.95rem;
+    text-decoration: none; border: none; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,160,0.3); }
+
+  .btn-secondary {
+    background: transparent; color: var(--text);
+    padding: 0.9rem 2rem; border-radius: 10px;
+    font-weight: 500; font-size: 0.95rem;
+    text-decoration: none; border: 1px solid var(--border);
+    cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-secondary:hover { border-color: var(--accent); background: rgba(0,229,160,0.05); }
+
+  .hero-stats {
+    display: flex; gap: 2.5rem; margin-top: 3.5rem;
+    padding-top: 2rem; border-top: 1px solid var(--border);
+  }
+  .stat-item h3 { font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-item p { font-size: 0.85rem; color: var(--text2); }
+
+  /* SECTIONS */
+  section { padding: 90px 5%; }
+
+  .section-label {
+    display: inline-block;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent);
+    margin-bottom: 1rem;
+  }
+
+  .section-title {
+    font-family: var(--font-head);
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700; letter-spacing: -0.5px;
+    line-height: 1.15; margin-bottom: 1rem;
+  }
+
+  .section-sub {
+    color: var(--text2); font-size: 1.05rem;
+    max-width: 560px; line-height: 1.7;
+  }
+
+  .section-header { margin-bottom: 3.5rem; }
+
+  /* SERVICES */
+  #uslugi { background: var(--bg2); }
+
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem; margin-top: 3rem;
+  }
+
+  .service-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .service-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .service-card:hover { background: var(--card-hover); border-color: rgba(0,229,160,0.2); transform: translateY(-4px); }
+  .service-card:hover::before { opacity: 1; }
+
+  .service-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: rgba(0,229,160,0.1); display: flex; align-items: center;
+    justify-content: center; font-size: 1.4rem; margin-bottom: 1.2rem;
+  }
+  .service-card h3 { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.6rem; }
+  .service-card p { color: var(--text2); font-size: 0.9rem; line-height: 1.6; }
+
+  /* QUOTE GENERATOR */
+  #generator { background: var(--bg); }
+
+  .generator-wrap {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 24px; padding: 3rem; max-width: 860px; margin: 0 auto;
+    position: relative; overflow: hidden;
+  }
+
+  .generator-wrap::before {
+    content: ''; position: absolute; top: -100px; right: -100px;
+    width: 300px; height: 300px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,160,0.1), transparent 70%);
+    pointer-events: none;
+  }
+
+  .generator-title {
+    font-family: var(--font-head); font-size: 1.8rem; font-weight: 800;
+    margin-bottom: 0.5rem; letter-spacing: -0.5px;
+  }
+  .generator-sub { color: var(--text2); margin-bottom: 2rem; font-size: 0.95rem; }
+
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  .form-group label { font-size: 0.85rem; font-weight: 600; color: var(--text2); }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text);
+    padding: 0.75rem 1rem; font-family: var(--font-body); font-size: 0.9rem;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); background: rgba(0,229,160,0.05); }
+
+  .form-group select option { background: var(--bg2); color: var(--text); }
+
+  .checkbox-group { display: flex; flex-direction: column; gap: 0.6rem; }
+  .checkbox-item {
+    display: flex; align-items: center; gap: 0.75rem;
+    padding: 0.6rem 0.8rem; border-radius: 8px;
+    border: 1px solid var(--border); cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  .checkbox-item:hover { background: var(--card); border-color: rgba(0,229,160,0.3); }
+  .checkbox-item input[type="checkbox"] { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+  .checkbox-item span { font-size: 0.88rem; color: var(--text2); }
+  .checkbox-item.checked { background: rgba(0,229,160,0.07); border-color: rgba(0,229,160,0.35); }
+  .checkbox-item.checked span { color: var(--text); }
+
+  .generate-btn {
+    width: 100%; background: var(--accent); color: #0a0a0f;
+    border: none; border-radius: 12px; padding: 1rem;
+    font-family: var(--font-head); font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,229,160,0.3); }
+  .generate-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+  .offer-result {
+    display: none; margin-top: 2rem;
+    background: rgba(0,229,160,0.05); border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 16px; padding: 2rem;
+  }
+  .offer-result.visible { display: block; animation: fadeIn 0.4s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .offer-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+  .offer-header h3 { font-family: var(--font-head); font-size: 1.3rem; font-weight: 800; }
+
+  .offer-price {
+    text-align: right;
+  }
+  .offer-price .price-range { font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; color: var(--accent); }
+  .offer-price .price-label { font-size: 0.75rem; color: var(--text2); }
+
+  .offer-body { color: var(--text2); font-size: 0.92rem; line-height: 1.8; white-space: pre-wrap; }
+
+  .offer-actions { display: flex; gap: 1rem; margin-top: 1.5rem; flex-wrap: wrap; }
+
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2px solid rgba(10,10,15,0.3); border-top-color: #0a0a0f;
+    border-radius: 50%; animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* PRICING */
+  #cennik { background: var(--bg2); }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem; max-width: 1000px; margin: 0 auto;
+  }
+
+  .pricing-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 2rem;
+    display: flex; flex-direction: column;
+    transition: transform 0.2s;
+  }
+  .pricing-card:hover { transform: translateY(-4px); }
+  .pricing-card.featured {
+    background: linear-gradient(135deg, rgba(0,229,160,0.12), rgba(124,109,250,0.08));
+    border-color: rgba(0,229,160,0.35);
+    position: relative;
+  }
+
+  .pricing-badge {
+    position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+    background: var(--accent); color: #0a0a0f;
+    padding: 0.25rem 1rem; border-radius: 100px;
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .pricing-card h3 { font-family: var(--font-head); font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .pricing-card .desc { color: var(--text2); font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  .price-num { font-family: var(--font-head); font-size: 2.4rem; font-weight: 800; color: var(--accent); }
+  .price-unit { color: var(--text2); font-size: 0.85rem; margin-bottom: 1.5rem; }
+
+  .feature-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; flex: 1; }
+  .feature-list li { font-size: 0.88rem; color: var(--text2); display: flex; align-items: flex-start; gap: 0.6rem; }
+  .feature-list li::before { content: '✓'; color: var(--accent); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+  .pricing-cta {
+    margin-top: 2rem; text-align: center;
+    background: transparent; border: 1px solid rgba(0,229,160,0.4);
+    color: var(--accent); padding: 0.75rem 1.5rem; border-radius: 10px;
+    font-weight: 700; font-size: 0.9rem; cursor: pointer;
+    transition: background 0.2s; text-decoration: none; display: block;
+  }
+  .pricing-card.featured .pricing-cta {
+    background: var(--accent); color: #0a0a0f; border-color: var(--accent);
+  }
+  .pricing-cta:hover { background: rgba(0,229,160,0.1); }
+  .pricing-card.featured .pricing-cta:hover { background: #00c98a; }
+
+  /* STRIPE PAYMENT MODAL */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.75); backdrop-filter: blur(8px);
+    z-index: 200; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border);
+    border-radius: 24px; padding: 2.5rem; max-width: 480px; width: 100%;
+    position: relative; animation: fadeIn 0.3s ease;
+  }
+
+  .modal-close {
+    position: absolute; top: 1.5rem; right: 1.5rem;
+    background: none; border: none; color: var(--text2);
+    font-size: 1.4rem; cursor: pointer; line-height: 1;
+  }
+  .modal h3 { font-family: var(--font-head); font-size: 1.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .modal p { color: var(--text2); font-size: 0.9rem; margin-bottom: 1.5rem; }
+
+  .stripe-form { display: flex; flex-direction: column; gap: 1rem; }
+  .stripe-form input {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); padding: 0.75rem 1rem;
+    font-family: var(--font-body); font-size: 0.9rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .stripe-form input:focus { border-color: var(--accent); }
+
+  .stripe-card-placeholder {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; padding: 0.75rem 1rem;
+    font-size: 0.85rem; color: var(--text2);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+
+  .stripe-note {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.78rem; color: var(--text2); margin-top: 0.5rem;
+  }
+
+  .pay-btn {
+    background: #635bff; color: white;
+    border: none; border-radius: 10px; padding: 0.9rem;
+    font-family: var(--font-head); font-weight: 700; font-size: 1rem;
+    cursor: pointer; transition: background 0.2s;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  }
+  .pay-btn:hover { background: #4f44ff; }
+
+  /* PROCESS */
+  #proces { background: var(--bg); }
+
+  .process-steps {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem; margin-top: 3rem; position: relative;
+  }
+
+  .step-card { position: relative; }
+  .step-num {
+    font-family: var(--font-head); font-size: 4rem; font-weight: 800;
+    color: rgba(0,229,160,0.1); line-height: 1; margin-bottom: 0.5rem;
+  }
+  .step-card h3 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .step-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.6; }
+
+  /* BLOG */
+  #blog { background: var(--bg2); }
+
+  .blog-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .blog-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .blog-card:hover { transform: translateY(-4px); border-color: rgba(0,229,160,0.25); }
+
+  .blog-thumb {
+    height: 160px;
+    background: linear-gradient(135deg, var(--bg3), rgba(0,229,160,0.15));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; position: relative; overflow: hidden;
+  }
+
+  .blog-thumb::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,229,160,0.1));
+  }
+
+  .blog-content { padding: 1.5rem; }
+  .blog-tag {
+    display: inline-block; font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--accent);
+    background: rgba(0,229,160,0.1); padding: 0.2rem 0.6rem; border-radius: 4px;
+    margin-bottom: 0.75rem;
+  }
+  .blog-card h3 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+  .blog-card p { color: var(--text2); font-size: 0.85rem; line-height: 1.6; margin-bottom: 1rem; }
+  .blog-meta { font-size: 0.78rem; color: var(--text2); display: flex; align-items: center; gap: 0.5rem; }
+
+  .blog-read-more {
+    color: var(--accent); font-size: 0.85rem; font-weight: 600;
+    text-decoration: none; display: inline-flex; align-items: center; gap: 0.3rem;
+  }
+
+  /* FAQ */
+  #faq { background: var(--bg); }
+
+  .faq-list { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+
+  .faq-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden;
+  }
+
+  .faq-q {
+    padding: 1.2rem 1.5rem; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    font-weight: 600; font-size: 0.95rem;
+    user-select: none; transition: background 0.2s;
+  }
+  .faq-q:hover { background: var(--card-hover); }
+  .faq-q .icon { color: var(--accent); font-size: 1.2rem; transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-q .icon { transform: rotate(45deg); }
+
+  .faq-a {
+    max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s;
+    color: var(--text2); font-size: 0.9rem; line-height: 1.7;
+    padding: 0 1.5rem;
+  }
+  .faq-item.open .faq-a { max-height: 400px; padding: 0 1.5rem 1.2rem; }
+
+  /* CONTACT */
+  #kontakt { background: var(--bg2); }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 4rem; align-items: start; }
+
+  .contact-info h2 { font-family: var(--font-head); font-size: 2rem; font-weight: 800; margin-bottom: 1rem; }
+  .contact-info p { color: var(--text2); line-height: 1.7; margin-bottom: 2rem; }
+
+  .contact-item { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1rem; }
+  .contact-item .icon { font-size: 1.2rem; }
+  .contact-item span { color: var(--text2); font-size: 0.9rem; }
+
+  .contact-form { display: flex; flex-direction: column; gap: 1rem; }
+  .contact-form input, .contact-form textarea {
+    background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--text); padding: 0.75rem 1rem;
+    font-family: var(--font-body); font-size: 0.9rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus { border-color: var(--accent); }
+  .contact-form textarea { height: 120px; resize: vertical; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 3rem 5%;
+  }
+
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .footer-brand p { color: var(--text2); font-size: 0.88rem; margin-top: 0.75rem; max-width: 260px; line-height: 1.6; }
+
+  .footer-col h4 { font-family: var(--font-head); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 1rem; color: var(--text2); }
+  .footer-col a { display: block; color: var(--text2); text-decoration: none; font-size: 0.88rem; margin-bottom: 0.5rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 1.5rem;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: gap;
+    font-size: 0.8rem; color: var(--text2); gap: 1rem;
+  }
+
+  /* LEGAL PAGES */
+  .legal-page { display: none; }
+  .legal-page.active {
+    display: block; position: fixed; inset: 0; z-index: 300;
+    background: var(--bg); overflow-y: auto;
+  }
+
+  .legal-content {
+    max-width: 760px; margin: 0 auto; padding: 100px 2rem 4rem;
+  }
+  .legal-content h1 { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; }
+  .legal-content .last-updated { color: var(--text2); font-size: 0.85rem; margin-bottom: 2.5rem; }
+  .legal-content h2 { font-family: var(--font-head); font-size: 1.2rem; font-weight: 700; margin: 2rem 0 0.75rem; }
+  .legal-content p { color: var(--text2); line-height: 1.8; margin-bottom: 1rem; font-size: 0.92rem; }
+  .legal-content ul { color: var(--text2); padding-left: 1.5rem; margin-bottom: 1rem; }
+  .legal-content li { margin-bottom: 0.4rem; font-size: 0.92rem; line-height: 1.7; }
+
+  .legal-back {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--accent); font-weight: 600; cursor: pointer;
+    border: none; background: none; font-family: var(--font-body); font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 2rem; right: 2rem; z-index: 500;
+    background: var(--accent); color: #0a0a0f;
+    padding: 1rem 1.5rem; border-radius: 12px;
+    font-weight: 700; font-size: 0.9rem;
+    transform: translateY(100px); opacity: 0;
+    transition: all 0.3s ease;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .form-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+    .hero-stats { flex-wrap: wrap; gap: 1.5rem; }
+    .generator-wrap { padding: 1.5rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .hero h1 { letter-spacing: -1px; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .offer-header { flex-direction: column; }
+    .offer-price { text-align: left; }
+  }
+
+  @media (max-width: 480px) {
+    nav { padding: 0 4%; }
+    section { padding: 60px 4%; }
+    .hero { padding: 100px 4% 60px; }
+  }
+
+  /* SCROLL ANIMATIONS */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ACCENT HIGHLIGHT */
+  .highlight { color: var(--accent); }
+  .highlight2 { color: var(--accent2); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#home" class="nav-logo">
+    <span class="logo-icon">
+      <svg width="18" height="18" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="26" width="20" height="4" rx="2" fill="#00e5a0"/>
+        <rect x="8" y="33" width="14" height="4" rx="2" fill="#00e5a0" opacity=".6"/>
+        <rect x="8" y="40" width="17" height="4" rx="2" fill="#00e5a0" opacity=".3"/>
+        <path d="M36 18 L52 32 L36 46" stroke="#00e5a0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    Automatyzacja <span>Sklep</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#uslugi">Usługi</a></li>
+    <li><a href="shopify-automatyzacja.html">Shopify</a></li>
+    <li><a href="woocommerce-automatyzacja.html">WooCommerce</a></li>
+    <li><a href="#generator">Generator ofert</a></li>
+    <li><a href="#cennik">Cennik</a></li>
+    <li><a href="#faq">FAQ</a></li>
+    <li><a href="#kontakt" class="nav-cta">Kontakt</a></li>
+  </ul>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#uslugi" onclick="toggleMenu()">Usługi</a>
+  <a href="shopify-automatyzacja.html" onclick="toggleMenu()">Shopify</a>
+  <a href="woocommerce-automatyzacja.html" onclick="toggleMenu()">WooCommerce</a>
+  <a href="#generator" onclick="toggleMenu()">Generator ofert</a>
+  <a href="#cennik" onclick="toggleMenu()">Cennik</a>
+  <a href="#faq" onclick="toggleMenu()">FAQ</a>
+  <a href="#kontakt" onclick="toggleMenu()">Kontakt</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">🤖 Automatyzacja e-commerce</div>
+    <h1>
+      Twój sklep<br>
+      <em>pracuje sam.</em><br>
+      <span class="line2">Ty zarabiasz.</span>
+    </h1>
+    <p>Automatyzuję procesy w sklepach Shopify i WooCommerce. Eliminuję powtarzalne zadania, integruję systemy i buduję workflow, które działają 24/7 bez Twojej obecności.</p>
+    <div class="hero-actions">
+      <a href="#generator" class="btn-primary">✦ Wygeneruj ofertę AI</a>
+      <a href="#uslugi" class="btn-secondary">Zobacz usługi →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <h3>48h</h3>
+        <p>czas wdrożenia</p>
+      </div>
+      <div class="stat-item">
+        <h3>30+</h3>
+        <p>automatyzacji</p>
+      </div>
+      <div class="stat-item">
+        <h3>100%</h3>
+        <p>zdalnie</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USŁUGI -->
+<section id="uslugi">
+  <div class="section-header reveal">
+    <span class="section-label">Co robię</span>
+    <h2 class="section-title">Automatyzacje które<br>realnie oszczędzają czas</h2>
+    <p class="section-sub">Buduję systemy na n8n i Make.com zintegrowane ze Shopify, WooCommerce i Twoimi narzędziami.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card reveal">
+      <div class="service-icon">🛍️</div>
+      <h3>Automatyzacja zamówień</h3>
+      <p>Automatyczne powiadomienia, aktualizacja stanów magazynowych, synchronizacja z systemami ERP i kurierami.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">📧</div>
+      <h3>E-mail marketing flows</h3>
+      <p>Porzucone koszyki, sekwencje po zakupie, reaktywacja klientów. Połączenie Shopify/Woo z Klaviyo, Mailchimp lub ActiveCampaign.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">📊</div>
+      <h3>Raporty i dashboardy</h3>
+      <p>Automatyczne raporty sprzedaży, marży i zwrotów wysyłane do Slack lub e-mail codziennie rano.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">🔁</div>
+      <h3>Integracje platform</h3>
+      <p>Łączę Shopify / WooCommerce z BaseLinker, Allegro, Amazon, Ceneo i innymi platformami sprzedażowymi.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">🤖</div>
+      <h3>Chatbot obsługi klienta</h3>
+      <p>AI chatbot odpowiadający na pytania o zamówienia, zwroty i dostępność produktów — bez angażowania zespołu.</p>
+    </div>
+    <div class="service-card reveal">
+      <div class="service-icon">📈</div>
+      <h3>Analityka danych</h3>
+      <p>Modele predykcyjne popytu, analiza koszyków i segmentacja klientów oparta na danych ze sklepu.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GENERATOR OFERT -->
+<section id="generator">
+  <div class="section-header reveal" style="text-align:center; margin-bottom:2rem;">
+    <span class="section-label">Generator ofert AI</span>
+    <h2 class="section-title">Wycena w 60 sekund</h2>
+    <p class="section-sub" style="margin:0 auto;">Wypełnij formularz, a AI wygeneruje dla Ciebie spersonalizowaną ofertę automatyzacji z szacowanym kosztem.</p>
+  </div>
+  <div class="generator-wrap reveal">
+    <div class="generator-title">Opisz swój sklep</div>
+    <p class="generator-sub">Im więcej szczegółów, tym dokładniejsza wycena</p>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Platforma sklepu *</label>
+        <select id="platform">
+          <option value="">Wybierz platformę</option>
+          <option value="Shopify">Shopify</option>
+          <option value="WooCommerce">WooCommerce</option>
+          <option value="Shopify + WooCommerce">Oba (multi-platform)</option>
+          <option value="inna platforma">Inna</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Liczba zamówień miesięcznie *</label>
+        <select id="orders">
+          <option value="">Wybierz zakres</option>
+          <option value="do 100 zamówień miesięcznie">Do 100</option>
+          <option value="100–500 zamówień miesięcznie">100–500</option>
+          <option value="500–2000 zamówień miesięcznie">500–2000</option>
+          <option value="ponad 2000 zamówień miesięcznie">Ponad 2000</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Branża sklepu</label>
+        <input type="text" id="industry" placeholder="np. odzież, elektronika, kosmetyki">
+      </div>
+      <div class="form-group">
+        <label>Używane narzędzia</label>
+        <input type="text" id="tools" placeholder="np. BaseLinker, Klaviyo, Slack">
+      </div>
+      <div class="form-group full">
+        <label>Jakie procesy chcesz zautomatyzować? *</label>
+        <div class="checkbox-group" id="processGroup">
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="automatyczne powiadomienia e-mail/SMS o zamówieniach">
+            <span>📬 Powiadomienia e-mail / SMS</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="synchronizacja stanów magazynowych">
+            <span>📦 Synchronizacja magazynu</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="automatyzacja zwrotów i reklamacji">
+            <span>🔄 Zwroty i reklamacje</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="raporty sprzedaży i analityka">
+            <span>📊 Raporty sprzedaży</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="integracja z marketplace (Allegro, Amazon)">
+            <span>🛒 Integracja marketplace</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="chatbot obsługi klienta AI">
+            <span>🤖 Chatbot obsługi klienta</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="automatyzacja fakturowania">
+            <span>🧾 Fakturowanie</span>
+          </label>
+          <label class="checkbox-item" onclick="toggleCheck(this)">
+            <input type="checkbox" name="process" value="sekwencje e-mail marketingowe (porzucone koszyki, follow-up)">
+            <span>💌 E-mail marketing</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group full">
+        <label>Dodatkowe informacje (opcjonalnie)</label>
+        <textarea id="extra" placeholder="Opisz konkretne problemy lub cele które chcesz osiągnąć..." rows="3"></textarea>
+      </div>
+    </div>
+
+    <button class="generate-btn" onclick="generateOffer()" id="genBtn">
+      ✦ Wygeneruj ofertę AI
+    </button>
+
+    <div class="offer-result" id="offerResult">
+      <div class="offer-header">
+        <div>
+          <h3 id="offerTitle">Oferta automatyzacji</h3>
+          <p style="color:var(--text2);font-size:0.8rem;margin-top:0.25rem;" id="offerDate"></p>
+        </div>
+        <div class="offer-price">
+          <div class="price-range" id="offerPrice">—</div>
+          <div class="price-label">szacowany koszt projektu</div>
+        </div>
+      </div>
+      <div class="offer-body" id="offerBody"></div>
+      <div class="offer-actions">
+        <button class="btn-primary" onclick="openPaymentModal()">💳 Zamów wdrożenie</button>
+        <button class="btn-secondary" onclick="copyOffer()">📋 Kopiuj ofertę</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="proces">
+  <div class="section-header reveal">
+    <span class="section-label">Jak działam</span>
+    <h2 class="section-title">Prosty proces,<br>szybkie efekty</h2>
+  </div>
+  <div class="process-steps">
+    <div class="step-card reveal">
+      <div class="step-num">01</div>
+      <h3>Bezpłatna konsultacja</h3>
+      <p>Omawiamy Twoje potrzeby, obecne procesy i cele. Możesz wybrać termin w kalendarzu lub napisać e-mail.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">02</div>
+      <h3>Analiza i oferta</h3>
+      <p>Przygotowuję szczegółową ofertę z zakresem, harmonogramem i wyceną. Umowa online, bez spotkań.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">03</div>
+      <h3>Wdrożenie</h3>
+      <p>Buduję automatyzacje w n8n / Make.com, testuję na środowisku testowym i przekazuję dokumentację.</p>
+    </div>
+    <div class="step-card reveal">
+      <div class="step-num">04</div>
+      <h3>Wsparcie</h3>
+      <p>Po wdrożeniu jestem dostępny na pytania. Opcjonalnie: retainer miesięczny na utrzymanie i rozwój.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CENNIK -->
+<section id="cennik">
+  <div class="section-header reveal" style="text-align:center;">
+    <span class="section-label">Cennik</span>
+    <h2 class="section-title">Przejrzyste ceny,<br>zero niespodzianek</h2>
+    <p class="section-sub" style="margin:0 auto 2rem;">Płatności online przez Stripe — karta, BLIK, przelew. Faktura VAT w każdym pakiecie.</p>
+  </div>
+  <div class="pricing-grid reveal">
+    <div class="pricing-card">
+      <h3>Starter</h3>
+      <p class="desc">Dla małych sklepów stawiających pierwsze kroki z automatyzacją</p>
+      <div class="price-num">2 500 zł</div>
+      <div class="price-unit">jednorazowo + VAT</div>
+      <ul class="feature-list">
+        <li>1 workflow automatyzacji</li>
+        <li>Integracja z 2 systemami</li>
+        <li>Testowanie i dokumentacja</li>
+        <li>30 dni wsparcia</li>
+        <li>Konsultacja 1h przed wdrożeniem</li>
+      </ul>
+      <a href="#generator" class="pricing-cta">Wygeneruj ofertę</a>
+    </div>
+    <div class="pricing-card featured">
+      <div class="pricing-badge">Najpopularniejszy</div>
+      <h3>Growth</h3>
+      <p class="desc">Kompleksowa automatyzacja dla sklepów z rosnącą sprzedażą</p>
+      <div class="price-num">5 500 zł</div>
+      <div class="price-unit">jednorazowo + VAT</div>
+      <ul class="feature-list">
+        <li>Do 4 workflow automatyzacji</li>
+        <li>Integracja z do 5 systemami</li>
+        <li>Panel raportowy / dashboard</li>
+        <li>60 dni wsparcia priorytetowego</li>
+        <li>Szkolenie dla zespołu (2h)</li>
+        <li>Optymalizacja po 30 dniach</li>
+      </ul>
+      <a href="#generator" class="pricing-cta">Wygeneruj ofertę</a>
+    </div>
+    <div class="pricing-card">
+      <h3>Retainer</h3>
+      <p class="desc">Stała współpraca dla sklepów rozwijających automatyzację</p>
+      <div class="price-num">1 800 zł</div>
+      <div class="price-unit">miesięcznie + VAT</div>
+      <ul class="feature-list">
+        <li>Do 8h pracy miesięcznie</li>
+        <li>Utrzymanie istniejących flow</li>
+        <li>Nowe automatyzacje priorytetowo</li>
+        <li>Monitoring i alerty błędów</li>
+        <li>Raport miesięczny</li>
+        <li>Priorytetowy kontakt</li>
+      </ul>
+      <a href="#kontakt" class="pricing-cta">Zapytaj o retainer</a>
+    </div>
+  </div>
+  <p style="text-align:center;color:var(--text2);font-size:0.85rem;margin-top:2rem;">
+    💳 Płatność przez Stripe — karta kredytowa, BLIK, przelew bankowy. Możliwa płatność w ratach.
+  </p>
+</section>
+
+<!-- BLOG -->
+<section id="blog">
+  <div class="section-header reveal">
+    <span class="section-label">Blog</span>
+    <h2 class="section-title">Wiedza o automatyzacji<br>e-commerce</h2>
+  </div>
+  <div class="blog-grid">
+    <div class="blog-card reveal">
+      <div class="blog-thumb">⚡</div>
+      <div class="blog-content">
+        <span class="blog-tag">n8n</span>
+        <h3>Jak zautomatyzować powiadomienia o zamówieniu w WooCommerce — krok po kroku</h3>
+        <p>Przewodnik po budowie workflow w n8n, który automatycznie wysyła SMS i e-mail do klienta po każdym zamówieniu.</p>
+        <div class="blog-meta">
+          <span>12 maja 2026</span> · <span>8 min czytania</span>
+        </div>
+      </div>
+    </div>
+    <div class="blog-card reveal">
+      <div class="blog-thumb">🔄</div>
+      <div class="blog-content">
+        <span class="blog-tag">Make.com</span>
+        <h3>n8n vs Make.com — które narzędzie wybrać dla sklepu Shopify?</h3>
+        <p>Porównanie dwóch najlepszych platform do automatyzacji. Kiedy użyć n8n, a kiedy Make? Konkretne przykłady z e-commerce.</p>
+        <div class="blog-meta">
+          <span>28 kwietnia 2026</span> · <span>6 min czytania</span>
+        </div>
+      </div>
+    </div>
+    <div class="blog-card reveal">
+      <div class="blog-thumb">📊</div>
+      <div class="blog-content">
+        <span class="blog-tag">Analityka</span>
+        <h3>5 raportów które każdy sklep Shopify powinien automatyzować</h3>
+        <p>Raport dzienny, tygodniowy i miesięczny — jak je zbudować w 2h i dostawać na Slack każdego ranka.</p>
+        <div class="blog-meta">
+          <span>10 kwietnia 2026</span> · <span>5 min czytania</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-header reveal" style="text-align:center;">
+    <span class="section-label">FAQ</span>
+    <h2 class="section-title">Najczęstsze pytania</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy muszę mieć wiedzę techniczną? <span class="icon">+</span></div>
+      <div class="faq-a">Nie. Moim zadaniem jest zbudowanie i wdrożenie całego systemu. Przekazuję Ci działające automatyzacje z dokumentacją napisaną prostym językiem. Jeśli coś przestanie działać — kontaktujesz się ze mną.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Jak długo trwa wdrożenie? <span class="icon">+</span></div>
+      <div class="faq-a">Prosty workflow (np. powiadomienia e-mail) to 24–48 godzin. Kompleksowa automatyzacja (kilka integracji, raporty, chatbot) zajmuje 5–10 dni roboczych. Zawsze podaję dokładny harmonogram przed rozpoczęciem projektu.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Co jeśli automatyzacja przestanie działać po wdrożeniu? <span class="icon">+</span></div>
+      <div class="faq-a">Każdy projekt objęty jest 30 lub 60-dniowym wsparciem (zależnie od pakietu). Błędy naprawiam bezpłatnie. Po okresie gwarancji możesz wykupić retainer lub rozliczamy się za zgłoszenie.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy pracujesz tylko ze Shopify i WooCommerce? <span class="icon">+</span></div>
+      <div class="faq-a">To moje główne specjalizacje, ale buduję też automatyzacje dla innych platform (PrestaShop, Magento, IdoSell). Jeśli Twój sklep jest na innej platformie — napisz, omówimy możliwości.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Jak wygląda płatność? <span class="icon">+</span></div>
+      <div class="faq-a">Płatność przez Stripe — akceptuję kartę kredytową/debetową, BLIK i przelew bankowy. Standardowo: 50% zaliczki przed projektem, 50% po odbiorze. Wystawiam fakturę VAT. Możliwa płatność ratalna dla pakietu Growth.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy moje dane są bezpieczne? <span class="icon">+</span></div>
+      <div class="faq-a">Tak. Przed projektem podpisujemy NDA (umowę o poufności). Dostępy do systemów są przekazywane przez bezpieczne kanały (1Password, zaszyfrowane wiadomości) i usuwane po zakończeniu projektu.</div>
+    </div>
+    <div class="faq-item reveal">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy mogę zobaczyć przykłady wcześniejszych projektów? <span class="icon">+</span></div>
+      <div class="faq-a">Tak, chętnie pokażę screenshoty z workflow i omówię case studies podczas bezpłatnej konsultacji. Ze względu na NDA nie podaję nazw klientów, ale mogę opisać rozwiązane problemy i osiągnięte efekty.</div>
+    </div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <span class="section-label">Kontakt</span>
+      <h2>Porozmawiajmy<br>o Twoim sklepie</h2>
+      <p>Napisz do mnie, a odpowiem w ciągu 24 godzin. Możemy umówić się na bezpłatną 30-minutową konsultację.</p>
+      <div class="contact-item">
+        <span class="icon">📧</span>
+        <span>kontakt@automatyzacjasklep.pl</span>
+      </div>
+      <div class="contact-item">
+        <span class="icon">🌍</span>
+        <span>Praca w 100% zdalna</span>
+      </div>
+      <div class="contact-item">
+        <span class="icon">⏱️</span>
+        <span>Odpowiedź do 24h</span>
+      </div>
+      <div class="contact-item">
+        <span class="icon">🔒</span>
+        <span>NDA na żądanie</span>
+      </div>
+    </div>
+    <div class="reveal">
+      <form class="contact-form" onsubmit="submitContact(event)">
+        <input type="text" placeholder="Imię i nazwisko lub firma *" required id="cName">
+        <input type="email" placeholder="Adres e-mail *" required id="cEmail">
+        <input type="text" placeholder="Platforma sklepu (Shopify / WooCommerce)" id="cPlatform">
+        <textarea placeholder="Opisz co chcesz zautomatyzować..." id="cMessage"></textarea>
+        <button type="submit" class="btn-primary" style="justify-content:center;">Wyślij wiadomość →</button>
+        <p style="font-size:0.78rem;color:var(--text2);">Wysyłając formularz akceptujesz <a href="#" onclick="showLegal('privacy')" style="color:var(--accent);">Politykę Prywatności</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#home" class="nav-logo">
+        <span class="logo-icon">
+          <svg width="18" height="18" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="8" y="26" width="20" height="4" rx="2" fill="#00e5a0"/>
+            <rect x="8" y="33" width="14" height="4" rx="2" fill="#00e5a0" opacity=".6"/>
+            <rect x="8" y="40" width="17" height="4" rx="2" fill="#00e5a0" opacity=".3"/>
+            <path d="M36 18 L52 32 L36 46" stroke="#00e5a0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        Automatyzacja <span>Sklep</span>
+      </a>
+      <p>Automatyzuję procesy w sklepach Shopify i WooCommerce. Oszczędzasz czas, eliminujesz błędy, zwiększasz sprzedaż.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Usługi</h4>
+      <a href="#uslugi">Automatyzacja zamówień</a>
+      <a href="#uslugi">E-mail marketing</a>
+      <a href="#uslugi">Integracje</a>
+      <a href="#uslugi">Chatbot AI</a>
+    </div>
+    <div class="footer-col">
+      <h4>Firma</h4>
+      <a href="#proces">Jak działam</a>
+      <a href="#blog">Blog</a>
+      <a href="#cennik">Cennik</a>
+      <a href="#kontakt">Kontakt</a>
+    </div>
+    <div class="footer-col">
+      <h4>Prawne</h4>
+      <a href="#" onclick="showLegal('terms')">Regulamin</a>
+      <a href="#" onclick="showLegal('privacy')">Polityka Prywatności</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 AutomatyzacjaSklep.pl — Wszelkie prawa zastrzeżone</span>
+    <span>NIP: PL0000000000 | REGON: 000000000</span>
+  </div>
+</footer>
+
+<!-- PAYMENT MODAL -->
+<div class="modal-overlay" id="payModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closePayModal()">×</button>
+    <h3>Zamów wdrożenie</h3>
+    <p>Płatność online przez Stripe. Po opłaceniu skontaktuję się w ciągu 24h.</p>
+    <div class="stripe-form">
+      <input type="text" placeholder="Imię i nazwisko / Firma *" id="payName">
+      <input type="email" placeholder="E-mail *" id="payEmail">
+      <div class="stripe-card-placeholder">
+        🔒 Pole karty płatniczej (Stripe Elements)
+      </div>
+      <div class="stripe-note">
+        🔒 Płatność zabezpieczona przez <strong>Stripe</strong> — PCI DSS Level 1
+      </div>
+      <button class="pay-btn" onclick="simulatePayment()">
+        💳 Zapłać 5 500 zł i zamów
+      </button>
+      <p style="font-size:0.75rem;color:var(--text2);text-align:center;">
+        Aby aktywować płatności Stripe, podłącz swoje konto Stripe i użyj Stripe.js / Stripe Elements.
+        <a href="https://stripe.com/docs/payments/accept-a-payment" target="_blank" style="color:var(--accent);">Dokumentacja →</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- LEGAL PAGES -->
+<div class="legal-page" id="legalTerms">
+  <div class="legal-content">
+    <button class="legal-back" onclick="hideLegal('terms')">← Wróć do strony</button>
+    <h1>Regulamin świadczenia usług</h1>
+    <p class="last-updated">Ostatnia aktualizacja: 1 maja 2026</p>
+
+    <h2>§1. Postanowienia ogólne</h2>
+    <p>Niniejszy regulamin określa zasady świadczenia usług automatyzacji procesów biznesowych przez AutomatyzacjaSklep.pl (dalej: „Usługodawca") na rzecz klientów (dalej: „Klient") za pośrednictwem serwisu automatyzacjasklep.pl.</p>
+    <p>Usługodawca prowadzi działalność jako jednoosobowa działalność gospodarcza zarejestrowana w Polsce. Kontakt: kontakt@automatyzacjasklep.pl</p>
+
+    <h2>§2. Rodzaje usług</h2>
+    <p>Usługodawca świadczy następujące usługi:</p>
+    <ul>
+      <li>Projektowanie i wdrożenie automatyzacji procesów biznesowych (n8n, Make.com)</li>
+      <li>Integracja systemów e-commerce (Shopify, WooCommerce) z zewnętrznymi platformami</li>
+      <li>Tworzenie dashboardów i systemów raportowania</li>
+      <li>Utrzymanie i monitoring wdrożonych automatyzacji (retainer)</li>
+      <li>Konsultacje z zakresu automatyzacji i architektury danych</li>
+    </ul>
+
+    <h2>§3. Zawarcie umowy</h2>
+    <p>Umowa zostaje zawarta poprzez: (a) podpisanie umowy o świadczenie usług przesłanej drogą elektroniczną, lub (b) akceptację oferty e-mailem i dokonanie płatności zaliczkowej. Każdy projekt poprzedzony jest pisemną ofertą określającą zakres, harmonogram i wynagrodzenie.</p>
+
+    <h2>§4. Płatności</h2>
+    <p>Wynagrodzenie jest płatne zgodnie z ofertą. Standardowe warunki płatności: 50% zaliczki przed rozpoczęciem prac, 50% po odbiorze przez Klienta. Płatności realizowane są przez platformę Stripe. Usługodawca wystawia fakturę VAT w terminie 7 dni od płatności.</p>
+    <p>W przypadku braku płatności w terminie Usługodawca ma prawo wstrzymać prace do czasu uregulowania należności.</p>
+
+    <h2>§5. Odbiór i gwarancja</h2>
+    <p>Po wdrożeniu Klient ma 5 dni roboczych na zgłoszenie uwag. Brak zgłoszenia w tym terminie oznacza akceptację projektu. Usługodawca udziela gwarancji na poprawne działanie wdrożonych automatyzacji przez okres wskazany w ofercie (30 lub 60 dni). Gwarancja nie obejmuje awarii spowodowanych zmianami w API platform trzecich.</p>
+
+    <h2>§6. Prawa autorskie i własność</h2>
+    <p>Z chwilą uregulowania pełnej należności, Klient nabywa niewyłączną licencję na korzystanie z wdrożonych rozwiązań na potrzeby swojej działalności. Usługodawca zachowuje prawo do wykorzystania opracowanych wzorców i metodyk w innych projektach, z zachowaniem poufności danych Klienta.</p>
+
+    <h2>§7. Poufność</h2>
+    <p>Usługodawca zobowiązuje się do zachowania w tajemnicy wszelkich informacji poufnych Klienta, w tym danych dostępowych, danych klientów sklepu i informacji biznesowych. Na żądanie Klienta Usługodawca podpisuje odrębną umowę NDA.</p>
+
+    <h2>§8. Odpowiedzialność</h2>
+    <p>Odpowiedzialność Usługodawcy ograniczona jest do wysokości wynagrodzenia zapłaconego za dany projekt. Usługodawca nie ponosi odpowiedzialności za utratę zysków ani szkody pośrednie. Klient zobowiązany jest do utrzymania aktualnych kopii zapasowych swoich danych.</p>
+
+    <h2>§9. Reklamacje</h2>
+    <p>Reklamacje należy zgłaszać na adres kontakt@automatyzacjasklep.pl w terminie 14 dni od wykrycia problemu. Usługodawca rozpatruje reklamację w terminie 14 dni roboczych.</p>
+
+    <h2>§10. Postanowienia końcowe</h2>
+    <p>Regulamin podlega prawu polskiemu. Spory rozstrzygane są przez sąd właściwy dla siedziby Usługodawcy. Usługodawca zastrzega prawo do zmiany regulaminu z 14-dniowym wyprzedzeniem.</p>
+  </div>
+</div>
+
+<div class="legal-page" id="legalPrivacy">
+  <div class="legal-content">
+    <button class="legal-back" onclick="hideLegal('privacy')">← Wróć do strony</button>
+    <h1>Polityka Prywatności</h1>
+    <p class="last-updated">Ostatnia aktualizacja: 1 maja 2026 | Administrator: AutomatyzacjaSklep.pl, kontakt@automatyzacjasklep.pl</p>
+
+    <h2>1. Administrator danych</h2>
+    <p>Administratorem Twoich danych osobowych jest AutomatyzacjaSklep.pl (jednoosobowa działalność gospodarcza). Kontakt w sprawach ochrony danych: kontakt@automatyzacjasklep.pl</p>
+
+    <h2>2. Jakie dane zbieramy</h2>
+    <ul>
+      <li><strong>Formularz kontaktowy:</strong> imię, adres e-mail, treść wiadomości</li>
+      <li><strong>Generator ofert:</strong> informacje o platformie sklepu, liczbie zamówień, branży</li>
+      <li><strong>Płatności Stripe:</strong> dane płatnicze przetwarzane przez Stripe (nie przechowujemy danych kart)</li>
+      <li><strong>Dane analityczne:</strong> anonimowe dane o ruchu na stronie (Google Analytics)</li>
+    </ul>
+
+    <h2>3. Cel i podstawa przetwarzania</h2>
+    <p>Przetwarzamy dane w celu: (a) odpowiedzi na zapytania — podstawa: uzasadniony interes (art. 6 ust. 1 lit. f RODO); (b) realizacji umowy — podstawa: wykonanie umowy (art. 6 ust. 1 lit. b RODO); (c) wystawiania faktur — podstawa: obowiązek prawny (art. 6 ust. 1 lit. c RODO).</p>
+
+    <h2>4. Okres przechowywania</h2>
+    <p>Dane z formularza kontaktowego przechowujemy przez 2 lata od ostatniego kontaktu. Dane związane z umowami przechowujemy przez 5 lat (wymóg podatkowy). Dane analityczne są anonimizowane po 26 miesiącach.</p>
+
+    <h2>5. Przekazywanie danych</h2>
+    <p>Dane mogą być przekazywane: Stripe Inc. (płatności), Google LLC (analityka, Google Workspace). Wszyscy przetwarzający są związani odpowiednimi umowami powierzenia i spełniają wymogi RODO.</p>
+
+    <h2>6. Twoje prawa</h2>
+    <p>Masz prawo do: dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania, przenoszenia danych oraz wniesienia sprzeciwu. Aby skorzystać z praw, napisz na kontakt@automatyzacjasklep.pl. Masz też prawo złożyć skargę do Prezesa Urzędu Ochrony Danych Osobowych (uodo.gov.pl).</p>
+
+    <h2>7. Pliki cookies</h2>
+    <p>Strona używa plików cookies do celów analitycznych (Google Analytics). Możesz zablokować cookies w ustawieniach przeglądarki. Cookies analityczne są aktywowane dopiero po Twojej zgodzie.</p>
+
+    <h2>8. Bezpieczeństwo</h2>
+    <p>Stosujemy szyfrowanie SSL/TLS. Płatności są przetwarzane wyłącznie przez Stripe (PCI DSS Level 1). Nie przechowujemy danych kart płatniczych.</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Wiadomość wysłana!</div>
+
+<script>
+// NAV
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// SCROLL REVEAL
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// FAQ
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!wasOpen) item.classList.add('open');
+}
+
+// CHECKBOX
+function toggleCheck(label) {
+  setTimeout(() => {
+    label.classList.toggle('checked', label.querySelector('input').checked);
+  }, 0);
+}
+
+// LEGAL PAGES
+function showLegal(page) {
+  document.getElementById(page === 'terms' ? 'legalTerms' : 'legalPrivacy').classList.add('active');
+  document.body.style.overflow = 'hidden';
+  return false;
+}
+function hideLegal(page) {
+  document.getElementById(page === 'terms' ? 'legalTerms' : 'legalPrivacy').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+// PAYMENT MODAL
+function openPaymentModal() {
+  document.getElementById('payModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('payModal').addEventListener('click', function(e) {
+  if (e.target === this) closePayModal();
+});
+
+function simulatePayment() {
+  showToast('🔗 Przekierowanie do Stripe... (integracja wymaga klucza API)');
+  closePayModal();
+}
+
+// CONTACT FORM
+function submitContact(e) {
+  e.preventDefault();
+  showToast('✓ Wiadomość wysłana! Odpiszę w ciągu 24h.');
+  document.getElementById('cName').value = '';
+  document.getElementById('cEmail').value = '';
+  document.getElementById('cPlatform').value = '';
+  document.getElementById('cMessage').value = '';
+}
+
+// TOAST
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// COPY OFFER
+function copyOffer() {
+  const title = document.getElementById('offerTitle').textContent;
+  const price = document.getElementById('offerPrice').textContent;
+  const body = document.getElementById('offerBody').textContent;
+  navigator.clipboard.writeText(`${title}\nSzacowany koszt: ${price}\n\n${body}`)
+    .then(() => showToast('📋 Oferta skopiowana!'));
+}
+
+// AI OFFER GENERATOR
+async function generateOffer() {
+  const platform = document.getElementById('platform').value;
+  const orders = document.getElementById('orders').value;
+  const industry = document.getElementById('industry').value;
+  const tools = document.getElementById('tools').value;
+  const extra = document.getElementById('extra').value;
+  const processes = [...document.querySelectorAll('input[name="process"]:checked')].map(c => c.value);
+
+  if (!platform || !orders || processes.length === 0) {
+    showToast('⚠️ Wybierz platformę, liczbę zamówień i minimum 1 proces');
+    return;
+  }
+
+  const btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generuję ofertę AI...';
+
+  const prompt = `Jesteś ekspertem od automatyzacji e-commerce. Wygeneruj profesjonalną ofertę automatyzacji dla klienta.
+
+DANE KLIENTA:
+- Platforma: ${platform}
+- Zamówienia/mies.: ${orders}
+- Branża: ${industry || 'nie podano'}
+- Używane narzędzia: ${tools || 'nie podano'}
+- Procesy do automatyzacji: ${processes.join(', ')}
+- Dodatkowe info: ${extra || 'brak'}
+
+Napisz ofertę PO POLSKU zawierającą:
+1. Krótkie podsumowanie sytuacji klienta (2-3 zdania)
+2. Proponowane rozwiązania (lista 3-5 konkretnych automatyzacji z nazwami technologii: n8n/Make.com)
+3. Szacowany czas wdrożenia
+4. Kluczowe korzyści (oszczędność czasu, redukcja błędów)
+5. Następne kroki
+
+Podaj też na końcu w osobnej linii: CENA: [zakres np. 3500-5500 zł]
+
+Ton: profesjonalny ale przystępny. Bez zbędnego marketingowego bełkotu. Max 400 słów.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+
+    // Extract price
+    const priceMatch = text.match(/CENA:\s*([^\n]+)/i);
+    const priceStr = priceMatch ? priceMatch[1].trim() : '3 500 – 6 500 zł';
+    const cleanText = text.replace(/CENA:[^\n]*/i, '').trim();
+
+    document.getElementById('offerTitle').textContent = `Oferta automatyzacji — ${platform}`;
+    document.getElementById('offerDate').textContent = new Date().toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.getElementById('offerPrice').textContent = priceStr;
+    document.getElementById('offerBody').textContent = cleanText;
+
+    const result = document.getElementById('offerResult');
+    result.classList.add('visible');
+    result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+  } catch (err) {
+    showToast('❌ Błąd generowania. Sprawdź połączenie i spróbuj ponownie.');
+    console.error(err);
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = '✦ Wygeneruj nową ofertę';
+}
+</script>
+</body>
+</html>

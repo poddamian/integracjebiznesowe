@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Automatyzacji — Bezpłatna Analiza</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        fontFamily: { syne: ['Syne', 'sans-serif'], dm: ['DM Sans', 'sans-serif'] },
+        colors: {
+          brand: { DEFAULT: '#6366f1', light: '#818cf8', dark: '#4f46e5' },
+          cyan: { acc: '#22d3ee' },
+        }
+      }
+    }
+  }
+</script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; }
+
+  /* Noise texture overlay */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+
+  /* Grid mesh background */
+  .mesh-bg {
+    background-color: #020617;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 20% -10%, rgba(99,102,241,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 110%, rgba(34,211,238,0.10) 0%, transparent 55%),
+      linear-gradient(rgba(99,102,241,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,102,241,0.04) 1px, transparent 1px);
+    background-size: auto, auto, 48px 48px, 48px 48px;
+  }
+
+  /* Step fade transitions */
+  .step-pane { transition: opacity 0.35s ease, transform 0.35s ease; }
+  .step-pane.hidden-step { opacity: 0; transform: translateY(16px); pointer-events: none; position: absolute; width: 100%; }
+  .step-pane.active-step { opacity: 1; transform: translateY(0); pointer-events: all; position: relative; }
+
+  /* Tile selected glow */
+  .tile {
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  .tile:hover { transform: translateY(-2px); }
+  .tile.selected {
+    border-color: #6366f1 !important;
+    background: rgba(99,102,241,0.12) !important;
+    box-shadow: 0 0 0 1px #6366f1, 0 0 20px rgba(99,102,241,0.25);
+  }
+  .tile.selected .tile-icon { color: #818cf8; }
+
+  /* Progress bar glow */
+  .progress-fill {
+    background: linear-gradient(90deg, #6366f1, #22d3ee);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 10px rgba(99,102,241,0.6);
+  }
+
+  /* Spinner */
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .spin { animation: spin 0.9s linear infinite; }
+
+  /* Pulse text */
+  @keyframes pulseFade {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .pulse-text { animation: pulseFade 1.8s ease-in-out infinite; }
+
+  /* Success checkmark */
+  @keyframes popIn {
+    0% { transform: scale(0.4) rotate(-10deg); opacity: 0; }
+    70% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+  .pop-in { animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) forwards; }
+
+  /* Glow accent line */
+  .glow-line {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #6366f1, #22d3ee, transparent);
+  }
+
+  /* Input focus glow */
+  .inp:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99,102,241,0.2);
+  }
+
+  /* Badge pulse */
+  @keyframes badgePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(34,211,238,0.4); }
+    50% { box-shadow: 0 0 0 6px rgba(34,211,238,0); }
+  }
+  .badge-pulse { animation: badgePulse 2.5s ease infinite; }
+
+  /* Typing dots */
+  @keyframes dotBounce {
+    0%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-6px); }
+  }
+  .dot1 { animation: dotBounce 1.2s ease infinite 0s; }
+  .dot2 { animation: dotBounce 1.2s ease infinite 0.15s; }
+  .dot3 { animation: dotBounce 1.2s ease infinite 0.3s; }
+
+  /* Scroll reveal */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .slide-up { animation: slideUp 0.6s ease forwards; }
+  .delay-1 { animation-delay: 0.1s; opacity: 0; }
+  .delay-2 { animation-delay: 0.25s; opacity: 0; }
+  .delay-3 { animation-delay: 0.4s; opacity: 0; }
+  .delay-4 { animation-delay: 0.55s; opacity: 0; }
+
+  /* Checkbox custom */
+  .custom-check { display: none; }
+  .check-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .check-box {
+    width: 18px; height: 18px; min-width: 18px;
+    border: 2px solid #475569;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    transition: all 0.2s;
+  }
+  .custom-check:checked + .check-label .check-box {
+    background: #6366f1;
+    border-color: #6366f1;
+  }
+  .custom-check:checked + .check-label .check-box::after {
+    content: '✓';
+    color: white;
+    font-size: 11px;
+    font-weight: bold;
+  }
+
+  /* Star rating */
+  .star { color: #f59e0b; }
+
+  /* Case study card hover */
+  .cs-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+  .cs-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(99,102,241,0.2); }
+
+  /* Floating label */
+  .field-wrap { position: relative; }
+  .field-label {
+    position: absolute;
+    left: 14px; top: 14px;
+    color: #64748b;
+    font-size: 14px;
+    transition: all 0.18s ease;
+    pointer-events: none;
+    background: transparent;
+    padding: 0 2px;
+  }
+  .field-input:focus ~ .field-label,
+  .field-input:not(:placeholder-shown) ~ .field-label {
+    top: -9px;
+    left: 10px;
+    font-size: 11px;
+    color: #818cf8;
+    background: #0f172a;
+    padding: 0 4px;
+  }
+
+  /* Loader bars */
+  @keyframes loadBar {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  .load-bar-fill { animation: loadBar 4s linear forwards; background: linear-gradient(90deg, #6366f1, #22d3ee); height: 3px; border-radius: 2px; }
+
+  /* Glowing border card */
+  .glow-card {
+    position: relative;
+    overflow: hidden;
+  }
+  .glow-card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(135deg, rgba(99,102,241,0.5), transparent 50%, rgba(34,211,238,0.3));
+    border-radius: inherit;
+    z-index: -1;
+  }
+</style>
+</head>
+<body class="mesh-bg min-h-screen flex items-center justify-center px-4 py-12">
+
+<div class="w-full max-w-2xl mx-auto relative">
+
+  <!-- Top accent line -->
+  <div class="glow-line mb-1 rounded-full opacity-60"></div>
+
+  <!-- Main card -->
+  <div class="relative rounded-2xl overflow-hidden noise" style="background: rgba(15,23,42,0.95); border: 1px solid rgba(99,102,241,0.2);">
+
+    <!-- Card inner -->
+    <div class="relative z-10 p-6 sm:p-10">
+
+      <!-- Header -->
+      <div class="mb-8 slide-up">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-cyan-400 uppercase badge-pulse bg-cyan-400/10 border border-cyan-400/20 rounded-full px-3 py-1">
+            <span class="w-1.5 h-1.5 bg-cyan-400 rounded-full"></span>
+            Bezpłatna analiza AI
+          </span>
+        </div>
+        <h1 class="font-syne text-2xl sm:text-3xl font-bold text-white leading-tight">
+          Ile czasu i pieniędzy<br>
+          <span style="background: linear-gradient(90deg, #818cf8, #22d3ee); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">tracisz na ręczne procesy?</span>
+        </h1>
+        <p class="text-slate-400 text-sm mt-2 font-dm">Odpowiedz na 4 pytania — otrzymasz spersonalizowaną strategię automatyzacji z estymacją ROI.</p>
+      </div>
+
+      <!-- Progress bar -->
+      <div class="mb-8 slide-up delay-1">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs text-slate-500 font-dm" id="step-label">Krok 1 z 4</span>
+          <span class="text-xs font-semibold text-indigo-400 font-syne" id="progress-pct">25%</span>
+        </div>
+        <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+          <div class="progress-fill h-full rounded-full" id="progress-bar" style="width: 25%"></div>
+        </div>
+        <!-- Step dots -->
+        <div class="flex gap-2 mt-3">
+          <div class="step-dot flex-1 h-0.5 rounded-full bg-indigo-500" id="dot-1"></div>
+          <div class="step-dot flex-1 h-0.5 rounded-full bg-slate-700" id="dot-2"></div>
+          <div class="step-dot flex-1 h-0.5 rounded-full bg-slate-700" id="dot-3"></div>
+          <div class="step-dot flex-1 h-0.5 rounded-full bg-slate-700" id="dot-4"></div>
+        </div>
+      </div>
+
+      <!-- Steps container (relative) -->
+      <div id="steps-container" class="relative">
+
+        <!-- ===== STEP 1: Platform ===== -->
+        <div class="step-pane active-step" id="step-1">
+          <h2 class="font-syne text-lg font-bold text-white mb-1">Na jakiej platformie działa Twój sklep?</h2>
+          <p class="text-slate-400 text-sm mb-5">Wybierz jedną opcję</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="platform-tiles">
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="Shopify" onclick="selectTile('platform', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🛍️</div>
+              <div class="font-syne font-semibold text-white text-sm">Shopify</div>
+              <div class="text-slate-500 text-xs mt-1">Hosted SaaS</div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="WooCommerce" onclick="selectTile('platform', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🔧</div>
+              <div class="font-syne font-semibold text-white text-sm">WooCommerce</div>
+              <div class="text-slate-500 text-xs mt-1">WordPress / Self-hosted</div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="Inna platforma" onclick="selectTile('platform', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🌐</div>
+              <div class="font-syne font-semibold text-white text-sm">Inna platforma</div>
+              <div class="text-slate-500 text-xs mt-1">Magento, IdoSell, itp.</div>
+            </div>
+          </div>
+          <div class="mt-6">
+            <button onclick="nextStep(1)" class="w-full py-3.5 rounded-xl font-syne font-bold text-white text-sm tracking-wide transition-all" style="background: linear-gradient(135deg, #6366f1, #4f46e5); opacity: 0.5;" id="btn-1">
+              Dalej →
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 2: Scale ===== -->
+        <div class="step-pane hidden-step" id="step-2">
+          <h2 class="font-syne text-lg font-bold text-white mb-1">Skala Twojego biznesu</h2>
+          <p class="text-slate-400 text-sm mb-5">Ile zamówień obsługujesz miesięcznie?</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="scale-tiles">
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="<500 zamówień/mies." onclick="selectTile('scale', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🌱</div>
+              <div class="font-syne font-semibold text-white text-sm">&lt;500</div>
+              <div class="text-slate-500 text-xs mt-1">zamówień / miesiąc</div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="500–2000 zamówień/mies." onclick="selectTile('scale', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🚀</div>
+              <div class="font-syne font-semibold text-white text-sm">500–2000</div>
+              <div class="text-slate-500 text-xs mt-1">zamówień / miesiąc</div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-5 text-center bg-slate-800/40" data-val="2000+ zamówień/mies." onclick="selectTile('scale', this)">
+              <div class="tile-icon text-3xl mb-3 text-slate-300">🏭</div>
+              <div class="font-syne font-semibold text-white text-sm">2000+</div>
+              <div class="text-slate-500 text-xs mt-1">zamówień / miesiąc</div>
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6">
+            <button onclick="prevStep(2)" class="px-5 py-3.5 rounded-xl border border-slate-700 text-slate-400 text-sm font-dm hover:border-slate-500 transition-colors">← Wróć</button>
+            <button onclick="nextStep(2)" class="flex-1 py-3.5 rounded-xl font-syne font-bold text-white text-sm tracking-wide transition-all" style="background: linear-gradient(135deg, #6366f1, #4f46e5); opacity: 0.5;" id="btn-2">
+              Dalej →
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 3: Problems (multi-select) ===== -->
+        <div class="step-pane hidden-step" id="step-3">
+          <h2 class="font-syne text-lg font-bold text-white mb-1">Gdzie boli najbardziej?</h2>
+          <p class="text-slate-400 text-sm mb-5">Zaznacz wszystkie, które dotyczą Twojego sklepu</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="problem-tiles">
+            <div class="tile border border-slate-700 rounded-xl p-4 bg-slate-800/40 flex items-start gap-3" data-val="Chaos w fakturowaniu" onclick="toggleTile('problems', this)">
+              <div class="text-2xl mt-0.5">🧾</div>
+              <div>
+                <div class="font-syne font-semibold text-white text-sm">Chaos w fakturowaniu</div>
+                <div class="text-slate-500 text-xs mt-0.5">Faktury, korekty, synchronizacja z księgowością</div>
+              </div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-4 bg-slate-800/40 flex items-start gap-3" data-val="Rozbieżności w magazynie" onclick="toggleTile('problems', this)">
+              <div class="text-2xl mt-0.5">📦</div>
+              <div>
+                <div class="font-syne font-semibold text-white text-sm">Rozbieżności w magazynie</div>
+                <div class="text-slate-500 text-xs mt-0.5">Stany, synchronizacja, hurtownie i WMS</div>
+              </div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-4 bg-slate-800/40 flex items-start gap-3" data-val="Porzucone koszyki" onclick="toggleTile('problems', this)">
+              <div class="text-2xl mt-0.5">🛒</div>
+              <div>
+                <div class="font-syne font-semibold text-white text-sm">Porzucone koszyki</div>
+                <div class="text-slate-500 text-xs mt-0.5">Sekwencje odzysku, powiadomienia, retargeting</div>
+              </div>
+            </div>
+            <div class="tile border border-slate-700 rounded-xl p-4 bg-slate-800/40 flex items-start gap-3" data-val="Ręczna obsługa zwrotów" onclick="toggleTile('problems', this)">
+              <div class="text-2xl mt-0.5">↩️</div>
+              <div>
+                <div class="font-syne font-semibold text-white text-sm">Ręczna obsługa zwrotów</div>
+                <div class="text-slate-500 text-xs mt-0.5">Zwroty, reklamacje, komunikacja z klientem</div>
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-3 mt-6">
+            <button onclick="prevStep(3)" class="px-5 py-3.5 rounded-xl border border-slate-700 text-slate-400 text-sm font-dm hover:border-slate-500 transition-colors">← Wróć</button>
+            <button onclick="nextStep(3)" class="flex-1 py-3.5 rounded-xl font-syne font-bold text-white text-sm tracking-wide transition-all" style="background: linear-gradient(135deg, #6366f1, #4f46e5); opacity: 0.5;" id="btn-3">
+              Generuj analizę →
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 4: Contact form ===== -->
+        <div class="step-pane hidden-step" id="step-4">
+          <h2 class="font-syne text-lg font-bold text-white mb-1">Gdzie wysłać Twoją ofertę?</h2>
+          <p class="text-slate-400 text-sm mb-6">Wypełnij formularz — oferta trafi do Ciebie w ciągu 60 sekund</p>
+
+          <div class="space-y-4">
+            <!-- Name -->
+            <div class="field-wrap">
+              <input type="text" id="f-name" class="field-input inp w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 pt-5 pb-3 text-white text-sm font-dm placeholder-transparent focus:border-indigo-500" placeholder=" ">
+              <label class="field-label font-dm">Imię i nazwisko</label>
+            </div>
+            <!-- Email -->
+            <div class="field-wrap">
+              <input type="email" id="f-email" class="field-input inp w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 pt-5 pb-3 text-white text-sm font-dm placeholder-transparent focus:border-indigo-500" placeholder=" ">
+              <label class="field-label font-dm">Adres e-mail <span class="text-red-400">*</span></label>
+              <span id="email-err" class="hidden text-red-400 text-xs mt-1 block">Podaj poprawny adres e-mail</span>
+            </div>
+            <!-- Phone -->
+            <div class="field-wrap">
+              <input type="tel" id="f-phone" class="field-input inp w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 pt-5 pb-3 text-white text-sm font-dm placeholder-transparent focus:border-indigo-500" placeholder=" ">
+              <label class="field-label font-dm">Numer telefonu</label>
+            </div>
+            <!-- Store URL -->
+            <div class="field-wrap">
+              <input type="text" id="f-store" class="field-input inp w-full bg-slate-800/60 border border-slate-700 rounded-xl px-4 pt-5 pb-3 text-white text-sm font-dm placeholder-transparent focus:border-indigo-500" placeholder=" ">
+              <label class="field-label font-dm">Nazwa sklepu / URL</label>
+            </div>
+          </div>
+
+          <!-- Privacy consent -->
+          <div class="mt-5">
+            <input type="checkbox" id="privacy-check" class="custom-check">
+            <label for="privacy-check" class="check-label">
+              <span class="check-box"></span>
+              <span class="text-xs text-slate-400 font-dm leading-relaxed">Wyrażam zgodę na przetwarzanie moich danych osobowych w celu przygotowania spersonalizowanej oferty zgodnie z <a href="#" class="text-indigo-400 hover:text-indigo-300 underline underline-offset-2">Polityką Prywatności</a>. Zgoda jest dobrowolna i można ją wycofać w każdym czasie.</span>
+            </label>
+            <span id="privacy-err" class="hidden text-red-400 text-xs mt-2 block">Wymagana zgoda na przetwarzanie danych</span>
+          </div>
+
+          <div class="flex gap-3 mt-6">
+            <button onclick="prevStep(4)" class="px-5 py-3.5 rounded-xl border border-slate-700 text-slate-400 text-sm font-dm hover:border-slate-500 transition-colors">← Wróć</button>
+            <button onclick="submitForm()" class="flex-1 py-3.5 rounded-xl font-syne font-bold text-white text-sm tracking-wide transition-all hover:opacity-90 active:scale-95" style="background: linear-gradient(135deg, #6366f1, #22d3ee)">
+              🚀 Generuj ofertę
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== STEP 5: Loader ===== -->
+        <div class="step-pane hidden-step" id="step-5">
+          <div class="text-center py-8">
+            <!-- Spinner -->
+            <div class="relative w-20 h-20 mx-auto mb-6">
+              <div class="absolute inset-0 rounded-full spin" style="border: 3px solid transparent; border-top-color: #6366f1; border-right-color: #22d3ee;"></div>
+              <div class="absolute inset-2 rounded-full spin" style="border: 2px solid transparent; border-bottom-color: #818cf8; animation-direction: reverse; animation-duration: 0.7s;"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-2xl">🤖</span>
+              </div>
+            </div>
+
+            <!-- Animated status text -->
+            <div class="h-6 mb-2">
+              <p class="pulse-text text-indigo-300 font-syne font-semibold text-sm" id="loader-text">Analizuję architekturę sklepu...</p>
+            </div>
+
+            <!-- Typing dots -->
+            <div class="flex justify-center gap-1.5 mb-8">
+              <div class="dot1 w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+              <div class="dot2 w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+              <div class="dot3 w-1.5 h-1.5 bg-indigo-400 rounded-full"></div>
+            </div>
+
+            <!-- Load bars -->
+            <div class="space-y-3 max-w-xs mx-auto">
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Analiza procesów</span><span class="text-indigo-400" id="bar1-pct">0%</span>
+                </div>
+                <div class="bg-slate-800 rounded-full overflow-hidden h-1">
+                  <div class="load-bar-fill" id="bar1"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Kalkulacja ROI</span><span class="text-cyan-400" id="bar2-pct">0%</span>
+                </div>
+                <div class="bg-slate-800 rounded-full overflow-hidden h-1">
+                  <div class="load-bar-fill" id="bar2" style="animation-delay: 0.5s;"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Generowanie oferty PDF</span><span class="text-indigo-400" id="bar3-pct">0%</span>
+                </div>
+                <div class="bg-slate-800 rounded-full overflow-hidden h-1">
+                  <div class="load-bar-fill" id="bar3" style="animation-delay: 1.2s;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== STEP 6: Success ===== -->
+        <div class="step-pane hidden-step" id="step-6">
+          <div class="text-center py-6">
+            <!-- Check icon -->
+            <div class="pop-in w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5" style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(34,211,238,0.2)); border: 1px solid rgba(99,102,241,0.4);">
+              <svg class="w-9 h-9" fill="none" viewBox="0 0 24 24">
+                <circle cx="12" cy="12" r="12" fill="rgba(99,102,241,0.15)"/>
+                <path d="M7 12.5l3.5 3.5 6.5-7" stroke="#22d3ee" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+
+            <h2 class="font-syne text-2xl font-bold text-white mb-2">Oferta wygenerowana! 🎉</h2>
+            <div class="glow-line w-16 mx-auto mb-5 opacity-80"></div>
+
+            <p class="text-slate-300 text-sm font-dm leading-relaxed max-w-md mx-auto mb-4">
+              Spersonalizowana strategia automatyzacji wraz z estymacją kosztów i wyliczonym <strong class="text-white">ROI</strong> została wysłana na Twój adres e-mail.
+            </p>
+            <p class="text-slate-400 text-xs font-dm mb-8">Sprawdź skrzynkę <span class="text-indigo-300">(oraz folder SPAM)</span> w ciągu najbliższych <strong class="text-white">60 sekund</strong>.</p>
+
+            <!-- Next step teaser -->
+            <div class="glow-card rounded-xl p-5 text-left" style="background: rgba(15,23,42,0.8); border: 1px solid rgba(99,102,241,0.25);">
+              <div class="flex items-start gap-4">
+                <div class="text-3xl">📞</div>
+                <div>
+                  <p class="font-syne font-bold text-white text-sm mb-1">Co dalej?</p>
+                  <p class="text-slate-400 text-xs font-dm leading-relaxed">Po zatwierdzeniu oferty skontaktuje się z Tobą osoba z naszego zespołu, która dopieści wszystkie szczegóły wdrożenia i odpowie na każde pytanie.</p>
+                  <div class="flex items-center gap-2 mt-3">
+                    <div class="w-2 h-2 bg-green-400 rounded-full" style="box-shadow: 0 0 6px rgba(74,222,128,0.8);"></div>
+                    <span class="text-green-400 text-xs font-syne font-semibold">Czas reakcji: do 24h roboczych</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /steps-container -->
+
+    </div>
+    <!-- /card inner -->
+
+  </div>
+  <!-- /main card -->
+
+  <!-- ===== SECTION: Case Studies ===== -->
+  <div class="mt-12 slide-up delay-2" id="social-proof">
+    <!-- Trust bar -->
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full border border-slate-700 bg-slate-900/60 mb-5">
+        <span class="text-2xl font-syne font-black text-white">1200+</span>
+        <span class="text-slate-400 text-sm">sklepów już działa na autopilocie</span>
+      </div>
+      <div class="flex justify-center items-center gap-1 mb-2">
+        <span class="star text-lg">★</span><span class="star text-lg">★</span><span class="star text-lg">★</span><span class="star text-lg">★</span><span class="star text-lg">★</span>
+        <span class="ml-2 text-slate-400 text-sm">4.97 / 5.0 średnia ocen</span>
+      </div>
+    </div>
+
+    <div class="glow-line opacity-40 mb-8"></div>
+
+    <!-- Case Study cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <!-- CS 1 -->
+      <div class="cs-card rounded-xl p-5 border border-slate-800" style="background: rgba(15,23,42,0.7);">
+        <div class="flex items-center gap-1 mb-3">
+          <span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span>
+        </div>
+        <p class="text-slate-300 text-xs font-dm leading-relaxed mb-4">"Automatyzacja fakturowania zredukowała czas obsługi zamówień z 4 godzin dziennie do 12 minut. <strong class="text-white">ROI zwrócił się w 3 tygodnie.</strong>"</p>
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-xs font-bold text-white">MK</div>
+          <div>
+            <div class="text-white text-xs font-syne font-semibold">Marek K.</div>
+            <div class="text-slate-500 text-xs">Shopify · 1200 zamówień/mies.</div>
+          </div>
+        </div>
+      </div>
+      <!-- CS 2 -->
+      <div class="cs-card rounded-xl p-5 border border-slate-800" style="background: rgba(15,23,42,0.7);">
+        <div class="flex items-center gap-1 mb-3">
+          <span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span>
+        </div>
+        <p class="text-slate-300 text-xs font-dm leading-relaxed mb-4">"Odzysk porzuconych koszyków wzrósł o <strong class="text-white">+34%</strong> w pierwszy miesiąc. Sekwencja działa sama, ja śpię spokojnie."</p>
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center text-xs font-bold text-white">AW</div>
+          <div>
+            <div class="text-white text-xs font-syne font-semibold">Anna W.</div>
+            <div class="text-slate-500 text-xs">WooCommerce · 800 zamówień/mies.</div>
+          </div>
+        </div>
+      </div>
+      <!-- CS 3 -->
+      <div class="cs-card rounded-xl p-5 border border-slate-800" style="background: rgba(15,23,42,0.7);">
+        <div class="flex items-center gap-1 mb-3">
+          <span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span><span class="star text-sm">★</span>
+        </div>
+        <p class="text-slate-300 text-xs font-dm leading-relaxed mb-4">"Synchronizacja magazynu między 3 hurtowniami — zero błędów od 6 miesięcy. Polecam każdemu sklepowi powyżej <strong class="text-white">500 zamówień.</strong>"</p>
+        <div class="flex items-center gap-2.5">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-xs font-bold text-white">PT</div>
+          <div>
+            <div class="text-white text-xs font-syne font-semibold">Piotr T.</div>
+            <div class="text-slate-500 text-xs">IdoSell · 3500 zamówień/mies.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Logos / badges row -->
+    <div class="flex flex-wrap justify-center items-center gap-4 opacity-50">
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">Shopify</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">WooCommerce</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">IdoSell</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">BaseLinker</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">Fakturownia</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-lg px-3 py-1.5">iFirma</span>
+    </div>
+  </div>
+  <!-- /social proof -->
+
+  <!-- ===== FAQ SECTION ===== -->
+  <div class="mt-16" id="faq">
+
+    <div class="text-center mb-10">
+      <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-indigo-400 uppercase bg-indigo-400/10 border border-indigo-400/20 rounded-full px-3 py-1 mb-4">FAQ</span>
+      <h2 class="font-syne text-2xl sm:text-3xl font-bold text-white mb-2">Najczęściej zadawane pytania</h2>
+      <p class="text-slate-400 text-sm font-dm">Wszystko, co chcesz wiedzieć zanim podejmiesz decyzję.</p>
+    </div>
+
+    <div class="glow-line opacity-40 mb-8"></div>
+
+    <div class="space-y-3">
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Ile kosztuje wdrożenie automatyzacji dla mojego sklepu?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Koszt zależy od liczby zautomatyzowanych procesów i wybranej platformy. Typowy projekt dla sklepu obsługującego 500–2000 zamówień miesięcznie zamyka się w przedziale <strong class="text-white">3 000–9 000 zł netto</strong>. Dokładna wycena z estymacją ROI trafia do Ciebie po wypełnieniu kalkulatora powyżej — bezpłatnie i bez zobowiązań.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Jak szybko zobaczę efekty automatyzacji?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Pierwsze efekty widać <strong class="text-white">od pierwszego dnia po uruchomieniu</strong> — faktury wystawiane automatycznie, koszyki odzyskiwane bez ręcznej interwencji, stany magazynowe synchronizowane w czasie rzeczywistym. Pełny zwrot inwestycji następuje średnio w ciągu <strong class="text-white">4–8 tygodni</strong> przy sklepach powyżej 500 zamówień miesięcznie.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Czy muszę mieć wiedzę techniczną, żeby korzystać z automatyzacji?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Nie. Całą konfigurację, integrację i testy przeprowadzam za Ciebie. Po wdrożeniu system działa samodzielnie — dostajesz <strong class="text-white">gotowe narzędzie, nie kod do samodzielnego utrzymania</strong>. Jeśli chcesz coś zmienić, wystarczy jeden e-mail do zespołu.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Z jakimi platformami sklepowymi pracujesz?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Specjalizuję się w <strong class="text-white">Shopify i WooCommerce</strong>, ale obsługuję też IdoSell, Magento, Shoper, PrestaShop oraz sklepy oparte na własnych rozwiązaniach. Jeśli platforma udostępnia API lub webhooki — da się ją zautomatyzować.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Czy automatyzacja jest bezpieczna dla danych moich klientów?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Tak. Wszystkie scenariusze działają na certyfikowanych platformach chmurowych (ISO 27001, SOC 2). Dane klientów nigdy nie opuszczają Twojej infrastruktury bez Twojej zgody — komunikacja odbywa się wyłącznie przez <strong class="text-white">szyfrowane połączenia HTTPS/TLS</strong>. Do każdego projektu podpisujemy umowę powierzenia danych osobowych zgodną z RODO.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Co się stanie, jeśli coś przestanie działać po wdrożeniu?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">W pakiecie opieki powdrożeniowej (3 miesiące w cenie) gwarantuję <strong class="text-white">SLA 24h w dni robocze</strong> — każda usterka naprawiana następnego dnia. Po tym czasie możemy przedłużyć opiekę abonamentowo lub pracować w modelu „płacisz za zmianę". Zawsze jesteś zabezpieczony.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Ile trwa wdrożenie od momentu podpisania umowy?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Standardowy projekt zamykam w <strong class="text-white">4–5 tygodni</strong>: tydzień na kickoff i przekazanie dostępów, 2 tygodnie budowy scenariuszy, tydzień testów akceptacyjnych z Tobą, tydzień go-live. Złożone projekty z 5+ integracjami mogą potrwać do 8 tygodni.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Czy automatyzacja wymaga stałych opłat miesięcznych?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Samo wdrożenie to <strong class="text-white">opłata jednorazowa</strong>. Narzędzia chmurowe działające w tle kosztują od 20 do 100 zł miesięcznie w zależności od wolumenu zamówień — zawsze transparentnie uwzględniam to w ofercie przed podpisaniem umowy. Opcjonalna opieka powdrożeniowa to odrębna, jasno wyceniona pozycja.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Czy mogę zacząć od jednego procesu i rozszerzać zakres później?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Tak — i właśnie to polecam. Zaczynamy od <strong class="text-white">jednego konkretnego problemu</strong> (np. fakturowanie), mierzysz efekty przez miesiąc, a następnie rozbudowujemy system o kolejne moduły. Każdy scenariusz jest zaprojektowany modularnie, więc dodanie nowej integracji nie wymaga przebudowy całości.</p>
+        </div>
+      </div>
+
+      <div class="faq-item rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7);transition:border-color .2s">
+        <button class="faq-btn w-full flex items-center justify-between gap-4 px-5 py-4 text-left" onclick="toggleFaq(this)">
+          <span class="font-syne font-semibold text-white text-sm">Jak wygląda model płatności za projekt?</span>
+          <span class="faq-icon text-indigo-400 flex-shrink-0 text-xl leading-none" style="transition:transform .25s">▾</span>
+        </button>
+        <div class="faq-body hidden px-5 pb-5">
+          <div class="glow-line opacity-25 mb-3"></div>
+          <p class="text-slate-400 text-sm leading-relaxed">Standardowo pobieramy <strong class="text-white">30% zadatku</strong> przy akceptacji oferty (online, kartą lub przelewem) oraz <strong class="text-white">70% po go-live</strong> — kiedy widzisz działający system i jesteś zadowolony. Wystawiam fakturę VAT. Dla większych projektów możliwe rozłożenie na raty miesięczne — do ustalenia indywidualnie.</p>
+        </div>
+      </div>
+
+    </div><!-- /faq items -->
+
+    <!-- FAQ Schema JSON-LD for Google -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type":"Question","name":"Ile kosztuje wdrożenie automatyzacji dla mojego sklepu?","acceptedAnswer":{"@type":"Answer","text":"Koszt zależy od zakresu wdrożenia. Typowy projekt zamyka się w przedziale 3 000–9 000 zł netto. Dokładna wycena trafia do Ciebie po wypełnieniu kalkulatora — bezpłatnie i bez zobowiązań."}},
+        {"@type":"Question","name":"Jak szybko zobaczę efekty automatyzacji?","acceptedAnswer":{"@type":"Answer","text":"Pierwsze efekty widać od pierwszego dnia po uruchomieniu. Pełny zwrot inwestycji następuje średnio w ciągu 4–8 tygodni przy sklepach powyżej 500 zamówień miesięcznie."}},
+        {"@type":"Question","name":"Czy muszę mieć wiedzę techniczną?","acceptedAnswer":{"@type":"Answer","text":"Nie. Całą konfigurację przeprowadzam za Ciebie. Po wdrożeniu system działa samodzielnie — dostajesz gotowe narzędzie, nie kod do samodzielnego utrzymania."}},
+        {"@type":"Question","name":"Z jakimi platformami sklepowymi pracujesz?","acceptedAnswer":{"@type":"Answer","text":"Specjalizuję się w Shopify i WooCommerce, ale obsługuję też IdoSell, Magento, Shoper i inne platformy z API."}},
+        {"@type":"Question","name":"Czy automatyzacja jest bezpieczna dla danych moich klientów?","acceptedAnswer":{"@type":"Answer","text":"Tak. Scenariusze działają na certyfikowanych platformach (ISO 27001, SOC 2), przez szyfrowane połączenia HTTPS/TLS. Podpisujemy umowę powierzenia danych RODO."}},
+        {"@type":"Question","name":"Co się stanie, jeśli coś przestanie działać po wdrożeniu?","acceptedAnswer":{"@type":"Answer","text":"W pakiecie opieki powdrożeniowej gwarantuję SLA 24h w dni robocze. Po 3 miesiącach możemy przedłużyć opiekę lub pracować w modelu płatności za zmianę."}},
+        {"@type":"Question","name":"Ile trwa wdrożenie od podpisania umowy?","acceptedAnswer":{"@type":"Answer","text":"Standardowy projekt zamykam w 4–5 tygodni. Złożone projekty z 5+ integracjami mogą potrwać do 8 tygodni."}},
+        {"@type":"Question","name":"Czy automatyzacja wymaga stałych opłat miesięcznych?","acceptedAnswer":{"@type":"Answer","text":"Wdrożenie to opłata jednorazowa. Narzędzia chmurowe kosztują od 20 do 100 zł miesięcznie — zawsze transparentnie w ofercie."}},
+        {"@type":"Question","name":"Czy mogę zacząć od jednego procesu?","acceptedAnswer":{"@type":"Answer","text":"Tak i polecam. Każdy scenariusz jest zaprojektowany modularnie — łatwo dodać integrację bez przebudowy całości."}},
+        {"@type":"Question","name":"Jak wygląda model płatności za projekt?","acceptedAnswer":{"@type":"Answer","text":"30% zadatku przy akceptacji oferty, 70% po go-live. Wystawiam fakturę VAT. Dla większych projektów możliwe raty miesięczne."}}
+      ]
+    }
+    </script>
+
+  </div><!-- /faq -->
+
+  <!-- ===== BLOG SECTION ===== -->
+  <div class="mt-16" id="blog">
+
+    <div class="text-center mb-10">
+      <span class="inline-flex items-center gap-2 text-xs font-semibold tracking-widest text-cyan-400 uppercase bg-cyan-400/10 border border-cyan-400/20 rounded-full px-3 py-1 mb-4">Blog</span>
+      <h2 class="font-syne text-2xl sm:text-3xl font-bold text-white mb-2">Wiedza o automatyzacji e-commerce</h2>
+      <p class="text-slate-400 text-sm font-dm">Praktyczne poradniki i case studies dla właścicieli sklepów internetowych.</p>
+    </div>
+
+    <div class="glow-line opacity-40 mb-8"></div>
+
+    <!-- Featured post -->
+    <div class="cs-card rounded-xl border border-slate-800 overflow-hidden mb-5" style="background:rgba(15,23,42,0.7)">
+      <div class="h-32 relative overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(34,211,238,0.08))">
+        <div class="absolute inset-0" style="background-image:linear-gradient(rgba(99,102,241,0.12) 1px,transparent 1px),linear-gradient(90deg,rgba(99,102,241,0.12) 1px,transparent 1px);background-size:28px 28px;"></div>
+        <span class="text-5xl relative z-10">🧾</span>
+        <span class="absolute top-3 left-3 text-xs font-syne font-bold text-indigo-300 bg-indigo-500/20 border border-indigo-500/30 rounded-full px-3 py-1">⭐ Case Study</span>
+        <span class="absolute top-3 right-3 text-xs font-dm text-slate-400 bg-slate-900/60 px-2 py-0.5 rounded-full">8 min czytania</span>
+      </div>
+      <div class="p-5">
+        <p class="text-slate-500 text-xs mb-2 font-dm">12 maja 2025</p>
+        <h3 class="font-syne font-bold text-white text-base mb-2 leading-snug hover:text-indigo-300 transition-colors cursor-pointer">Jak sklep WooCommerce zaoszczędził 38 godzin miesięcznie eliminując ręczne fakturowanie</h3>
+        <p class="text-slate-400 text-xs leading-relaxed mb-4">Marek prowadził sklep z elektroniką — 1200 zamówień miesięcznie, 2 osoby dedykowane wyłącznie fakturom. Wdrożenie jednego scenariusza zredukowało ten czas do 12 minut dziennie. Sprawdź jak to zrobiliśmy.</p>
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div class="flex gap-2 flex-wrap">
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">WooCommerce</span>
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">Fakturowanie</span>
+            <span class="text-xs bg-slate-800 text-slate-400 px-2 py-0.5 rounded-full border border-slate-700">ROI w 3 tygodnie</span>
+          </div>
+          <span class="text-indigo-400 text-xs font-syne font-semibold cursor-pointer hover:text-indigo-300 transition-colors">Czytaj artykuł →</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2-column grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+
+      <div class="cs-card rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7)">
+        <div class="h-24 relative overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,rgba(34,211,238,0.14),rgba(99,102,241,0.05))">
+          <span class="text-4xl relative z-10">🛒</span>
+          <span class="absolute top-2 left-2 text-xs font-syne font-bold text-cyan-300 bg-cyan-500/20 border border-cyan-500/30 rounded-full px-2.5 py-0.5">Poradnik</span>
+        </div>
+        <div class="p-4">
+          <p class="text-slate-500 text-xs mb-1.5 font-dm">28 kwietnia 2025 · 6 min</p>
+          <h3 class="font-syne font-bold text-white text-sm mb-3 leading-snug hover:text-cyan-300 transition-colors cursor-pointer">Porzucone koszyki w Shopify: sekwencja 3-etapowa, która odzyskuje +28% sprzedaży</h3>
+          <span class="text-cyan-400 text-xs font-syne font-semibold cursor-pointer hover:text-cyan-300 transition-colors">Czytaj →</span>
+        </div>
+      </div>
+
+      <div class="cs-card rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7)">
+        <div class="h-24 relative overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,rgba(74,222,128,0.12),rgba(34,211,238,0.04))">
+          <span class="text-4xl relative z-10">📦</span>
+          <span class="absolute top-2 left-2 text-xs font-syne font-bold text-green-300 bg-green-500/15 border border-green-500/25 rounded-full px-2.5 py-0.5">Integracje</span>
+        </div>
+        <div class="p-4">
+          <p class="text-slate-500 text-xs mb-1.5 font-dm">15 kwietnia 2025 · 5 min</p>
+          <h3 class="font-syne font-bold text-white text-sm mb-3 leading-snug hover:text-green-300 transition-colors cursor-pointer">Synchronizacja 3 hurtowni z WooCommerce — zero błędów stanów przez 6 miesięcy</h3>
+          <span class="text-green-400 text-xs font-syne font-semibold cursor-pointer hover:text-green-300 transition-colors">Czytaj →</span>
+        </div>
+      </div>
+
+      <div class="cs-card rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7)">
+        <div class="h-24 relative overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(99,102,241,0.04))">
+          <span class="text-4xl relative z-10">↩️</span>
+          <span class="absolute top-2 left-2 text-xs font-syne font-bold text-amber-300 bg-amber-500/15 border border-amber-500/25 rounded-full px-2.5 py-0.5">Zwroty</span>
+        </div>
+        <div class="p-4">
+          <p class="text-slate-500 text-xs mb-1.5 font-dm">2 kwietnia 2025 · 7 min</p>
+          <h3 class="font-syne font-bold text-white text-sm mb-3 leading-snug hover:text-amber-300 transition-colors cursor-pointer">Automatyczna obsługa zwrotów: od zgłoszenia do refundu bez jednego kliknięcia</h3>
+          <span class="text-amber-400 text-xs font-syne font-semibold cursor-pointer hover:text-amber-300 transition-colors">Czytaj →</span>
+        </div>
+      </div>
+
+      <div class="cs-card rounded-xl border border-slate-800 overflow-hidden" style="background:rgba(15,23,42,0.7)">
+        <div class="h-24 relative overflow-hidden flex items-center justify-center" style="background:linear-gradient(135deg,rgba(99,102,241,0.14),rgba(74,222,128,0.04))">
+          <span class="text-4xl relative z-10">📊</span>
+          <span class="absolute top-2 left-2 text-xs font-syne font-bold text-indigo-300 bg-indigo-500/15 border border-indigo-500/25 rounded-full px-2.5 py-0.5">ROI</span>
+        </div>
+        <div class="p-4">
+          <p class="text-slate-500 text-xs mb-1.5 font-dm">18 marca 2025 · 4 min</p>
+          <h3 class="font-syne font-bold text-white text-sm mb-3 leading-snug hover:text-indigo-300 transition-colors cursor-pointer">Jak liczyć ROI z automatyzacji? Prosty kalkulator dla sklepów 500–5000 zamówień/mies.</h3>
+          <span class="text-indigo-400 text-xs font-syne font-semibold cursor-pointer hover:text-indigo-300 transition-colors">Czytaj →</span>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="text-center">
+      <button class="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-slate-700 text-slate-300 text-sm font-syne font-semibold hover:border-indigo-500/60 hover:text-indigo-300 transition-all">
+        Zobacz wszystkie artykuły
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+      </button>
+    </div>
+
+  </div><!-- /blog -->
+
+</div><!-- /max-w container -->
+
+<!-- ===== FOOTER ===== -->
+<footer class="mt-20 border-t border-slate-800/60" style="background:rgba(2,6,23,0.97)">
+  <div class="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+
+    <div class="text-center mb-8">
+      <div class="inline-flex items-center gap-2 mb-3">
+        <div class="w-7 h-7 rounded-lg flex items-center justify-center" style="background:linear-gradient(135deg,#6366f1,#22d3ee)"><span class="text-xs">⚡</span></div>
+        <span class="font-syne font-bold text-white text-sm">AutomatyzacjaSklepu.pl</span>
+      </div>
+      <p class="text-slate-500 text-xs font-dm max-w-xs mx-auto leading-relaxed">Freelancer automatyzacji procesów biznesowych dla sklepów Shopify i WooCommerce. Ponad 1200 wdrożeń.</p>
+    </div>
+
+    <div class="glow-line opacity-25 mb-8"></div>
+
+    <div class="flex flex-wrap justify-center items-center gap-x-5 gap-y-3 mb-6 text-xs font-dm">
+      <a href="#faq" class="text-slate-400 hover:text-indigo-300 transition-colors">FAQ</a>
+      <span class="text-slate-700">·</span>
+      <a href="#blog" class="text-slate-400 hover:text-indigo-300 transition-colors">Blog</a>
+      <span class="text-slate-700">·</span>
+      <a href="mailto:hello@mojadomena.pl" class="text-slate-400 hover:text-indigo-300 transition-colors">Kontakt</a>
+      <span class="text-slate-700">·</span>
+      <a href="https://mojadomena.pl/regulamin" class="text-slate-400 hover:text-indigo-300 transition-colors">Regulamin</a>
+      <span class="text-slate-700">·</span>
+      <a href="https://mojadomena.pl/polityka-prywatnosci" class="text-slate-400 hover:text-indigo-300 transition-colors">Polityka Prywatności</a>
+    </div>
+
+    <div class="flex flex-wrap justify-center items-center gap-2 mb-8 opacity-35">
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">Shopify</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">WooCommerce</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">IdoSell</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">BaseLinker</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">iFirma</span>
+      <span class="text-slate-400 text-xs border border-slate-700 rounded-md px-2.5 py-1">Fakturownia</span>
+    </div>
+
+    <div style="height:1px;background:rgba(71,85,105,0.3);margin-bottom:1.25rem;"></div>
+
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-2 text-center">
+      <p class="text-slate-600 text-xs font-dm">© <span id="footer-year"></span> AutomatyzacjaSklepu.pl — Wszelkie prawa zastrzeżone.</p>
+      <p class="text-slate-700 text-xs font-dm">NIP: 000-000-00-00 · REGON: 000000000</p>
+    </div>
+
+  </div>
+</footer>
+<script>
+const WEBHOOK_URL = 'TUTAJ_WKLEJ_WEBHOOK';
+
+// ========== STATE ==========
+const state = {
+  platform: null,
+  scale: null,
+  problems: [],
+  name: '',
+  email: '',
+  phone: '',
+  store: '',
+  timestamp: null,
+};
+
+const TOTAL_STEPS = 4; // steps 1-4 visible in progress
+let currentStep = 1;
+
+// ========== PROGRESS ==========
+function updateProgress(step) {
+  const pct = Math.round((step / TOTAL_STEPS) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('step-label').textContent = `Krok ${step} z ${TOTAL_STEPS}`;
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const dot = document.getElementById('dot-' + i);
+    if (dot) {
+      dot.style.background = i <= step
+        ? 'linear-gradient(90deg, #6366f1, #22d3ee)'
+        : 'rgba(71,85,105,0.6)';
+    }
+  }
+  // hide progress for loading/success
+  const progressEl = document.getElementById('progress-bar').parentElement.parentElement.parentElement;
+  progressEl.style.display = (step > TOTAL_STEPS) ? 'none' : 'block';
+}
+
+// ========== TRANSITION ==========
+function goToStep(from, to) {
+  const fromEl = document.getElementById('step-' + from);
+  const toEl = document.getElementById('step-' + to);
+  fromEl.classList.remove('active-step');
+  fromEl.classList.add('hidden-step');
+  toEl.classList.remove('hidden-step');
+  toEl.classList.add('active-step');
+  currentStep = to;
+  if (to <= TOTAL_STEPS) updateProgress(to);
+}
+
+// ========== SINGLE SELECT TILE ==========
+function selectTile(key, el) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.tile').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  state[key] = el.dataset.val;
+
+  // Unlock next button
+  const btnMap = { platform: 'btn-1', scale: 'btn-2' };
+  if (btnMap[key]) {
+    const btn = document.getElementById(btnMap[key]);
+    btn.style.opacity = '1';
+    btn.style.cursor = 'pointer';
+  }
+}
+
+// ========== MULTI SELECT TILE ==========
+function toggleTile(key, el) {
+  el.classList.toggle('selected');
+  const val = el.dataset.val;
+  if (el.classList.contains('selected')) {
+    if (!state[key].includes(val)) state[key].push(val);
+  } else {
+    state[key] = state[key].filter(v => v !== val);
+  }
+  // enable btn-3 if at least 1 selected
+  const btn = document.getElementById('btn-3');
+  btn.style.opacity = state.problems.length > 0 ? '1' : '0.5';
+  btn.style.cursor = state.problems.length > 0 ? 'pointer' : 'not-allowed';
+}
+
+// ========== STEP NAV ==========
+function nextStep(step) {
+  if (step === 1) {
+    if (!state.platform) return;
+    goToStep(1, 2);
+  } else if (step === 2) {
+    if (!state.scale) return;
+    goToStep(2, 3);
+  } else if (step === 3) {
+    if (state.problems.length === 0) return;
+    goToStep(3, 4);
+  }
+}
+
+function prevStep(step) {
+  if (step === 2) goToStep(2, 1);
+  else if (step === 3) goToStep(3, 2);
+  else if (step === 4) goToStep(4, 3);
+}
+
+// ========== EMAIL VALIDATION ==========
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+// ========== LOADER ANIMATION ==========
+const loaderMessages = [
+  'Analizuję architekturę sklepu...',
+  'Dobieram scenariusze automatyzacji...',
+  'Kalkuluję potencjalne oszczędności...',
+  'Generuję spersonalizowaną ofertę PDF...',
+  'Finalizuję rekomendacje...',
+];
+
+function startLoader() {
+  let idx = 0;
+  const textEl = document.getElementById('loader-text');
+  const interval = setInterval(() => {
+    idx = (idx + 1) % loaderMessages.length;
+    textEl.textContent = loaderMessages[idx];
+  }, 900);
+
+  // Animate bar percentages
+  const bars = [
+    { id: 'bar1-pct', color: '#818cf8' },
+    { id: 'bar2-pct', color: '#22d3ee' },
+    { id: 'bar3-pct', color: '#818cf8' },
+  ];
+  const startTime = Date.now();
+  const barInterval = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const rawPct = Math.min(100, Math.round((elapsed / 4000) * 100));
+    bars.forEach((b, i) => {
+      const delay = i * 12;
+      const p = Math.min(100, Math.max(0, rawPct - delay));
+      document.getElementById(b.id).textContent = p + '%';
+    });
+    if (rawPct >= 100) clearInterval(barInterval);
+  }, 80);
+
+  setTimeout(() => {
+    clearInterval(interval);
+    goToStep(5, 6);
+    // Hide progress bar permanently
+    document.querySelector('.mb-8.slide-up').style.display = 'none';
+  }, 4000);
+}
+
+// ========== WEBHOOK SEND ==========
+async function sendToWebhook(data) {
+  try {
+    if (!WEBHOOK_URL || WEBHOOK_URL === 'TUTAJ_WKLEJ_WEBHOOK') return;
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+  } catch (e) {
+    console.error('Webhook error:', e);
+  }
+}
+
+// ========== FORM SUBMIT ==========
+function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const store = document.getElementById('f-store').value.trim();
+  const privacy = document.getElementById('privacy-check').checked;
+
+  // Validate email
+  const emailErr = document.getElementById('email-err');
+  if (!email || !isValidEmail(email)) {
+    emailErr.classList.remove('hidden');
+    document.getElementById('f-email').focus();
+    return;
+  }
+  emailErr.classList.add('hidden');
+
+  // Validate privacy
+  const privacyErr = document.getElementById('privacy-err');
+  if (!privacy) {
+    privacyErr.classList.remove('hidden');
+    return;
+  }
+  privacyErr.classList.add('hidden');
+
+  // Update state
+  state.name = name;
+  state.email = email;
+  state.phone = phone;
+  state.store = store;
+  state.timestamp = new Date().toISOString();
+
+  // Send webhook (fire and forget)
+  sendToWebhook({ ...state });
+
+  // Go to loader
+  goToStep(4, 5);
+  // Hide progress
+  document.querySelector('.mb-8.slide-up').style.display = 'none';
+  startLoader();
+}
+
+
+// ========== FAQ ACCORDION ==========
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const body = item.querySelector('.faq-body');
+  const icon = btn.querySelector('.faq-icon');
+  const isOpen = !body.classList.contains('hidden');
+  // Close all
+  document.querySelectorAll('.faq-item').forEach(el => {
+    el.querySelector('.faq-body').classList.add('hidden');
+    el.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
+    el.style.borderColor = '';
+  });
+  // Open clicked if it was closed
+  if (!isOpen) {
+    body.classList.remove('hidden');
+    icon.style.transform = 'rotate(180deg)';
+    item.style.borderColor = 'rgba(99,102,241,0.45)';
+    item.style.boxShadow = '0 0 16px rgba(99,102,241,0.1)';
+  }
+}
+
+// ========== FOOTER YEAR ==========
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+// ========== INIT ==========
+updateProgress(1);
+</script>
+</body>
+</html>

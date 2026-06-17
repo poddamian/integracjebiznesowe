@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Regulamin – Integracje Biznesowe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#06070d;--bg2:#0c0e1a;--surface:#111526;--surface2:#171c30;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--lime:#c8f135;--lime-dim:rgba(200,241,53,0.1);--text:#e8ecf7;--text2:#8896b8;--text3:#4a5577;--radius:14px;--font-display:'Clash Display',sans-serif;--font-body:'Satoshi',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;background:rgba(6,7,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1200px)/2));gap:24px}
+.nav-logo{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-logo-dot{width:26px;height:26px;border-radius:7px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:14px}
+.nav-logo span{color:var(--lime)}
+.nav-back{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s;margin-left:auto}
+.nav-back:hover{color:var(--lime)}
+.page{max-width:860px;margin:0 auto;padding:104px max(24px,calc((100vw - 860px)/2 + 24px)) 80px}
+.page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:18px}
+h1{font-family:var(--font-display);font-size:clamp(32px,4vw,52px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;line-height:1.1}
+.date{font-size:12px;color:var(--text3);margin-bottom:48px}
+h2{font-size:17px;font-weight:700;margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);color:var(--lime)}
+h3{font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)}
+p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:12px}
+ul,ol{padding-left:22px;margin-bottom:14px}
+li{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:5px}
+strong{color:var(--text)}
+a{color:var(--lime)}
+.box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
+.box p{margin-bottom:0}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px max(24px,calc((100vw - 1200px)/2));text-align:center;font-size:12px;color:var(--text3)}
+footer a{color:var(--text3);text-decoration:none;margin:0 10px}
+footer a:hover{color:var(--text2)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+  <a href="index.html" class="nav-back">← Powrót do strony głównej</a>
+</nav>
+<div class="page">
+<div class="page-tag">Dokument prawny</div>
+<h1>Regulamin świadczenia usług</h1>
+<div class="date">Obowiązuje od: 1 stycznia 2025 r. | Wersja: 2.1</div>
+
+<div class="box"><p>Niniejszy Regulamin określa zasady korzystania z serwisu Integracje Biznesowe oraz zamawiania i realizacji usług wdrożenia agentów AI i automatyzacji procesów biznesowych. Przed dokonaniem zakupu prosimy o dokładne zapoznanie się z jego treścią.</p></div>
+
+<h2 id="definicje">§ 1. Definicje</h2>
+<ul>
+<li><strong>Usługodawca / Sprzedawca</strong> – Integracje Biznesowe Sp. z o.o., ul. Technologiczna 1, 00-001 Warszawa, NIP: 000-000-00-00, REGON: 000000000, wpisana do KRS pod numerem 0000000000.</li>
+<li><strong>Klient / Zamawiający</strong> – osoba fizyczna prowadząca działalność gospodarczą, osoba prawna lub jednostka organizacyjna, która zawiera umowę z Usługodawcą.</li>
+<li><strong>Serwis</strong> – strona internetowa dostępna pod adresem automatyzujai.pl oraz powiązane poddomeny.</li>
+<li><strong>Agent AI</strong> – zautomatyzowany system oparty na modelach językowych (LLM) i platformie n8n, wdrażany przez Usługodawcę na rzecz Klienta.</li>
+<li><strong>Wdrożenie</strong> – jednorazowa usługa konfiguracji, integracji i uruchomienia Agenta AI zgodnie ze specyfikacją.</li>
+<li><strong>Abonament</strong> – cykliczna miesięczna opłata za utrzymanie, aktualizacje i wsparcie techniczne.</li>
+<li><strong>Brief</strong> – ankieta onboardingowa wypełniana przez Klienta po zakupie, zawierająca informacje niezbędne do wdrożenia.</li>
+<li><strong>Stripe</strong> – zewnętrzny operator płatności, Stripe Payments Europe Ltd., przetwarzający transakcje w Serwisie.</li>
+</ul>
+
+<h2 id="postanowienia-ogolne">§ 2. Postanowienia ogólne</h2>
+<p>2.1. Niniejszy Regulamin stanowi umowę między Klientem a Usługodawcą i reguluje wszelkie stosunki prawne wynikające z korzystania z Serwisu oraz zakupu usług.</p>
+<p>2.2. Korzystanie z Serwisu jest równoznaczne z akceptacją Regulaminu w całości.</p>
+<p>2.3. Usługodawca zastrzega sobie prawo do zmiany Regulaminu z 30-dniowym wyprzedzeniem. Zmiany nie dotyczą zamówień złożonych przed datą zmiany.</p>
+<p>2.4. Usługodawca świadczy usługi wyłącznie na rzecz podmiotów prowadzących działalność gospodarczą (B2B). Serwis nie jest skierowany do konsumentów.</p>
+
+<h2 id="zamowienia">§ 3. Składanie zamówień i zawarcie umowy</h2>
+<p>3.1. Zamówienia można składać przez Serwis 24 godziny na dobę, 7 dni w tygodniu, korzystając z formularza zamówienia i systemu płatności Stripe.</p>
+<p>3.2. Oferta prezentowana w Serwisie stanowi zaproszenie do zawarcia umowy w rozumieniu art. 71 Kodeksu cywilnego, a nie ofertę w rozumieniu art. 66 KC.</p>
+<p>3.3. Umowa zostaje zawarta z chwilą potwierdzenia przez Usługodawcę przyjęcia zamówienia do realizacji, co następuje w formie wiadomości email na adres wskazany przez Klienta.</p>
+<p>3.4. Do realizacji zamówienia niezbędne jest wypełnienie Briefa w ciągu 5 dni roboczych od złożenia zamówienia. Brak Briefa w tym terminie może spowodować wydłużenie czasu realizacji.</p>
+<p>3.5. Usługodawca zastrzega sobie prawo do odmowy realizacji zamówienia w przypadku podejrzenia działania na szkodę osób trzecich lub niezgodnego z prawem.</p>
+
+<h2 id="platnosci">§ 4. Płatności i fakturowanie</h2>
+<p>4.1. Wszystkie ceny podane w Serwisie są wyrażone w złotych polskich i są cenami netto (bez podatku VAT).</p>
+<p>4.2. Do każdej transakcji doliczany jest podatek VAT w wysokości 23%.</p>
+<p>4.3. Płatności realizowane są za pośrednictwem operatora Stripe. Akceptowane formy płatności: karta płatnicza (Visa, Mastercard), BLIK, przelew bankowy, Apple Pay, Google Pay.</p>
+<p>4.4. Opłata wdrożeniowa (setup fee) jest wymagana przed rozpoczęciem prac. Usługodawca może zaproponować płatność ratalną: 50% przy zamówieniu, 50% przy odbiorze — wyłącznie na indywidualne ustalenie.</p>
+<p>4.5. Abonament miesięczny pobierany jest automatycznie pierwszego dnia każdego okresu rozliczeniowego z karty Klienta. Klient otrzymuje fakturę VAT emailem.</p>
+<p>4.6. W przypadku braku płatności abonamentu Usługodawca może zawiesić dostęp do Agenta AI po upływie 7 dni od terminu płatności, z uprzednim powiadomieniem.</p>
+<p>4.7. Faktura VAT wystawiana jest automatycznie na dane podane podczas zakupu i dostarczana na adres email w formacie PDF.</p>
+
+<h2 id="realizacja">§ 5. Realizacja usług i terminy</h2>
+<p>5.1. Termin realizacji (wdrożenia) wynosi <strong>14–21 dni roboczych</strong> od daty: (a) wpłynięcia pełnej płatności wdrożeniowej, (b) wypełnienia Briefa przez Klienta — zależnie od tego, które nastąpi później.</p>
+<p>5.2. W przypadku niedotrzymania terminu wdrożenia z winy Usługodawcy Klient otrzymuje zwrot 20% opłaty wdrożeniowej za każdy tydzień opóźnienia, maksymalnie do 60% kwoty.</p>
+<p>5.3. Termin wdrożenia może ulec wydłużeniu w przypadku: opóźnienia w dostarczeniu Briefa, braku dostępu do wymaganych systemów Klienta, zmian zakresu inicjowanych przez Klienta, działania siły wyższej.</p>
+<p>5.4. Odbiór wdrożenia następuje poprzez potwierdzenie przez Klienta działania Agenta AI zgodnie ze specyfikacją. Brak sprzeciwu w ciągu 5 dni roboczych od udostępnienia systemu oznacza dorozumiane przyjęcie.</p>
+<p>5.5. Po odbiorze Usługodawca świadczy wsparcie techniczne zgodnie z wybranym pakietem (Starter: 3 mies., Professional: 6 mies.).</p>
+
+<h2 id="abonament">§ 6. Abonament i utrzymanie</h2>
+<p>6.1. W ramach miesięcznego abonamentu Usługodawca zapewnia: monitoring i utrzymanie techniczne Agenta AI, aktualizacje modeli AI i bibliotek, wsparcie email (Starter) lub email+Slack (Professional) w godzinach 9:00–17:00 w dni robocze, do 2 godzin modyfikacji/optymalizacji miesięcznie, kopie zapasowe konfiguracji.</p>
+<p>6.2. SLA (Service Level Agreement): dostępność Systemu na poziomie 99% (Starter) lub 99,5% (Professional) miesięcznie. Planowane przerwy konserwacyjne: max 2h/miesiąc, z 24h powiadomieniem.</p>
+<p>6.3. Czas reakcji na zgłoszenie błędu krytycznego: do 4h roboczych. Błąd standardowy: do 24h roboczych.</p>
+<p>6.4. Abonament można anulować z <strong>30-dniowym wypowiedzeniem</strong> na koniec miesiąca rozliczeniowego, poprzez wysłanie wiadomości email na adres biuro@integracjebiznesowe.pl.</p>
+
+<h2 id="zwroty">§ 7. Reklamacje, gwarancja i zwroty</h2>
+<p>7.1. Klient ma prawo do złożenia reklamacji w terminie 14 dni od daty odbioru wdrożenia.</p>
+<p>7.2. Reklamację należy złożyć pisemnie na adres: biuro@integracjebiznesowe.pl z opisem problemu, screenshotami lub nagraniami dokumentującymi nieprawidłowości.</p>
+<p>7.3. Usługodawca rozpatruje reklamację w terminie 14 dni roboczych. W uzasadnionych przypadkach termin może być przedłużony do 30 dni, z powiadomieniem Klienta.</p>
+<p>7.4. <strong>Gwarancja działania:</strong> Usługodawca gwarantuje działanie Agenta AI zgodnie ze specyfikacją przez 14 dni od odbioru. Jeśli w tym czasie system nie działa prawidłowo i Usługodawca nie usunie usterki w rozsądnym terminie, Klientowi przysługuje zwrot 100% opłaty wdrożeniowej.</p>
+<p>7.5. Zwrot jest procesowany przez Stripe w terminie do 10 dni roboczych od decyzji o jego przyznaniu.</p>
+<p>7.6. Opłaty abonamentowe za miesiące, w których system działał prawidłowo, nie podlegają zwrotowi.</p>
+
+<h2 id="odpowiedzialnosc">§ 8. Ograniczenie odpowiedzialności</h2>
+<p>8.1. Usługodawca ponosi odpowiedzialność za prawidłowe działanie Agenta AI wyłącznie w zakresie funkcjonalności opisanych w specyfikacji zamówienia.</p>
+<p>8.2. Usługodawca nie ponosi odpowiedzialności za: przerwy w działaniu usług zewnętrznych (OpenAI API, Twilio, Airtable), awarie infrastruktury hostingowej, działanie siły wyższej, nieprawidłowe odpowiedzi generowane przez modele LLM.</p>
+<p>8.3. Całkowita odpowiedzialność Usługodawcy ograniczona jest do wysokości opłat wdrożeniowych i abonamentowych za ostatnie 3 miesiące.</p>
+<p>8.4. Klient jest odpowiedzialny za zgodność korzystania z Agenta AI z obowiązującym prawem oraz za treści wprowadzane do systemu.</p>
+
+<h2 id="prawa-wlasnosci">§ 9. Własność intelektualna i licencja</h2>
+<p>9.1. Z chwilą zapłaty pełnego wynagrodzenia wdrożeniowego Usługodawca przekazuje Klientowi: pełny export konfiguracji workflow (JSON n8n), dokumentację techniczną, instrukcję użytkownika.</p>
+<p>9.2. Usługodawca zachowuje prawa do metodologii, szablonów promptów i ogólnych komponentów systemu niebędących specyficznie stworzonych dla Klienta.</p>
+<p>9.3. Klient otrzymuje niewyłączną, nieprzenoszalną licencję na użytkowanie Agenta AI w ramach własnej działalności. Odsprzedaż lub sublicencjonowanie wymaga pisemnej zgody Usługodawcy.</p>
+
+<h2 id="poufnosc">§ 10. Poufność</h2>
+<p>10.1. Obie strony zobowiązują się do zachowania poufności wszelkich informacji uzyskanych w trakcie realizacji umowy, w szczególności danych biznesowych, strategii i know-how.</p>
+<p>10.2. Obowiązek poufności obowiązuje przez czas trwania umowy i przez 2 lata po jej zakończeniu.</p>
+
+<h2 id="postanowienia-kocowe">§ 11. Postanowienia końcowe</h2>
+<p>11.1. W sprawach nieuregulowanych Regulaminem zastosowanie mają przepisy Kodeksu Cywilnego i innych ustaw polskich.</p>
+<p>11.2. Ewentualne spory Strony będą rozstrzygać polubownie. W razie braku porozumienia właściwy jest sąd siedziby Usługodawcy.</p>
+<p>11.3. Regulamin dostępny jest w aktualnej wersji na stronie automatyzujai.pl/regulamin.html.</p>
+<p>11.4. W przypadku sprzeczności między Regulaminem a indywidualną umową pisemną z Klientem, pierwszeństwo ma umowa pisemna.</p>
+
+<div class="box" style="margin-top:40px"><p style="font-size:13px"><strong>Kontakt w sprawach regulaminowych:</strong> biuro@integracjebiznesowe.pl | Integracje Biznesowe Sp. z o.o., ul. Technologiczna 1, 00-001 Warszawa</p></div>
+</div>
+<footer>
+  © 2025 Integracje Biznesowe Sp. z o.o. ·
+  <a href="index.html">Strona główna</a>
+  <a href="regulamin.html">Regulamin</a>
+  <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
+  <a href="index.html#faq">FAQ</a>
+</footer>
+</body>
+</html>

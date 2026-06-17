@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<!--
+  UWAGA: strona w wersji minimalnej (rebranding w toku).
+  - Domena: docelowo integracjebiznesowe.pl (placeholder w meta/schema/footer).
+  - Oferta usług jest ogólna i będzie rozwijana sukcesywnie wraz z nauką n8n / Make.com.
+  - Pełna wersja (cennik, produkty, Stripe) jest w archiwum/automatyzuj-ai-v2-pelna-wersja.html.
+-->
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- SEO -->
+<title>Automatyzacja Procesów Biznesowych dla Małych Firm | Integracje Biznesowe</title>
+<meta name="description" content="Automatyzuję powtarzalne procesy w małych firmach — n8n, Make.com, integracje API, automatyczne raporty. Odzyskaj czas i skup się na tym, co ważne. Bezpłatna konsultacja.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://integracjebiznesowe.pl/">
+
+<!-- Open Graph -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://integracjebiznesowe.pl/">
+<meta property="og:locale" content="pl_PL">
+<meta property="og:title" content="Automatyzacja Procesów Biznesowych dla Małych Firm | Integracje Biznesowe">
+<meta property="og:description" content="Automatyzuję powtarzalne procesy w małych firmach — n8n, Make.com, integracje API, automatyczne raporty. Bezpłatna konsultacja.">
+<meta property="og:site_name" content="Integracje Biznesowe">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Automatyzacja Procesów Biznesowych dla Małych Firm | Integracje Biznesowe">
+<meta name="twitter:description" content="Automatyzuję powtarzalne procesy w małych firmach — n8n, Make.com, integracje API, automatyczne raporty.">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+<!-- AEO / Structured Data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": ["LocalBusiness", "ProfessionalService"],
+      "@id": "https://integracjebiznesowe.pl/#business",
+      "name": "Integracje Biznesowe",
+      "url": "https://integracjebiznesowe.pl",
+      "email": "biuro@integracjebiznesowe.pl",
+      "description": "Automatyzacja procesów biznesowych dla małych firm. Wdrożenia n8n i Make.com, integracje API oraz automatyczne raporty i powiadomienia.",
+      "areaServed": { "@type": "Country", "name": "Polska" },
+      "knowsAbout": ["automatyzacja procesów biznesowych", "n8n", "Make.com", "integracje API", "AI dla firm", "automatyzacja małych firm"],
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Usługi automatyzacji",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatyzacja procesów", "description": "Łączenie systemów CRM, e-mail, arkuszy i formularzy w spójne przepływy pracy." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Integracje API i AI", "description": "Wdrożenia integracji API oraz prostych asystentów AI do codziennych zadań." } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Automatyczne raporty i powiadomienia", "description": "Raporty, alerty i podsumowania generowane automatycznie zamiast ręcznego zbierania danych." } }
+        ]
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://integracjebiznesowe.pl/#website",
+      "url": "https://integracjebiznesowe.pl",
+      "name": "Integracje Biznesowe",
+      "inLanguage": "pl-PL",
+      "publisher": { "@id": "https://integracjebiznesowe.pl/#business" }
+    },
+    {
+      "@type": "WebPage",
+      "@id": "https://integracjebiznesowe.pl/#webpage",
+      "url": "https://integracjebiznesowe.pl",
+      "name": "Automatyzacja Procesów Biznesowych dla Małych Firm | Integracje Biznesowe",
+      "isPartOf": { "@id": "https://integracjebiznesowe.pl/#website" },
+      "about": { "@id": "https://integracjebiznesowe.pl/#business" },
+      "inLanguage": "pl-PL",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [".hero-title", ".hero-sub"]
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Co to jest automatyzacja procesów biznesowych?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Automatyzacja procesów biznesowych to zastąpienie ręcznych, powtarzalnych zadań systemami działającymi automatycznie — bez udziału człowieka. Przykłady: automatyczne przesyłanie danych między aplikacjami (CRM, arkusze, e-mail), generowanie raportów, obsługa zgłoszeń klientów czy wysyłka przypomnień o fakturach."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Jakie procesy w małej firmie warto zautomatyzować w pierwszej kolejności?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "W małej firmie warto zacząć od procesów, które zajmują najwięcej czasu i są powtarzalne: obsługa formularzy kontaktowych i zgłoszeń, ręczne przepisywanie danych między systemami, wysyłka powiadomień i przypomnień do klientów, generowanie raportów sprzedażowych oraz wystawianie faktur i potwierdzeń zamówień."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Czym różni się n8n od Make.com?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "n8n to platforma open-source do automatyzacji, którą można hostować na własnym serwerze (brak opłat za wykonania workflow). Make.com (dawniej Integromat) to platforma SaaS z rozbudowanym interfejsem wizualnym i biblioteką ponad 1000 gotowych integracji. Make.com jest szybszy we wdrożeniu prostych scenariuszy, n8n daje więcej elastyczności i pełną kontrolę nad danymi."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Jak wygląda proces wdrożenia automatyzacji krok po kroku?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Wdrożenie automatyzacji przebiega w 4 krokach: 1) Rozmowa — omawiamy, co robisz ręcznie i co najbardziej zajmuje Ci czas. 2) Analiza — sprawdzam możliwości techniczne i dobieram narzędzia (n8n lub Make.com). 3) Wdrożenie — buduję i testuję automatyzację na Twoich realnych danych. 4) Wsparcie — tłumaczę jak to działa i pomagam z ewentualnymi poprawkami."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f4f6fb;--surface:#f0f3fa;--surface2:#e8edf7;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.13);
+  --lime:#c8f135;--lime-dim:rgba(200,241,53,0.28);--lime-text:#4d6a00;
+  --text:#141623;--text2:#4a5577;--text3:#8896b8;
+  --radius:14px;--radius-sm:8px;--radius-lg:20px;
+  --font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.bg-grid{
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);
+  background-size:80px 80px;
+  -webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent);
+  mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent)
+}
+section{position:relative;z-index:1}
+.container{max-width:1000px;margin:0 auto;padding:0 24px}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;
+  background:rgba(255,255,255,.88);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 max(24px,calc((100vw - 1000px)/2));
+  transition:background .3s
+}
+nav.scrolled{background:rgba(255,255,255,.98)}
+.nav-logo{font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}
+.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo span{color:var(--lime-text)}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all .2s}
+.nav-link:hover{color:var(--text);background:var(--surface2)}
+.btn-nav{background:var(--lime);color:#141623;border:none;border-radius:var(--radius-sm);padding:10px 22px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;margin-left:auto;white-space:nowrap}
+.btn-nav:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(200,241,53,.2)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(255,255,255,.98);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);z-index:999;padding:32px 24px;flex-direction:column;gap:8px}
+.mobile-menu.open{display:flex}
+.mobile-link{color:var(--text2);text-decoration:none;font-size:17px;font-weight:500;padding:12px 16px;border-radius:var(--radius);transition:all .2s}
+.mobile-link:hover{color:var(--text);background:var(--surface2)}
+@media(max-width:760px){.nav-links{display:none}.hamburger{display:flex}.btn-nav{display:none}}
+
+/* HERO */
+#hero{min-height:88vh;padding:140px 0 80px;display:flex;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime-text);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:7px 16px;border-radius:100px;margin-bottom:28px}
+.hero-title{font-family:var(--font-display);font-size:clamp(28px,4.5vw,48px);font-weight:700;line-height:1.18;letter-spacing:-.02em;margin-bottom:22px;opacity:0}
+.hero-title .accent{color:var(--lime-text)}
+.hero-sub{font-size:17px;color:var(--text2);line-height:1.75;margin-bottom:36px;max-width:600px}
+.hero-ctas{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.btn-primary{background:var(--lime);color:#141623;border:none;border-radius:var(--radius);padding:15px 30px;font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;transition:transform .25s,box-shadow .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,241,53,.3)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:15px 28px;font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;transition:border-color .25s,background .25s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:rgba(255,255,255,.25);background:var(--surface2)}
+
+/* SECTION HEADERS */
+.sec-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:18px}
+.sec-header{margin-bottom:44px;max-width:620px}
+.sec-title{font-family:var(--font-display);font-size:clamp(28px,4vw,42px);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:14px}
+.sec-title em{font-style:normal;color:var(--lime-text)}
+.sec-sub{font-size:15px;color:var(--text2);line-height:1.7}
+
+/* SERVICES */
+#usługi{padding:80px 0}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:28px}
+@media(max-width:760px){.services-grid{grid-template-columns:1fr}}
+.service-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;transition:border-color .2s,box-shadow .2s,opacity .6s ease,transform .6s ease}
+.service-card:hover{border-color:rgba(200,241,53,.25);box-shadow:0 0 30px rgba(200,241,53,.06)}
+.service-icon{width:44px;height:44px;border-radius:11px;background:var(--lime-dim);display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:18px}
+.service-title{font-family:var(--font-display);font-size:18px;font-weight:600;margin-bottom:10px}
+.service-desc{font-size:14px;color:var(--text2);line-height:1.7}
+.services-note{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;font-size:14px;color:var(--text2);line-height:1.7}
+.services-note strong{color:var(--lime-text)}
+
+/* PROCESS */
+#jak-dziala{padding:80px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2)}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+@media(max-width:900px){.steps-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.steps-grid{grid-template-columns:1fr}}
+.step-num{font-family:var(--font-display);font-size:13px;font-weight:700;color:var(--lime-text);letter-spacing:.1em;margin-bottom:10px}
+.step-title{font-family:var(--font-display);font-size:16px;font-weight:600;margin-bottom:8px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* BLOG TEASER */
+#blog{padding:80px 0}
+.post-card{display:grid;grid-template-columns:160px 1fr;gap:28px;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;text-decoration:none;color:inherit;transition:border-color .25s,transform .25s,box-shadow .25s,opacity .6s ease}
+.post-card:hover{border-color:rgba(200,241,53,.25);transform:translateY(-2px);box-shadow:0 8px 40px rgba(200,241,53,.06)}
+@media(max-width:600px){.post-card{grid-template-columns:1fr;text-align:left}}
+.post-thumb{width:100%;height:120px;border-radius:var(--radius);background:linear-gradient(135deg,#dde3f5,#c8d5f0);display:flex;align-items:center;justify-content:center;font-size:40px}
+.post-meta{font-size:12px;color:var(--text3);margin-bottom:8px}
+.post-title{font-family:var(--font-display);font-size:20px;font-weight:600;margin-bottom:10px;line-height:1.3}
+.post-excerpt{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:12px}
+.post-link{font-size:13px;font-weight:700;color:var(--lime-text)}
+.blog-more-note{margin-top:20px;font-size:13px;color:var(--text3)}
+
+/* CONTACT */
+#kontakt{padding:80px 0;border-top:1px solid var(--border);background:var(--bg2)}
+.contact-box{text-align:center;max-width:560px;margin:0 auto}
+.contact-box .sec-title{margin:0 auto 14px}
+.contact-box .sec-sub{margin:0 auto 30px}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.footer-logo-sm{font-family:var(--font-display);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px}
+.footer-logo-sm span{color:var(--lime-text)}
+.footer-links-sm{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
+.footer-links-sm a:hover{color:var(--lime-text)}
+.footer-cr{font-size:12px;color:var(--text3)}
+
+/* ── HERO TITLE LETTER ANIMATION ─────────────────────────────── */
+.char-wrap{display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.12em;margin-bottom:-.12em}
+.char{display:inline-block;animation:char-rise .65s cubic-bezier(.22,1,.36,1) both}
+@keyframes char-rise{from{transform:translateY(110%)}to{transform:translateY(0)}}
+
+/* ── SCROLL REVEAL ────────────────────────────────────────────── */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+/* Stagger for service cards */
+.services-grid .service-card:nth-child(1){transition-delay:0s}
+.services-grid .service-card:nth-child(2){transition-delay:.12s}
+.services-grid .service-card:nth-child(3){transition-delay:.24s}
+/* Stagger for process steps */
+.steps-grid .reveal:nth-child(2){transition-delay:.1s}
+.steps-grid .reveal:nth-child(3){transition-delay:.2s}
+.steps-grid .reveal:nth-child(4){transition-delay:.3s}
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<!-- NAV -->
+<nav id="navbar" role="navigation" aria-label="Nawigacja główna">
+  <a href="index.html" class="nav-logo" aria-label="Integracje Biznesowe - strona główna">
+    <div class="nav-logo-dot" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5"  fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5"  fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5"  fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    Integracje <span>Biznesowe</span>
+  </a>
+  <div class="nav-links">
+    <a href="#usługi" class="nav-link">Usługi</a>
+    <a href="#jak-dziala" class="nav-link">Jak działam</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+    <a href="#kontakt" class="nav-link">Kontakt</a>
+  </div>
+  <a href="#kontakt" class="btn-nav">Napisz do mnie</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu mobilne" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+  <a href="#usługi" class="mobile-link">Usługi</a>
+  <a href="#jak-dziala" class="mobile-link">Jak działam</a>
+  <a href="blog.html" class="mobile-link">Blog</a>
+  <a href="#kontakt" class="mobile-link">Kontakt</a>
+</div>
+
+<!-- HERO -->
+<section id="hero" aria-labelledby="hero-heading">
+  <div class="container">
+    <div class="hero-eyebrow">Automatyzacja procesów</div>
+    <h1 class="hero-title" id="hero-heading">Automatyzuję powtarzalne zadania,<br>żeby Twoja firma działała <span class="accent">szybciej</span></h1>
+    <p class="hero-sub">Pomagam małym firmom odzyskać czas, automatyzując rutynowe procesy - od prostych przepływów pracy po integracje między systemami, które już dziś używasz.</p>
+    <div class="hero-ctas">
+      <a href="#kontakt" class="btn-primary">✉️ Napisz do mnie</a>
+      <a href="blog.html" class="btn-secondary">Przeczytaj bloga →</a>
+    </div>
+  </div>
+</section>
+
+<!-- USŁUGI -->
+<section id="usługi" aria-labelledby="uslugi-heading">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Czym się zajmuję</div>
+      <h2 class="sec-title" id="uslugi-heading">Automatyzacja procesów <em>krok po kroku</em></h2>
+      <p class="sec-sub">Zanim cokolwiek zautomatyzuję, sprawdzam, co realnie zabiera Ci czas. Dopiero potem proponuję rozwiązanie - proste, zrozumiałe i działające na narzędziach, które już znasz.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">⚙️</div>
+        <h3 class="service-title">Automatyzacja procesów</h3>
+        <p class="service-desc">Łączę systemy, które już używasz - e-mail, arkusze, formularze, CRM - w spójne przepływy pracy działające bez Twojego udziału.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">🤖</div>
+        <h3 class="service-title">Integracje i AI</h3>
+        <p class="service-desc">Wdrażam integracje API oraz proste asystenty AI wspierające codzienne, powtarzalne zadania.</p>
+      </div>
+      <div class="service-card reveal">
+        <div class="service-icon" aria-hidden="true">📊</div>
+        <h3 class="service-title">Raporty i powiadomienia</h3>
+        <p class="service-desc">Automatyczne raporty, alerty i podsumowania - zamiast ręcznego zbierania danych z różnych miejsc.</p>
+      </div>
+    </div>
+    <div class="services-note reveal">
+      <strong>💡 Masz konkretny proces, który Cię męczy?</strong> Napisz do mnie - bezpłatnie sprawdzimy, czy da się go zautomatyzować i jakie narzędzia będą potrzebne.
+    </div>
+  </div>
+</section>
+
+<!-- JAK DZIAŁAM -->
+<section id="jak-dziala" aria-labelledby="proces-heading">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Proces</div>
+      <h2 class="sec-title" id="proces-heading">Jak <em>wygląda współpraca</em></h2>
+    </div>
+    <div class="steps-grid">
+      <div class="reveal">
+        <div class="step-num">01</div>
+        <h3 class="step-title">Rozmowa</h3>
+        <p class="step-desc">Opowiadasz, co robisz ręcznie i co najbardziej Cię męczy w codziennej pracy.</p>
+      </div>
+      <div class="reveal">
+        <div class="step-num">02</div>
+        <h3 class="step-title">Analiza</h3>
+        <p class="step-desc">Sprawdzam, czy i jak dany proces można zautomatyzować oraz jakie narzędzia będą potrzebne.</p>
+      </div>
+      <div class="reveal">
+        <div class="step-num">03</div>
+        <h3 class="step-title">Wdrożenie</h3>
+        <p class="step-desc">Buduję automatyzację w n8n lub Make.com i testuję ją na Twoich realnych danych.</p>
+      </div>
+      <div class="reveal">
+        <div class="step-num">04</div>
+        <h3 class="step-title">Wsparcie</h3>
+        <p class="step-desc">Pomagam z poprawkami i tłumaczę, jak to działa - bez czarnej skrzynki.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BLOG TEASER -->
+<section id="blog" aria-labelledby="blog-heading">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Blog</div>
+      <h2 class="sec-title" id="blog-heading">Piszę o automatyzacji <em>dla małych firm</em></h2>
+      <p class="sec-sub">Praktyczne wpisy o automatyzacji procesów - bez żargonu, krok po kroku.</p>
+    </div>
+    <a href="blog/automatyzacja-procesow-biznesowych-od-czego-zaczac.html" class="post-card reveal">
+      <div class="post-thumb" aria-hidden="true">🧩</div>
+      <div>
+        <div class="post-meta">15 czerwca 2026 · 7 min czytania</div>
+        <h3 class="post-title">Automatyzacja procesów biznesowych - od czego zacząć w małej firmie?</h3>
+        <p class="post-excerpt">Czym właściwie jest automatyzacja procesów, jakie zadania w małej firmie warto zautomatyzować najpierw i jak zrobić to małymi krokami, bez dużych inwestycji.</p>
+        <div class="post-link">Czytaj artykuł →</div>
+      </div>
+    </a>
+    <div class="blog-more-note">Więcej wpisów wkrótce.</div>
+  </div>
+</section>
+
+<!-- KONTAKT -->
+<section id="kontakt" aria-labelledby="kontakt-heading">
+  <div class="container">
+    <div class="contact-box reveal">
+      <div class="sec-tag">Kontakt</div>
+      <h2 class="sec-title" id="kontakt-heading">Masz proces, który Cię <em>męczy?</em></h2>
+      <p class="sec-sub">Napisz, co robisz ręcznie i powtarzalnie w swojej firmie - sprawdzimy razem, czy da się to zautomatyzować.</p>
+      <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-primary">✉️ biuro@integracjebiznesowe.pl</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container footer-inner">
+    <div class="footer-logo-sm">
+      <svg width="18" height="18" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <rect width="32" height="32" rx="8" fill="#c8f135"/>
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5"  fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5"  fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5"  fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      Integracje <span>Biznesowe</span>
+    </div>
+    <div class="footer-links-sm">
+      <a href="index.html">Strona główna</a>
+      <a href="blog.html">Blog</a>
+      <a href="regulamin.html">Regulamin</a>
+      <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
+    </div>
+    <div class="footer-cr">© 2026 Integracje Biznesowe</div>
+  </div>
+</footer>
+
+<!-- Nav scroll + hamburger -->
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  const isOpen = hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open', isOpen);
+  hamburger.setAttribute('aria-expanded', isOpen);
+  mobileMenu.setAttribute('aria-hidden', !isOpen);
+});
+document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+  hamburger.setAttribute('aria-expanded', 'false');
+  mobileMenu.setAttribute('aria-hidden', 'true');
+}));
+</script>
+
+<!-- Hero title letter animation + scroll reveal -->
+<script>
+(function () {
+  // ── LETTER SPLIT ────────────────────────────────────────────────
+  // Wraps each character in .char-wrap > .char for per-letter mask reveal.
+  // Preserves <br> and nested elements (e.g. <span class="accent">).
+  var charIdx = 0;
+
+  function splitLetters(node, container) {
+    var children = Array.prototype.slice.call(node.childNodes);
+    for (var i = 0; i < children.length; i++) {
+      var child = children[i];
+      if (child.nodeType === 3) {
+        var text = child.textContent;
+        // Use Array.from for correct Unicode / Polish char iteration
+        Array.from(text).forEach(function (ch) {
+          if (ch === ' ') {
+            container.appendChild(document.createTextNode(' '));
+          } else {
+            var wrap  = document.createElement('span');
+            wrap.className = 'char-wrap';
+            var inner = document.createElement('span');
+            inner.className = 'char';
+            inner.style.animationDelay = (0.1 + charIdx * 0.022) + 's';
+            inner.textContent = ch;
+            charIdx++;
+            wrap.appendChild(inner);
+            container.appendChild(wrap);
+          }
+        });
+      } else if (child.nodeName === 'BR') {
+        container.appendChild(child.cloneNode());
+      } else if (child.nodeType === 1) {
+        var el = document.createElement(child.tagName.toLowerCase());
+        for (var j = 0; j < child.attributes.length; j++) {
+          el.setAttribute(child.attributes[j].name, child.attributes[j].value);
+        }
+        splitLetters(child, el);
+        container.appendChild(el);
+      }
+    }
+  }
+
+  var heroTitle = document.querySelector('.hero-title');
+  if (heroTitle) {
+    var frag = document.createDocumentFragment();
+    splitLetters(heroTitle, frag);
+    heroTitle.innerHTML = '';
+    heroTitle.appendChild(frag);
+    heroTitle.style.opacity = '1';
+  }
+
+  // ── SCROLL REVEAL (IntersectionObserver) ─────────────────────────
+  if ('IntersectionObserver' in window) {
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      obs.observe(el);
+    });
+  } else {
+    // Fallback for very old browsers
+    document.querySelectorAll('.reveal').forEach(function (el) {
+      el.classList.add('visible');
+    });
+  }
+}());
+</script>
+</body>
+</html>

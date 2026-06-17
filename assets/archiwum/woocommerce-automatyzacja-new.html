@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automatyzacja WooCommerce | AutomatyzacjaSklep.pl — Ekspert integracji i workflow</title>
+<meta name="description" content="Automatyzuję sklepy WooCommerce — zamówienia, magazyn, faktury, zwroty, e-mail marketing. Wdrożenie w 48h. Sprawdź ofertę i wygeneruj wycenę.">
+<meta name="keywords" content="automatyzacja WooCommerce, integracja WooCommerce, WooCommerce n8n, WooCommerce make.com, automatyczne zamówienia WooCommerce, WooCommerce webhook">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Epilogue:wght@400;500;700;900&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0c0c0c;
+  --bg2: #111111;
+  --bg3: #181818;
+  --woo: #7f54b3;
+  --woo-light: #9b70cc;
+  --woo-glow: rgba(127,84,179,0.15);
+  --green: #3fcf8e;
+  --text: #f5f5f0;
+  --text2: #888880;
+  --text3: #555550;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(127,84,179,0.25);
+  --r: 12px;
+  --font-h: 'Epilogue', sans-serif;
+  --font-b: 'Lora', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-b); font-size: 16px; line-height: 1.65; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6%; background: rgba(12,12,12,0.9); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--font-h); font-weight: 900; font-size: 1.2rem; text-decoration: none; color: var(--text); letter-spacing: -0.5px; }
+.logo span { color: var(--woo-light); }
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+.nav-right a { color: var(--text2); text-decoration: none; font-family: var(--font-h); font-size: 0.82rem; font-weight: 500; letter-spacing: 0.3px; transition: color 0.2s; }
+.nav-right a:hover { color: var(--woo-light); }
+.nav-back { color: var(--text2) !important; font-size: 0.8rem !important; border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 6px; }
+.nav-cta-nav {
+  background: var(--woo); color: #fff !important;
+  padding: 0.45rem 1.1rem; border-radius: 7px; font-weight: 700 !important;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { width: 22px; height: 2px; background: var(--text); border-radius: 2px; }
+.mob-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--bg2); border-bottom: 1px solid var(--border); padding: 1.2rem 6%; flex-direction: column; gap: 0.8rem; z-index: 99; }
+.mob-menu a { color: var(--text2); text-decoration: none; font-family: var(--font-h); font-size: 0.95rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.mob-menu.open { display: flex; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; padding: 110px 6% 80px;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; top: -200px; right: -200px;
+  width: 700px; height: 700px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(127,84,179,0.12) 0%, transparent 65%);
+  pointer-events: none;
+}
+.hero::after {
+  content: 'WooCommerce'; position: absolute; right: -2%; top: 50%;
+  transform: translateY(-50%) rotate(90deg); transform-origin: center;
+  font-family: var(--font-h); font-size: clamp(80px, 12vw, 160px); font-weight: 900;
+  color: rgba(127,84,179,0.04); white-space: nowrap; pointer-events: none; letter-spacing: -4px;
+}
+.hero-label {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--font-h); font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--woo-light); margin-bottom: 1.2rem;
+}
+.hero-label::before { content: ''; width: 24px; height: 1px; background: var(--woo-light); }
+.hero h1 {
+  font-family: var(--font-h); font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  font-weight: 900; line-height: 1.0; letter-spacing: -2px; margin-bottom: 1.5rem;
+}
+.hero h1 .accent { color: var(--woo-light); display: block; }
+.hero h1 .dim { color: var(--text2); font-weight: 400; font-style: italic; font-family: var(--font-b); font-size: 0.6em; letter-spacing: 0px; display: block; margin-top: 0.3rem; }
+.hero-desc { color: var(--text2); font-size: 1rem; line-height: 1.8; margin-bottom: 2.5rem; max-width: 480px; }
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+.btn-woo {
+  background: var(--woo); color: #fff;
+  padding: 0.85rem 1.8rem; border-radius: 8px;
+  font-family: var(--font-h); font-weight: 700; font-size: 0.9rem;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-woo:hover { background: var(--woo-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(127,84,179,0.35); }
+
+.btn-outline {
+  background: transparent; color: var(--text);
+  padding: 0.85rem 1.8rem; border-radius: 8px;
+  font-family: var(--font-h); font-weight: 500; font-size: 0.9rem;
+  text-decoration: none; border: 1px solid var(--border);
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-outline:hover { border-color: var(--woo-light); background: var(--woo-glow); }
+
+.hero-trust { display: flex; gap: 2rem; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border); flex-wrap: wrap; }
+.trust-item { font-family: var(--font-h); }
+.trust-item .num { font-size: 1.8rem; font-weight: 900; color: var(--woo-light); line-height: 1; }
+.trust-item .lbl { font-size: 0.75rem; color: var(--text2); margin-top: 0.2rem; }
+
+.hero-visual {
+  position: relative; display: flex; flex-direction: column; gap: 1rem;
+}
+.woo-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 1.2rem 1.5rem;
+  display: flex; align-items: center; gap: 1rem;
+  transition: border-color 0.3s; animation: floatIn 0.8s ease both;
+}
+.woo-card:nth-child(1) { animation-delay: 0.1s; }
+.woo-card:nth-child(2) { animation-delay: 0.2s; margin-left: 2rem; border-color: var(--border2); }
+.woo-card:nth-child(3) { animation-delay: 0.3s; }
+.woo-card:nth-child(4) { animation-delay: 0.4s; margin-left: 1rem; }
+@keyframes floatIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+.woo-card-icon { width: 40px; height: 40px; border-radius: 10px; background: var(--woo-glow); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; border: 1px solid var(--border2); }
+.woo-card-info .title { font-family: var(--font-h); font-size: 0.85rem; font-weight: 700; }
+.woo-card-info .sub { font-size: 0.75rem; color: var(--text2); }
+.woo-card-status { margin-left: auto; font-family: var(--font-h); font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 4px; }
+.status-ok { background: rgba(63,207,142,0.15); color: var(--green); }
+.status-run { background: rgba(127,84,179,0.2); color: var(--woo-light); }
+
+/* SECTIONS */
+section { padding: 80px 6%; }
+.s-label { font-family: var(--font-h); font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--woo-light); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+.s-label::before { content: ''; width: 20px; height: 1px; background: var(--woo-light); }
+.s-title { font-family: var(--font-h); font-size: clamp(1.7rem, 3.5vw, 2.8rem); font-weight: 900; letter-spacing: -1.5px; line-height: 1.05; margin-bottom: 0.75rem; }
+.s-sub { color: var(--text2); font-size: 0.95rem; max-width: 540px; line-height: 1.8; }
+
+/* PAIN POINTS */
+#problemy { background: var(--bg2); }
+.pain-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; margin-top: 3rem; border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.pain-item { background: var(--bg2); padding: 2rem; transition: background 0.2s; }
+.pain-item:hover { background: var(--bg3); }
+.pain-q { font-family: var(--font-h); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; display: flex; align-items: flex-start; gap: 0.6rem; }
+.pain-q::before { content: '?'; background: rgba(127,84,179,0.2); color: var(--woo-light); border-radius: 50%; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; margin-top: 1px; }
+.pain-a { color: var(--text2); font-size: 0.85rem; line-height: 1.7; padding-left: 1.75rem; }
+
+/* SERVICES */
+#uslugi { background: var(--bg); }
+.svc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.svc-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: var(--r); padding: 2rem; position: relative;
+  overflow: hidden; transition: border-color 0.25s, transform 0.25s;
+}
+.svc-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.svc-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--woo), var(--woo-light)); transform: scaleX(0); transform-origin: left; transition: transform 0.3s; }
+.svc-card:hover::after { transform: scaleX(1); }
+.svc-num { font-family: var(--font-h); font-size: 0.65rem; font-weight: 900; letter-spacing: 2px; color: var(--text3); margin-bottom: 1rem; }
+.svc-icon { font-size: 1.8rem; margin-bottom: 1rem; }
+.svc-card h3 { font-family: var(--font-h); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.6rem; }
+.svc-card p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; margin-bottom: 1rem; }
+.svc-benefit { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-h); font-size: 0.78rem; font-weight: 700; color: var(--green); }
+.svc-benefit::before { content: '↑'; }
+
+/* INTEGRATIONS */
+#integracje { background: var(--bg2); }
+.int-grid { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+.int-badge {
+  background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0.6rem 1.1rem;
+  font-family: var(--font-h); font-size: 0.82rem; font-weight: 600;
+  color: var(--text2); transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;
+}
+.int-badge:hover { border-color: var(--border2); color: var(--text); background: var(--woo-glow); }
+.int-badge.featured { border-color: var(--border2); color: var(--woo-light); background: var(--woo-glow); }
+
+/* PROCESS */
+#proces { background: var(--bg); }
+.proc-list { display: flex; flex-direction: column; gap: 0; margin-top: 3rem; max-width: 700px; }
+.proc-item { display: flex; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--border); position: relative; }
+.proc-item:last-child { border-bottom: none; }
+.proc-line { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.proc-dot { width: 40px; height: 40px; border-radius: 50%; background: var(--woo-glow); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-family: var(--font-h); font-size: 0.8rem; font-weight: 900; color: var(--woo-light); flex-shrink: 0; }
+.proc-connector { width: 1px; flex: 1; background: var(--border); margin-top: 8px; }
+.proc-item:last-child .proc-connector { display: none; }
+.proc-content { padding-top: 0.5rem; }
+.proc-content h3 { font-family: var(--font-h); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+.proc-content p { color: var(--text2); font-size: 0.88rem; line-height: 1.7; }
+.proc-time { font-family: var(--font-h); font-size: 0.72rem; font-weight: 700; color: var(--woo-light); margin-top: 0.4rem; }
+
+/* PRICING */
+#cennik { background: var(--bg2); }
+.price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 3rem; max-width: 900px; }
+.price-card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--r); padding: 2rem; display: flex; flex-direction: column; position: relative; transition: transform 0.2s; }
+.price-card:hover { transform: translateY(-4px); }
+.price-card.featured { border-color: var(--border2); background: linear-gradient(135deg, rgba(127,84,179,0.08), transparent); }
+.price-badge { position: absolute; top: -11px; left: 1.5rem; background: var(--woo); color: #fff; font-family: var(--font-h); font-size: 0.65rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; padding: 0.2rem 0.8rem; border-radius: 4px; }
+.price-card h3 { font-family: var(--font-h); font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.price-card .pdesc { color: var(--text2); font-size: 0.82rem; margin-bottom: 1.5rem; line-height: 1.5; }
+.price-num { font-family: var(--font-h); font-size: 2.2rem; font-weight: 900; color: var(--woo-light); line-height: 1; }
+.price-unit { color: var(--text2); font-size: 0.78rem; margin-bottom: 1.5rem; font-family: var(--font-h); }
+.feat-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
+.feat-list li { font-size: 0.85rem; color: var(--text2); display: flex; gap: 0.6rem; align-items: flex-start; font-family: var(--font-h); }
+.feat-list li::before { content: '✓'; color: var(--green); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+.price-btn { margin-top: 1.8rem; text-align: center; background: transparent; border: 1px solid var(--border2); color: var(--woo-light); padding: 0.7rem 1.5rem; border-radius: 8px; font-family: var(--font-h); font-weight: 700; font-size: 0.85rem; cursor: pointer; text-decoration: none; display: block; transition: background 0.2s; }
+.price-card.featured .price-btn { background: var(--woo); color: #fff; border-color: var(--woo); }
+.price-btn:hover { background: var(--woo-glow); }
+.price-card.featured .price-btn:hover { background: var(--woo-light); }
+
+/* FAQ */
+#faq { background: var(--bg); }
+.faq-wrap { max-width: 680px; margin-top: 3rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.faq-item { border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.faq-q { padding: 1.1rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-family: var(--font-h); font-weight: 600; font-size: 0.9rem; user-select: none; transition: background 0.2s; }
+.faq-q:hover { background: var(--bg2); }
+.faq-q .ico { color: var(--woo-light); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+.faq-item.open .faq-q { background: var(--bg2); }
+.faq-item.open .faq-q .ico { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; color: var(--text2); font-size: 0.88rem; line-height: 1.8; padding: 0 1.5rem; }
+.faq-item.open .faq-a { max-height: 300px; padding: 0 1.5rem 1.2rem; }
+
+/* SEO CONTENT */
+#seo-content { background: var(--bg2); }
+.seo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; }
+.seo-text h2 { font-family: var(--font-h); font-size: clamp(1.5rem, 3vw, 2.2rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; line-height: 1.1; }
+.seo-text p { color: var(--text2); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1rem; }
+.seo-kw { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.kw-tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; padding: 0.35rem 0.75rem; font-family: var(--font-h); font-size: 0.75rem; font-weight: 600; color: var(--text2); }
+
+/* CONTACT */
+#kontakt { background: var(--bg); }
+.contact-wrap { display: grid; grid-template-columns: 1fr 1.4fr; gap: 4rem; align-items: start; }
+.contact-left h2 { font-family: var(--font-h); font-size: 2rem; font-weight: 900; letter-spacing: -1px; margin-bottom: 1rem; }
+.contact-left p { color: var(--text2); font-size: 0.9rem; line-height: 1.8; margin-bottom: 2rem; }
+.contact-detail { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+.contact-detail .icon { font-size: 1rem; width: 32px; }
+.contact-detail span { color: var(--text2); font-size: 0.88rem; }
+.c-form { display: flex; flex-direction: column; gap: 1rem; }
+.c-form input, .c-form select, .c-form textarea {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--text); padding: 0.75rem 1rem; font-family: var(--font-b); font-size: 0.88rem;
+  outline: none; transition: border-color 0.2s;
+}
+.c-form input:focus, .c-form select:focus, .c-form textarea:focus { border-color: var(--woo-light); }
+.c-form select option { background: var(--bg2); }
+.c-form textarea { height: 110px; resize: vertical; }
+.c-form .privacy { font-size: 0.75rem; color: var(--text2); }
+.c-form .privacy a { color: var(--woo-light); }
+
+/* FOOTER */
+footer { background: var(--bg2); border-top: 1px solid var(--border); padding: 2.5rem 6%; }
+.foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.foot-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.foot-links a { color: var(--text2); text-decoration: none; font-family: var(--font-h); font-size: 0.8rem; transition: color 0.2s; }
+.foot-links a:hover { color: var(--woo-light); }
+.foot-copy { color: var(--text2); font-family: var(--font-h); font-size: 0.78rem; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 500; background: var(--woo); color: #fff; padding: 0.85rem 1.4rem; border-radius: 10px; font-family: var(--font-h); font-weight: 700; font-size: 0.85rem; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-visual { display: none; }
+  .hero::after { display: none; }
+  .seo-grid { grid-template-columns: 1fr; }
+  .contact-wrap { grid-template-columns: 1fr; gap: 2rem; }
+}
+@media (max-width: 640px) {
+  nav { padding: 0 4%; }
+  section { padding: 60px 4%; }
+  .hero { padding: 95px 4% 60px; }
+  .nav-right .nav-mid { display: none; }
+  .hamburger { display: flex; }
+  footer { padding: 2rem 4%; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Automatyzacja<span>Sklep.pl</span></a>
+  <div class="nav-right">
+    <a href="#uslugi" class="nav-mid">Usługi</a>
+    <a href="#cennik" class="nav-mid">Cennik</a>
+    <a href="#faq" class="nav-mid">FAQ</a>
+    <a href="shopify-automatyzacja.html" class="nav-back">→ Shopify</a>
+    <a href="#kontakt" class="nav-cta-nav">Kontakt</a>
+  </div>
+  <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mob-menu" id="mob">
+  <a href="#uslugi">Usługi</a>
+  <a href="#cennik">Cennik</a>
+  <a href="#faq">FAQ</a>
+  <a href="shopify-automatyzacja.html">→ Wersja Shopify</a>
+  <a href="#kontakt">Kontakt</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <div class="hero-label">Specjalista WooCommerce</div>
+    <h1>
+      Twój WooCommerce<br>
+      <span class="accent">zautomatyzowany.</span>
+      <span class="dim">Bez zatrudniania, bez błędów.</span>
+    </h1>
+    <p class="hero-desc">
+      Buduję systemy automatyzacji dla sklepów WooCommerce — od obsługi zamówień, przez integracje z Allegro i BaseLinker, po raporty i chatboty. Wdrożenie w 48–72h. Praca w 100% zdalna.
+    </p>
+    <div class="hero-btns">
+      <a href="#kontakt" class="btn-woo">✦ Zapytaj o ofertę</a>
+      <a href="#uslugi" class="btn-outline">Zobacz usługi →</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><div class="num">48h</div><div class="lbl">czas wdrożenia</div></div>
+      <div class="trust-item"><div class="num">100%</div><div class="lbl">praca zdalna</div></div>
+      <div class="trust-item"><div class="num">NDA</div><div class="lbl">na żądanie</div></div>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="woo-card">
+      <div class="woo-card-icon">📦</div>
+      <div class="woo-card-info"><div class="title">Nowe zamówienie #4821</div><div class="sub">Automatyczne powiadomienie → klient</div></div>
+      <span class="woo-card-status status-ok">✓ Wysłano</span>
+    </div>
+    <div class="woo-card">
+      <div class="woo-card-icon">🔄</div>
+      <div class="woo-card-info"><div class="title">Synchronizacja magazynu</div><div class="sub">WooCommerce ↔ BaseLinker ↔ Allegro</div></div>
+      <span class="woo-card-status status-run">● Live</span>
+    </div>
+    <div class="woo-card">
+      <div class="woo-card-icon">📊</div>
+      <div class="woo-card-info"><div class="title">Raport dzienny gotowy</div><div class="sub">Sprzedaż, marże, top produkty → Slack</div></div>
+      <span class="woo-card-status status-ok">✓ 07:00</span>
+    </div>
+    <div class="woo-card">
+      <div class="woo-card-icon">💌</div>
+      <div class="woo-card-info"><div class="title">Porzucony koszyk — odzyskany</div><div class="sub">Automatyczna sekwencja e-mail</div></div>
+      <span class="woo-card-status status-ok">✓ +340 zł</span>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section id="problemy">
+  <div class="s-label reveal">Problemy które rozwiązuję</div>
+  <h2 class="s-title reveal">Brzmi znajomo?</h2>
+  <div class="pain-grid reveal">
+    <div class="pain-item">
+      <div class="pain-q">Ręcznie kopiujesz dane między systemami?</div>
+      <div class="pain-a">Każde zamówienie przechodzi przez Twoje ręce zanim trafi do magazynu, kuriera i klienta. Automatyzacja eliminuje ten krok w całości.</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-q">Klienci pytają „kiedy paczka?" przez cały dzień?</div>
+      <div class="pain-a">Chatbot i automatyczne powiadomienia odpowiadają na 80% pytań bez Twojego udziału. Klient wie co się dzieje, Ty masz spokój.</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-q">Stany magazynowe nie zgadzają się między kanałami?</div>
+      <div class="pain-a">Automatyczna synchronizacja między WooCommerce, Allegro i magazynem sprawia, że oversell staje się przeszłością.</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-q">Raporty sprzedaży robisz ręcznie w Excelu?</div>
+      <div class="pain-a">Codzienny raport trafia do Ciebie o 7 rano — bez otwierania panelu WooCommerce, bez kopiowania danych. Gotowy do podjęcia decyzji.</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-q">Faktury wystawiasz ręcznie po każdym zamówieniu?</div>
+      <div class="pain-a">System wystawia fakturę automatycznie, wysyła ją klientowi i przekazuje do Twojego programu księgowego. Zero klikania.</div>
+    </div>
+    <div class="pain-item">
+      <div class="pain-q">Zwroty i reklamacje zajmują Ci godziny tygodniowo?</div>
+      <div class="pain-a">Automatyzacja procesu zwrotu — od zgłoszenia przez klienta po aktualizację zamówienia i zwrot środków — zajmuje minuty zamiast godzin.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="uslugi">
+  <div class="s-label reveal">Co wdrażam</div>
+  <h2 class="s-title reveal">Automatyzacje WooCommerce<br>które realnie pracują za Ciebie</h2>
+  <p class="s-sub reveal">Każda automatyzacja budowana jest pod Twój sklep — nie szablonowe rozwiązania, tylko to czego naprawdę potrzebujesz.</p>
+  <div class="svc-grid">
+    <div class="svc-card reveal">
+      <div class="svc-num">01 / ZAMÓWIENIA</div>
+      <div class="svc-icon">📦</div>
+      <h3>Pełna automatyzacja obsługi zamówień</h3>
+      <p>Od momentu złożenia zamówienia do dostawy — klient dostaje powiadomienia, magazyn jest aktualizowany, kurier jest powiadamiany. Wszystko bez Twojego udziału.</p>
+      <div class="svc-benefit">Oszczędność 2–4h dziennie</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">02 / MAGAZYN</div>
+      <div class="svc-icon">🏭</div>
+      <h3>Synchronizacja stanów magazynowych</h3>
+      <p>Jeden system prawdy dla WooCommerce, Allegro, BaseLinker i hurtowni. Oversell i „przepraszam, brak w magazynie" odchodzą do przeszłości.</p>
+      <div class="svc-benefit">Zero oversell, zero niezadowolonych klientów</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">03 / E-MAIL</div>
+      <div class="svc-icon">💌</div>
+      <h3>Sekwencje e-mail i odzyskiwanie koszyków</h3>
+      <p>Automatyczne wiadomości po zakupie, odzyskiwanie porzuconych koszyków, prośby o opinie. Każda wiadomość wysyłana w optymalnym momencie.</p>
+      <div class="svc-benefit">Odzyskanie 10–15% porzuconych koszyków</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">04 / RAPORTY</div>
+      <div class="svc-icon">📊</div>
+      <h3>Automatyczne raporty i dashboardy</h3>
+      <p>Codzienny raport sprzedaży, tygodniowe zestawienie marż, alerty o niskich stanach. Wszystko trafia do Slack, e-mail lub Google Sheets o wybranej godzinie.</p>
+      <div class="svc-benefit">Decyzje oparte na danych, nie przeczuciach</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">05 / FAKTURY</div>
+      <div class="svc-icon">🧾</div>
+      <h3>Automatyczne fakturowanie</h3>
+      <p>Integracja WooCommerce z iFirma, wFirma, Fakturownia lub innym programem. Faktura wystawiana i wysyłana natychmiast po opłaceniu zamówienia.</p>
+      <div class="svc-benefit">Kilka godzin pracy miesięcznie z głowy</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">06 / ZWROTY</div>
+      <div class="svc-icon">🔄</div>
+      <h3>Automatyzacja zwrotów i reklamacji</h3>
+      <p>Klient składa zwrot → system generuje etykietę → aktualizuje zamówienie → informuje magazyn → zwraca środki. Cały proces bez angażowania zespołu.</p>
+      <div class="svc-benefit">Obsługa zwrotu w minuty zamiast godzin</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">07 / CHATBOT</div>
+      <div class="svc-icon">🤖</div>
+      <h3>Chatbot obsługi klienta AI</h3>
+      <p>Odpowiada na pytania o status zamówienia, czas dostawy, zasady zwrotów i dostępność produktów. Działa 24/7, odpowiada w sekundy.</p>
+      <div class="svc-benefit">80% pytań obsługiwanych automatycznie</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-num">08 / MARKETPLACE</div>
+      <div class="svc-icon">🛒</div>
+      <h3>Integracja z marketplace</h3>
+      <p>Połączenie WooCommerce z Allegro, Amazon, Ceneo i porównywarkami. Jeden panel, wiele kanałów sprzedaży — synchronizacja produktów, zamówień i stanów.</p>
+      <div class="svc-benefit">Więcej kanałów bez więcej pracy</div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section id="integracje">
+  <div class="s-label reveal">Ekosystem</div>
+  <h2 class="s-title reveal">Z czym integruję WooCommerce</h2>
+  <p class="s-sub reveal">Jeśli Twojego narzędzia nie ma na liście — napisz. Prawie wszystko ma API.</p>
+  <div class="int-grid reveal">
+    <span class="int-badge featured">⚙️ n8n</span>
+    <span class="int-badge featured">🔄 Make.com</span>
+    <span class="int-badge">📦 BaseLinker</span>
+    <span class="int-badge">🛒 Allegro</span>
+    <span class="int-badge">📊 Google Sheets</span>
+    <span class="int-badge">💬 Slack</span>
+    <span class="int-badge">🧾 iFirma</span>
+    <span class="int-badge">🧾 wFirma</span>
+    <span class="int-badge">🧾 Fakturownia</span>
+    <span class="int-badge">📧 Klaviyo</span>
+    <span class="int-badge">📧 Mailchimp</span>
+    <span class="int-badge">📧 ActiveCampaign</span>
+    <span class="int-badge">📦 InPost</span>
+    <span class="int-badge">🚚 DPD</span>
+    <span class="int-badge">🚚 DHL</span>
+    <span class="int-badge">🏪 Subiekt GT</span>
+    <span class="int-badge">🤖 ChatGPT / Claude AI</span>
+    <span class="int-badge">📱 WhatsApp</span>
+    <span class="int-badge">📊 Metabase</span>
+    <span class="int-badge">🛒 Ceneo</span>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="proces">
+  <div class="s-label reveal">Jak działam</div>
+  <h2 class="s-title reveal">Od zapytania do działającej<br>automatyzacji</h2>
+  <div class="proc-list reveal">
+    <div class="proc-item">
+      <div class="proc-line"><div class="proc-dot">01</div><div class="proc-connector"></div></div>
+      <div class="proc-content">
+        <h3>Bezpłatna konsultacja (30 min)</h3>
+        <p>Omawiamy Twój sklep, obecne procesy i co chcesz zautomatyzować. Możesz pisać e-mailem lub spotkamy się na video call. Bez zobowiązań.</p>
+        <div class="proc-time">⏱ Dzień 0</div>
+      </div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-line"><div class="proc-dot">02</div><div class="proc-connector"></div></div>
+      <div class="proc-content">
+        <h3>Oferta i umowa online</h3>
+        <p>Otrzymujesz szczegółową ofertę z zakresem, harmonogramem i wyceną. Umowa podpisywana elektronicznie, płatność zaliczkowa przez Stripe. Opcjonalnie NDA przed pokazaniem jakichkolwiek danych.</p>
+        <div class="proc-time">⏱ Dzień 1</div>
+      </div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-line"><div class="proc-dot">03</div><div class="proc-connector"></div></div>
+      <div class="proc-content">
+        <h3>Wdrożenie i testy</h3>
+        <p>Buduję automatyzacje na środowisku testowym, sprawdzam każdy scenariusz i krawędziowe przypadki. Dostajesz dostęp do podglądu przed uruchomieniem produkcyjnym.</p>
+        <div class="proc-time">⏱ Dzień 2–7</div>
+      </div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-line"><div class="proc-dot">04</div><div class="proc-connector"></div></div>
+      <div class="proc-content">
+        <h3>Przekazanie i dokumentacja</h3>
+        <p>Uruchamiamy na produkcji. Otrzymujesz dokumentację napisaną prostym językiem + krótkie nagranie wideo pokazujące jak to działa. Płatność końcowa po Twoim odbiorze.</p>
+        <div class="proc-time">⏱ Dzień 7–10</div>
+      </div>
+    </div>
+    <div class="proc-item">
+      <div class="proc-line"><div class="proc-dot">05</div></div>
+      <div class="proc-content">
+        <h3>Wsparcie po wdrożeniu</h3>
+        <p>30 lub 60 dni gwarancji w cenie. Błędy naprawiam bezpłatnie. Opcjonalny retainer miesięczny dla sklepów które chcą rozwijać automatyzacje dalej.</p>
+        <div class="proc-time">⏱ Bezterminowo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="cennik">
+  <div class="s-label reveal">Cennik</div>
+  <h2 class="s-title reveal">Przejrzyste ceny,<br>zero ukrytych kosztów</h2>
+  <div class="price-grid reveal">
+    <div class="price-card">
+      <h3>Starter</h3>
+      <p class="pdesc">Jeden kluczowy proces do zautomatyzowania. Idealny start.</p>
+      <div class="price-num">2 500 zł</div>
+      <div class="price-unit">jednorazowo + VAT</div>
+      <ul class="feat-list">
+        <li>1 workflow automatyzacji</li>
+        <li>Integracja z 2 systemami</li>
+        <li>Dokumentacja tekstowa</li>
+        <li>30 dni wsparcia</li>
+        <li>Płatność przez Stripe</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Zapytaj o ofertę</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-badge">Najpopularniejszy</div>
+      <h3>Growth</h3>
+      <p class="pdesc">Kompleksowa automatyzacja dla rosnącego sklepu WooCommerce.</p>
+      <div class="price-num">5 500 zł</div>
+      <div class="price-unit">jednorazowo + VAT</div>
+      <ul class="feat-list">
+        <li>Do 4 workflow automatyzacji</li>
+        <li>Integracja z do 5 systemami</li>
+        <li>Dashboard raportowy</li>
+        <li>60 dni wsparcia priorytetowego</li>
+        <li>Nagranie wideo z dokumentacji</li>
+        <li>Optymalizacja po 30 dniach</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Zapytaj o ofertę</a>
+    </div>
+    <div class="price-card">
+      <h3>Retainer</h3>
+      <p class="pdesc">Stała współpraca — nowe automatyzacje i utrzymanie systemu.</p>
+      <div class="price-num">1 800 zł</div>
+      <div class="price-unit">miesięcznie + VAT</div>
+      <ul class="feat-list">
+        <li>Do 8h pracy miesięcznie</li>
+        <li>Utrzymanie i monitoring</li>
+        <li>Nowe workflow priorytetowo</li>
+        <li>Raport miesięczny</li>
+        <li>Priorytetowy kontakt</li>
+      </ul>
+      <a href="#kontakt" class="price-btn">Zapytaj o retainer</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="s-label reveal">FAQ</div>
+  <h2 class="s-title reveal">Najczęstsze pytania<br>o automatyzację WooCommerce</h2>
+  <div class="faq-wrap reveal">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy mój sklep musi mieć jakieś specjalne wtyczki? <span class="ico">+</span></div>
+      <div class="faq-a">Nie. Korzystam z natywnego REST API WooCommerce, które jest dostępne w każdej standardowej instalacji WordPress + WooCommerce. Nie musisz nic instalować przed naszą rozmową.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy automatyzacje działają gdy zmienię motyw lub dodam wtyczkę? <span class="ico">+</span></div>
+      <div class="faq-a">Tak — automatyzacje komunikują się z WooCommerce przez API, nie przez interfejs graficzny. Zmiany w wyglądzie sklepu nie wpływają na działanie workflow. Aktualizacje wtyczek mogą czasem wymagać drobnych korekt — to obejmuje gwarancja.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy moje dane klientów są bezpieczne? <span class="ico">+</span></div>
+      <div class="faq-a">Tak. Podpisujemy NDA przed projektem. Dostępy (klucze API, hasła) przekazywane są przez szyfrowane kanały i usuwane po zakończeniu projektu. Dane klientów Twojego sklepu nigdy nie są przechowywane poza Twoimi systemami.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy n8n / Make.com to dodatkowy koszt dla mnie? <span class="ico">+</span></div>
+      <div class="faq-a">n8n można hostować samodzielnie (praktycznie za darmo na VPS za ~20 zł/mies.) lub używać wersji cloud. Make.com ma darmowy plan dla mniejszej liczby automatyzacji. Doradzę najlepsze rozwiązanie pod Twój wolumen zamówień i budżet.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy mogę zamawiać przez Useme / bez faktury VAT? <span class="ico">+</span></div>
+      <div class="faq-a">Tak, rozliczam się przez platformę Useme co jest wygodne dla obu stron. Możliwe też wystawienie rachunku lub faktury VAT w zależności od potrzeb.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Co jeśli WooCommerce zmieni API po wdrożeniu? <span class="ico">+</span></div>
+      <div class="faq-a">WooCommerce zachowuje kompatybilność wsteczną API przez wiele lat. W przypadku złamania automatyzacji przez aktualizację WooCommerce — naprawiam bezpłatnie w ramach gwarancji, a po jej zakończeniu w ramach retainera lub za małą opłatą.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SEO CONTENT -->
+<section id="seo-content">
+  <div class="seo-grid">
+    <div class="seo-text reveal">
+      <div class="s-label">Dla wyszukiwarek</div>
+      <h2>Automatyzacja WooCommerce — ekspert w Polsce</h2>
+      <p>WooCommerce to największa platforma e-commerce w Polsce — ponad 30% sklepów internetowych działa na tym systemie. Wraz ze wzrostem sprzedaży rośnie liczba powtarzalnych zadań, które pochłaniają czas właścicieli i zespołów.</p>
+      <p>Specjalizuję się w automatyzacji procesów dla sklepów WooCommerce działających na rynku polskim — z uwzględnieniem lokalnych integracji jak InPost, Allegro, Przelewy24 i polskie systemy fakturowania.</p>
+    </div>
+    <div class="reveal">
+      <div class="s-label">Słowa kluczowe</div>
+      <p style="color:var(--text2);font-size:0.82rem;margin-bottom:1rem;">Obszary w których buduję widoczność organiczną:</p>
+      <div class="seo-kw">
+        <span class="kw-tag">automatyzacja WooCommerce</span>
+        <span class="kw-tag">WooCommerce n8n integracja</span>
+        <span class="kw-tag">WooCommerce make.com</span>
+        <span class="kw-tag">WooCommerce BaseLinker automatyzacja</span>
+        <span class="kw-tag">automatyczne zamówienia WooCommerce</span>
+        <span class="kw-tag">WooCommerce Allegro integracja</span>
+        <span class="kw-tag">WooCommerce webhook automatyzacja</span>
+        <span class="kw-tag">automatyczne faktury WooCommerce</span>
+        <span class="kw-tag">WooCommerce synchronizacja magazynu</span>
+        <span class="kw-tag">chatbot WooCommerce AI</span>
+        <span class="kw-tag">WooCommerce raport sprzedaży automatyczny</span>
+        <span class="kw-tag">ekspert automatyzacja WooCommerce Polska</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="kontakt">
+  <div class="contact-wrap">
+    <div class="contact-left reveal">
+      <div class="s-label">Kontakt</div>
+      <h2>Porozmawiajmy o Twoim WooCommerce</h2>
+      <p>Opisz swój sklep i co chcesz zautomatyzować. Odpiszę w ciągu 24h z wstępną oceną i możliwymi rozwiązaniami. Bezpłatnie i bez zobowiązań.</p>
+      <div class="contact-detail"><span class="icon">📧</span><span>kontakt@automatyzacjasklep.pl</span></div>
+      <div class="contact-detail"><span class="icon">⏱️</span><span>Odpowiedź do 24h</span></div>
+      <div class="contact-detail"><span class="icon">🌍</span><span>Praca w 100% zdalna</span></div>
+      <div class="contact-detail"><span class="icon">🔒</span><span>NDA dostępne przed projektem</span></div>
+      <div class="contact-detail"><span class="icon">💳</span><span>Płatność przez Useme lub Stripe</span></div>
+    </div>
+    <div class="reveal">
+      <form class="c-form" onsubmit="submitForm(event)">
+        <input type="text" placeholder="Imię / Firma *" required id="fn">
+        <input type="email" placeholder="E-mail *" required id="fe">
+        <input type="text" placeholder="Adres sklepu WooCommerce" id="furl">
+        <select id="fbudget">
+          <option value="">Szacowany budżet projektu</option>
+          <option>Do 2 500 zł</option>
+          <option>2 500 – 5 500 zł</option>
+          <option>Powyżej 5 500 zł</option>
+          <option>Retainer miesięczny</option>
+        </select>
+        <textarea placeholder="Co chcesz zautomatyzować? Opisz obecny problem..." id="fmsg"></textarea>
+        <button type="submit" class="btn-woo" style="justify-content:center;">Wyślij zapytanie →</button>
+        <p class="privacy">Wysyłając formularz akceptujesz <a href="#">Politykę Prywatności</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <a href="index.html" class="logo">Automatyzacja<span>Sklep.pl</span></a>
+    <div class="foot-links">
+      <a href="#uslugi">Usługi</a>
+      <a href="#cennik">Cennik</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="shopify-automatyzacja.html">→ Wersja Shopify</a>
+      <a href="#">Regulamin</a>
+      <a href="#">Polityka Prywatności</a>
+    </div>
+    <span class="foot-copy">© 2026 AutomatyzacjaSklep.pl</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✓ Wiadomość wysłana!</div>
+
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+function submitForm(e) {
+  e.preventDefault();
+  const t = document.getElementById('toast');
+  t.textContent = '✓ Wysłano! Odpiszę w ciągu 24h.';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+  e.target.reset();
+}
+const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

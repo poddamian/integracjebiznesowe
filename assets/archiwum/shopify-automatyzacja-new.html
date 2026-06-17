@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automatyzacja Shopify Polska | AutomatyzacjaSklep.pl — Ekspert integracji Shopify</title>
+<meta name="description" content="Specjalista automatyzacji Shopify w Polsce. Integracje z InPost, Allegro, BaseLinker. Workflow n8n i Make.com. Wdrożenie 48h. Praca zdalna.">
+<meta name="keywords" content="automatyzacja Shopify Polska, Shopify n8n, Shopify make.com, Shopify InPost, Shopify Allegro integracja, ekspert Shopify Polska, automatyzacja sklepu Shopify">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f7f6f2;
+  --bg2: #eeecea;
+  --bg3: #e4e2de;
+  --dark: #141210;
+  --dark2: #2a2825;
+  --shopify: #008060;
+  --shopify-light: #00a67e;
+  --shopify-pale: rgba(0,128,96,0.08);
+  --shopify-glow: rgba(0,128,96,0.15);
+  --text: #141210;
+  --text2: #6b6860;
+  --text3: #a8a6a2;
+  --border: rgba(20,18,16,0.1);
+  --border-s: rgba(0,128,96,0.2);
+  --r: 14px;
+  --font-h: 'Outfit', sans-serif;
+  --font-b: 'Instrument Serif', serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--text); font-family: var(--font-h); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  height: 64px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 6%; background: rgba(247,246,242,0.92); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.logo { font-family: var(--font-h); font-weight: 800; font-size: 1.2rem; text-decoration: none; color: var(--dark); letter-spacing: -0.5px; }
+.logo span { color: var(--shopify); }
+.nav-right { display: flex; align-items: center; gap: 2rem; }
+.nav-right a { color: var(--text2); text-decoration: none; font-size: 0.83rem; font-weight: 500; transition: color 0.2s; }
+.nav-right a:hover { color: var(--shopify); }
+.nav-back { border: 1px solid var(--border); padding: 0.4rem 0.9rem; border-radius: 6px; }
+.nav-cta-nav { background: var(--shopify); color: #fff !important; padding: 0.45rem 1.1rem; border-radius: 7px; font-weight: 700 !important; }
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; }
+.hamburger span { width: 22px; height: 2px; background: var(--dark); border-radius: 2px; }
+.mob-menu { display: none; position: fixed; top: 64px; left: 0; right: 0; background: var(--bg); border-bottom: 1px solid var(--border); padding: 1.2rem 6%; flex-direction: column; gap: 0.8rem; z-index: 99; }
+.mob-menu a { color: var(--text2); text-decoration: none; font-size: 0.95rem; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.mob-menu.open { display: flex; }
+
+/* HERO */
+.hero {
+  min-height: 100vh; padding: 110px 6% 80px;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 5rem; align-items: center;
+  position: relative;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 0.75rem;
+  font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--shopify); margin-bottom: 1.5rem;
+}
+.hero-eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--shopify); }
+
+.hero h1 {
+  font-family: var(--font-b); font-size: clamp(2.4rem, 5vw, 4.2rem);
+  font-weight: 400; line-height: 1.05; letter-spacing: -1px; margin-bottom: 1.5rem;
+  color: var(--dark);
+}
+.hero h1 em { font-style: italic; color: var(--shopify); }
+.hero h1 strong { font-style: normal; font-family: var(--font-h); font-weight: 800; display: block; font-size: 0.75em; color: var(--text2); letter-spacing: -1px; margin-top: 0.3rem; }
+
+.hero-desc { color: var(--text2); font-size: 1rem; line-height: 1.8; margin-bottom: 2.5rem; max-width: 460px; }
+
+.btn-shopify {
+  background: var(--shopify); color: #fff;
+  padding: 0.9rem 1.9rem; border-radius: 9px;
+  font-weight: 700; font-size: 0.9rem;
+  text-decoration: none; border: none; cursor: pointer;
+  transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-shopify:hover { background: var(--shopify-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,128,96,0.3); }
+
+.btn-ghost {
+  background: transparent; color: var(--dark);
+  padding: 0.9rem 1.9rem; border-radius: 9px;
+  font-weight: 500; font-size: 0.9rem;
+  text-decoration: none; border: 1px solid var(--border);
+  cursor: pointer; transition: border-color 0.2s, background 0.2s;
+  display: inline-flex; align-items: center; gap: 0.5rem;
+}
+.btn-ghost:hover { border-color: var(--shopify); background: var(--shopify-pale); }
+
+.hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+
+.hero-proof {
+  display: flex; gap: 2.5rem; padding-top: 2.5rem;
+  border-top: 1px solid var(--border); flex-wrap: wrap;
+}
+.proof-item .num { font-family: var(--font-b); font-size: 2.2rem; font-style: italic; color: var(--shopify); line-height: 1; }
+.proof-item .lbl { font-size: 0.78rem; color: var(--text2); font-weight: 500; margin-top: 0.2rem; }
+
+/* HERO RIGHT — STATS PANEL */
+.hero-panel {
+  background: var(--dark); border-radius: 20px; padding: 2rem;
+  color: #f0ede8; position: relative; overflow: hidden;
+}
+.hero-panel::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,128,96,0.25), transparent 65%);
+}
+.panel-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.panel-title { font-size: 0.72rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(240,237,232,0.5); }
+.panel-status { display: flex; align-items: center; gap: 0.4rem; font-size: 0.72rem; font-weight: 600; color: #00c98a; }
+.panel-status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #00c98a; animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+.panel-metric { margin-bottom: 1.5rem; }
+.metric-label { font-size: 0.72rem; color: rgba(240,237,232,0.5); font-weight: 500; margin-bottom: 0.2rem; }
+.metric-val { font-family: var(--font-b); font-size: 2rem; font-style: italic; color: #00c98a; }
+.metric-bar { margin-top: 0.5rem; height: 3px; background: rgba(255,255,255,0.08); border-radius: 2px; }
+.metric-fill { height: 100%; background: linear-gradient(90deg, #00c98a, #008060); border-radius: 2px; transition: width 1.5s ease; }
+
+.panel-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.panel-row { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; background: rgba(255,255,255,0.04); border-radius: 8px; border: 1px solid rgba(255,255,255,0.06); }
+.panel-row-left { display: flex; align-items: center; gap: 0.6rem; }
+.panel-row-icon { font-size: 1rem; }
+.panel-row-text { font-size: 0.8rem; font-weight: 500; }
+.panel-row-sub { font-size: 0.68rem; color: rgba(240,237,232,0.45); }
+.panel-tag { font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.5rem; border-radius: 4px; }
+.tag-ok { background: rgba(0,201,138,0.15); color: #00c98a; }
+.tag-live { background: rgba(0,128,96,0.2); color: #66d4b0; }
+
+/* SECTIONS */
+section { padding: 80px 6%; }
+.s-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 2.5px; text-transform: uppercase; color: var(--shopify); margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.5rem; }
+.s-label::before { content: ''; width: 18px; height: 2px; background: var(--shopify); }
+.s-title { font-family: var(--font-b); font-size: clamp(1.8rem, 3.5vw, 3rem); font-weight: 400; letter-spacing: -0.5px; line-height: 1.1; margin-bottom: 0.75rem; color: var(--dark); }
+.s-title em { font-style: italic; color: var(--shopify); }
+.s-sub { color: var(--text2); font-size: 0.95rem; max-width: 520px; line-height: 1.8; }
+
+/* WHY SHOPIFY */
+#dlaczego { background: var(--dark); color: #f0ede8; }
+#dlaczego .s-label { color: #66d4b0; }
+#dlaczego .s-label::before { background: #66d4b0; }
+#dlaczego .s-title { color: #f0ede8; }
+#dlaczego .s-sub { color: rgba(240,237,232,0.55); }
+.why-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.why-card { background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.07); border-radius: var(--r); padding: 1.8rem; transition: background 0.2s, border-color 0.2s; }
+.why-card:hover { background: rgba(255,255,255,0.07); border-color: rgba(0,128,96,0.35); }
+.why-num { font-family: var(--font-b); font-size: 3rem; font-style: italic; color: rgba(0,201,138,0.25); line-height: 1; margin-bottom: 0.5rem; }
+.why-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.5rem; color: #f0ede8; }
+.why-card p { color: rgba(240,237,232,0.5); font-size: 0.85rem; line-height: 1.7; }
+.why-source { margin-top: 2.5rem; font-size: 0.78rem; color: rgba(240,237,232,0.3); font-style: italic; font-family: var(--font-b); }
+
+/* SERVICES */
+#uslugi { background: var(--bg); }
+.svc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
+.svc-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 2rem; position: relative; transition: box-shadow 0.25s, transform 0.25s; }
+.svc-card:hover { box-shadow: 0 12px 40px rgba(0,128,96,0.1); transform: translateY(-3px); }
+.svc-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--shopify); background: var(--shopify-pale); border-radius: 4px; padding: 0.2rem 0.6rem; margin-bottom: 1.2rem; }
+.svc-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+.svc-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.6rem; color: var(--dark); }
+.svc-card p { color: var(--text2); font-size: 0.87rem; line-height: 1.7; margin-bottom: 1rem; }
+.svc-result { font-size: 0.78rem; font-weight: 700; color: var(--shopify); display: flex; align-items: center; gap: 0.4rem; }
+.svc-result::before { content: '↑'; }
+
+/* POLISH ADVANTAGE */
+#polska-przewaga { background: var(--bg2); }
+.adv-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+.adv-left h2 { font-family: var(--font-b); font-size: clamp(1.8rem, 3vw, 2.8rem); line-height: 1.1; margin-bottom: 1.2rem; color: var(--dark); }
+.adv-left h2 em { color: var(--shopify); font-style: italic; }
+.adv-left p { color: var(--text2); font-size: 0.92rem; line-height: 1.8; margin-bottom: 1.5rem; }
+.adv-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.adv-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; background: #fff; border-radius: 10px; border: 1px solid var(--border); }
+.adv-item .icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 1px; }
+.adv-item h4 { font-size: 0.88rem; font-weight: 700; margin-bottom: 0.2rem; }
+.adv-item p { font-size: 0.82rem; color: var(--text2); line-height: 1.6; }
+.adv-stat-box { background: var(--dark); border-radius: 16px; padding: 2.5rem; color: #f0ede8; }
+.adv-stat-box h3 { font-family: var(--font-b); font-size: 1.2rem; font-style: italic; margin-bottom: 2rem; color: rgba(240,237,232,0.6); }
+.big-stat { margin-bottom: 2rem; }
+.big-stat .val { font-family: var(--font-b); font-size: 3.5rem; font-style: italic; color: #00c98a; line-height: 1; }
+.big-stat .desc { font-size: 0.85rem; color: rgba(240,237,232,0.5); margin-top: 0.3rem; }
+.stat-row { display: flex; justify-content: space-between; padding: 0.75rem 0; border-top: 1px solid rgba(255,255,255,0.06); }
+.stat-row .s { font-size: 0.82rem; color: rgba(240,237,232,0.5); }
+.stat-row .v { font-size: 0.82rem; font-weight: 700; color: #66d4b0; }
+
+/* INTEGRATIONS */
+#integracje { background: var(--bg); }
+.int-section-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+.int-col h3 { font-size: 0.82rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text2); margin-bottom: 1rem; }
+.int-badges { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.int-b { background: var(--bg2); border: 1px solid var(--border); border-radius: 7px; padding: 0.5rem 0.9rem; font-size: 0.8rem; font-weight: 600; color: var(--text2); display: flex; align-items: center; gap: 0.4rem; transition: all 0.2s; cursor: default; }
+.int-b:hover { border-color: var(--border-s); color: var(--shopify); background: var(--shopify-pale); }
+.int-b.hot { border-color: var(--border-s); color: var(--shopify); background: var(--shopify-pale); font-weight: 700; }
+
+/* PROCESS */
+#proces { background: var(--bg2); }
+.proc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; margin-top: 3rem; background: var(--border); border-radius: var(--r); overflow: hidden; }
+.proc-cell { background: var(--bg); padding: 2rem 1.5rem; }
+.proc-cell:hover { background: #fff; }
+.proc-n { font-family: var(--font-b); font-size: 3.5rem; font-style: italic; color: rgba(0,128,96,0.15); line-height: 1; margin-bottom: 0.5rem; }
+.proc-cell h3 { font-size: 0.92rem; font-weight: 700; margin-bottom: 0.5rem; }
+.proc-cell p { font-size: 0.82rem; color: var(--text2); line-height: 1.7; }
+.proc-t { font-size: 0.72rem; font-weight: 700; color: var(--shopify); margin-top: 0.5rem; }
+
+/* PRICING */
+#cennik { background: var(--bg); }
+.price-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-top: 3rem; max-width: 900px; }
+.price-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 2rem; display: flex; flex-direction: column; position: relative; transition: transform 0.2s, box-shadow 0.2s; }
+.price-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.08); }
+.price-card.featured { background: var(--dark); color: #f0ede8; border-color: transparent; }
+.price-badge { position: absolute; top: -11px; left: 1.5rem; background: var(--shopify); color: #fff; font-size: 0.65rem; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; padding: 0.2rem 0.8rem; border-radius: 4px; }
+.price-card h3 { font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; }
+.price-card.featured h3 { color: #f0ede8; }
+.pdesc { font-size: 0.82rem; margin-bottom: 1.5rem; line-height: 1.5; }
+.price-card .pdesc { color: var(--text2); }
+.price-card.featured .pdesc { color: rgba(240,237,232,0.5); }
+.pnum { font-family: var(--font-b); font-size: 2.4rem; font-style: italic; color: var(--shopify); line-height: 1; }
+.price-card.featured .pnum { color: #00c98a; }
+.punit { font-size: 0.78rem; margin-bottom: 1.5rem; }
+.price-card .punit { color: var(--text2); }
+.price-card.featured .punit { color: rgba(240,237,232,0.45); }
+.f-list { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; flex: 1; }
+.f-list li { font-size: 0.85rem; display: flex; gap: 0.6rem; align-items: flex-start; }
+.price-card .f-list li { color: var(--text2); }
+.price-card.featured .f-list li { color: rgba(240,237,232,0.65); }
+.f-list li::before { content: '✓'; color: var(--shopify); font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+.price-card.featured .f-list li::before { color: #00c98a; }
+.p-btn { margin-top: 1.8rem; text-align: center; padding: 0.75rem 1.5rem; border-radius: 9px; font-weight: 700; font-size: 0.85rem; cursor: pointer; text-decoration: none; display: block; transition: all 0.2s; }
+.price-card:not(.featured) .p-btn { background: transparent; border: 1px solid var(--border-s); color: var(--shopify); }
+.price-card:not(.featured) .p-btn:hover { background: var(--shopify-pale); }
+.price-card.featured .p-btn { background: var(--shopify); color: #fff; border: none; }
+.price-card.featured .p-btn:hover { background: var(--shopify-light); }
+
+/* FAQ */
+#faq { background: var(--bg2); }
+.faq-wrap { max-width: 700px; margin-top: 3rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.faq-item { background: #fff; border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.faq-q { padding: 1.1rem 1.5rem; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.9rem; user-select: none; transition: background 0.2s; color: var(--dark); }
+.faq-q:hover { background: var(--bg); }
+.faq-item.open .faq-q { background: var(--shopify-pale); }
+.faq-q .ico { color: var(--shopify); font-size: 1.1rem; transition: transform 0.3s; flex-shrink: 0; }
+.faq-item.open .faq-q .ico { transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.2s; color: var(--text2); font-size: 0.88rem; line-height: 1.8; padding: 0 1.5rem; }
+.faq-item.open .faq-a { max-height: 300px; padding: 0 1.5rem 1.2rem; }
+
+/* CONTACT */
+#kontakt { background: var(--bg); }
+.contact-wrap { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; align-items: start; }
+.contact-left h2 { font-family: var(--font-b); font-size: 2.2rem; line-height: 1.1; margin-bottom: 1rem; color: var(--dark); }
+.contact-left h2 em { color: var(--shopify); font-style: italic; }
+.contact-left p { color: var(--text2); font-size: 0.9rem; line-height: 1.8; margin-bottom: 2rem; }
+.c-detail { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.85rem; }
+.c-detail .icon { font-size: 1rem; width: 28px; }
+.c-detail span { color: var(--text2); font-size: 0.88rem; }
+.c-form { display: flex; flex-direction: column; gap: 1rem; }
+.c-form input, .c-form select, .c-form textarea {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+  color: var(--dark); padding: 0.8rem 1rem; font-family: var(--font-h); font-size: 0.88rem;
+  outline: none; transition: border-color 0.2s;
+}
+.c-form input:focus, .c-form select:focus, .c-form textarea:focus { border-color: var(--shopify); background: #fff; }
+.c-form select option { background: var(--bg); }
+.c-form textarea { height: 110px; resize: vertical; }
+.c-form .priv { font-size: 0.75rem; color: var(--text2); }
+.c-form .priv a { color: var(--shopify); }
+
+/* FOOTER */
+footer { background: var(--dark); border-top: none; padding: 2.5rem 6%; }
+.foot-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+.foot-logo { font-family: var(--font-h); font-weight: 800; font-size: 1.1rem; text-decoration: none; color: #f0ede8; }
+.foot-logo span { color: #00c98a; }
+.foot-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.foot-links a { color: rgba(240,237,232,0.4); text-decoration: none; font-size: 0.8rem; transition: color 0.2s; }
+.foot-links a:hover { color: #00c98a; }
+.foot-copy { color: rgba(240,237,232,0.3); font-size: 0.78rem; }
+
+/* TOAST */
+.toast { position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 500; background: var(--shopify); color: #fff; padding: 0.85rem 1.4rem; border-radius: 10px; font-weight: 700; font-size: 0.85rem; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+/* REVEAL */
+.reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.55s ease, transform 0.55s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-panel { display: none; }
+  .adv-grid { grid-template-columns: 1fr; }
+  .int-section-grid { grid-template-columns: 1fr; }
+  .contact-wrap { grid-template-columns: 1fr; gap: 2.5rem; }
+}
+@media (max-width: 640px) {
+  nav { padding: 0 4%; }
+  section { padding: 60px 4%; }
+  .hero { padding: 95px 4% 60px; }
+  .nav-right .nav-mid { display: none; }
+  .hamburger { display: flex; }
+  .proc-grid { grid-template-columns: 1fr 1fr; }
+  footer { padding: 2rem 4%; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Automatyzacja<span>Sklep.pl</span></a>
+  <div class="nav-right">
+    <a href="#uslugi" class="nav-mid">Usługi</a>
+    <a href="#cennik" class="nav-mid">Cennik</a>
+    <a href="#faq" class="nav-mid">FAQ</a>
+    <a href="woocommerce-automatyzacja.html" class="nav-back">→ WooCommerce</a>
+    <a href="#kontakt" class="nav-cta-nav">Kontakt</a>
+  </div>
+  <button class="hamburger" onclick="document.getElementById('mob').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mob-menu" id="mob">
+  <a href="#uslugi">Usługi</a>
+  <a href="#cennik">Cennik</a>
+  <a href="#faq">FAQ</a>
+  <a href="woocommerce-automatyzacja.html">→ Wersja WooCommerce</a>
+  <a href="#kontakt">Kontakt</a>
+</div>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div>
+    <div class="hero-eyebrow"><span class="dot"></span>Specjalista automatyzacji Shopify w Polsce</div>
+    <h1>
+      Shopify który<br>
+      <em>pracuje sam.</em>
+      <strong>Ty zajmujesz się rozwojem.</strong>
+    </h1>
+    <p class="hero-desc">Buduję systemy automatyzacji dla sklepów Shopify na rynku polskim — z uwzględnieniem InPost, Allegro, BaseLinker i polskich integratorów płatności. Wdrożenie w 48–72h, praca w 100% zdalna.</p>
+    <div class="hero-btns">
+      <a href="#kontakt" class="btn-shopify">✦ Zapytaj o ofertę</a>
+      <a href="#uslugi" class="btn-ghost">Zobacz usługi →</a>
+    </div>
+    <div class="hero-proof">
+      <div class="proof-item"><div class="num">15 000+</div><div class="lbl">sklepów Shopify w Polsce</div></div>
+      <div class="proof-item"><div class="num">67%</div><div class="lbl">wzrost rok do roku</div></div>
+      <div class="proof-item"><div class="num">48h</div><div class="lbl">czas wdrożenia</div></div>
+    </div>
+  </div>
+  <div class="hero-panel">
+    <div class="panel-header">
+      <div class="panel-title">AutomatyzacjaSklep.pl · Shopify Dashboard</div>
+      <div class="panel-status">Wszystko działa</div>
+    </div>
+    <div class="panel-metric">
+      <div class="metric-label">Dzisiejsze zamówienia przetworzone automatycznie</div>
+      <div class="metric-val">47 / 47</div>
+      <div class="metric-bar"><div class="metric-fill" style="width:100%"></div></div>
+    </div>
+    <div class="panel-list">
+      <div class="panel-row">
+        <div class="panel-row-left">
+          <span class="panel-row-icon">📦</span>
+          <div><div class="panel-row-text">Zamówienia → InPost</div><div class="panel-row-sub">Automatyczna etykieta</div></div>
+        </div>
+        <span class="panel-tag tag-ok">✓ Live</span>
+      </div>
+      <div class="panel-row">
+        <div class="panel-row-left">
+          <span class="panel-row-icon">🛒</span>
+          <div><div class="panel-row-text">Shopify ↔ Allegro sync</div><div class="panel-row-sub">Stany i zamówienia</div></div>
+        </div>
+        <span class="panel-tag tag-ok">✓ Live</span>
+      </div>
+      <div class="panel-row">
+        <div class="panel-row-left">
+          <span class="panel-row-icon">📊</span>
+          <div><div class="panel-row-text">Raport dzienny → Slack</div><div class="panel-row-sub">Wysłany 07:00</div></div>
+        </div>
+        <span class="panel-tag tag-ok">✓ OK</span>
+      </div>
+      <div class="panel-row">
+        <div class="panel-row-left">
+          <span class="panel-row-icon">💌</span>
+          <div><div class="panel-row-text">Porzucone koszyki</div><div class="panel-row-sub">3 odzyskane dziś</div></div>
+        </div>
+        <span class="panel-tag tag-live">● Aktywny</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY SHOPIFY -->
+<section id="dlaczego">
+  <div class="s-label reveal">Dlaczego Shopify</div>
+  <h2 class="s-title reveal">Rynek który rośnie.<br><em>Wejdź zanim zrobi się tłoczno.</em></h2>
+  <p class="s-sub reveal">Shopify w Polsce przeszedł z niszowego narzędzia do standardu dla marek D2C i B2C. Specjaliści są rzadkością — to Twoja szansa.</p>
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-num">15k</div>
+      <h3>Aktywnych sklepów Shopify w Polsce</h3>
+      <p>Z 6 000 w 2024 do ponad 15 000 w 2026. Każdy z tych sklepów to potencjalny klient automatyzacji.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-num">67%</div>
+      <h3>Wzrost rok do roku</h3>
+      <p>Żadna inna platforma e-commerce nie rośnie w Polsce tak szybko. Popyt na specjalistów wyprzedza podaż.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-num">D2C</div>
+      <h3>Standard dla marek nowoczesnych</h3>
+      <p>Fashion, beauty, home decor, FMCG — branże z największymi budżetami wybierają Shopify jako platformę główną.</p>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-num">🇵🇱</div>
+      <h3>Polskie integracje już działają</h3>
+      <p>InPost, Przelewy24, PayU, Allegro, BaseLinker — ekosystem Shopify w Polsce jest kompletny. Czas na automatyzację.</p>
+    </div>
+  </div>
+  <p class="why-source reveal">Źródło: Store Leads 2025, grzegorzsekowski.pl, thenewlook.pl — dane na maj 2026</p>
+</section>
+
+<!-- SERVICES -->
+<section id="uslugi">
+  <div class="s-label reveal">Co wdrażam</div>
+  <h2 class="s-title reveal">Automatyzacje Shopify<br><em>skrojone pod polski rynek</em></h2>
+  <p class="s-sub reveal">Każde rozwiązanie uwzględnia specyfikę polskiego e-commerce — InPost, Allegro, polskie systemy fakturowania i lokalne integratory płatności.</p>
+  <div class="svc-grid">
+    <div class="svc-card reveal">
+      <div class="svc-tag">Zamówienia</div>
+      <div class="svc-icon">📦</div>
+      <h3>Pełna automatyzacja obsługi zamówień</h3>
+      <p>Od złożenia zamówienia po dostawę — powiadomienia dla klienta, aktualizacja magazynu, generowanie etykiet InPost/DPD/DHL. Zero ręcznego klikania.</p>
+      <div class="svc-result">2–4 godziny dziennie z powrotem dla Ciebie</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Marketplace</div>
+      <div class="svc-icon">🛒</div>
+      <h3>Shopify ↔ Allegro — pełna integracja</h3>
+      <p>Synchronizacja produktów, stanów, cen i zamówień między Shopify a Allegro w czasie rzeczywistym. To przewaga której zagraniczni konkurenci nie mają.</p>
+      <div class="svc-result">Wiele kanałów, jedna praca</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Magazyn</div>
+      <div class="svc-icon">🏭</div>
+      <h3>Synchronizacja stanów magazynowych</h3>
+      <p>Shopify, Allegro, BaseLinker i hurtownia w jednym systemie prawdy. Oversell i „przepraszam, brak na stanie" znikają na zawsze.</p>
+      <div class="svc-result">Zero niezadowolonych klientów z powodu braków</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">E-mail</div>
+      <div class="svc-icon">💌</div>
+      <h3>Automatyczne sekwencje i porzucone koszyki</h3>
+      <p>Wiadomości po zakupie, odzyskiwanie porzuconych koszyków, prośby o opinie, reaktywacja uśpionych klientów — każda w idealnym momencie.</p>
+      <div class="svc-result">Odzyskanie 10–15% porzuconych transakcji</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Raporty</div>
+      <div class="svc-icon">📊</div>
+      <h3>Automatyczne raporty sprzedaży</h3>
+      <p>Raport dzienny, tygodniowy, miesięczny — sprzedaż, marże, top produkty, zwroty. Trafia do Slack lub e-mail o wybranej godzinie. Bez otwierania panelu.</p>
+      <div class="svc-result">Decyzje biznesowe oparte na danych</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Faktury</div>
+      <div class="svc-icon">🧾</div>
+      <h3>Automatyczne fakturowanie po polsku</h3>
+      <p>Integracja Shopify z iFirma, wFirma, Fakturownia. Faktura wystawiana i wysyłana klientowi natychmiast po opłaceniu zamówienia. Zgodność z polskim prawem podatkowym.</p>
+      <div class="svc-result">Kilka godzin miesięcznej pracy z głowy</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Chatbot AI</div>
+      <div class="svc-icon">🤖</div>
+      <h3>Chatbot obsługi klienta dla Shopify</h3>
+      <p>Odpowiada na pytania o status zamówienia, zwroty, dostępność produktów i czas dostawy. Działa 24/7, obsługuje 80% zapytań bez angażowania zespołu.</p>
+      <div class="svc-result">Zespół skupia się na wartościowych zadaniach</div>
+    </div>
+    <div class="svc-card reveal">
+      <div class="svc-tag">Migracja</div>
+      <div class="svc-icon">🔄</div>
+      <h3>Migracja z WooCommerce + automatyzacje</h3>
+      <p>Przenosisz sklep na Shopify? Migruję produkty, zamówienia i klientów, a następnie od razu wdrażam automatyzacje. Jeden specjalista, jeden projekt.</p>
+      <div class="svc-result">Płynna migracja bez utraty danych</div>
+    </div>
+  </div>
+</section>
+
+<!-- POLISH ADVANTAGE -->
+<section id="polska-przewaga">
+  <div class="adv-grid">
+    <div class="adv-left reveal">
+      <div class="s-label">Polska specyfika</div>
+      <h2>To czego nie zrobi<br>żaden <em>zagraniczny freelancer</em></h2>
+      <p>Shopify ma globalny ekosystem, ale polski rynek ma swoją specyfikę. Znam ją i integruję ją w automatyzacjach od pierwszego dnia.</p>
+      <div class="adv-list">
+        <div class="adv-item">
+          <span class="icon">📬</span>
+          <div><h4>InPost Paczkomaty</h4><p>Automatyczne generowanie etykiet, śledzenie paczek i powiadomienia klientów przez InPost API.</p></div>
+        </div>
+        <div class="adv-item">
+          <span class="icon">🛒</span>
+          <div><h4>Allegro integracja</h4><p>Dwukierunkowa synchronizacja Shopify ↔ Allegro — produkty, stany, ceny, zamówienia w czasie rzeczywistym.</p></div>
+        </div>
+        <div class="adv-item">
+          <span class="icon">💳</span>
+          <div><h4>Przelewy24 / PayU / PayPo</h4><p>Automatyzacje obejmują wszystkie polskie metody płatności bez dodatkowych komplikacji.</p></div>
+        </div>
+        <div class="adv-item">
+          <span class="icon">🧾</span>
+          <div><h4>Polskie programy fakturowania</h4><p>iFirma, wFirma, Fakturownia, Subiekt — integracje zgodne z polskim prawem podatkowym.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="adv-stat-box">
+        <h3>Rynek Shopify w Polsce — dane 2026</h3>
+        <div class="big-stat">
+          <div class="val">15 000+</div>
+          <div class="desc">aktywnych sklepów Shopify w Polsce</div>
+        </div>
+        <div class="stat-row"><span class="s">Wzrost rok do roku</span><span class="v">+67%</span></div>
+        <div class="stat-row"><span class="s">Wzrost od 2024</span><span class="v">+150% (6k → 15k)</span></div>
+        <div class="stat-row"><span class="s">Główne branże</span><span class="v">Fashion, Beauty, Home</span></div>
+        <div class="stat-row"><span class="s">Ruch mobilny e-comm PL</span><span class="v">>70%</span></div>
+        <div class="stat-row"><span class="s">Ekspertów automatyzacji Shopify PL</span><span class="v">Garstka</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INTEGRATIONS -->
+<section id="integracje">
+  <div class="s-label reveal">Ekosystem</div>
+  <h2 class="s-title reveal">Z czym integruję Shopify</h2>
+  <p class="s-sub reveal" style="margin-bottom:2.5rem;">Jeśli Twojego systemu nie ma na liście — napisz. Jeśli ma API, można to zintegrować.</p>
+  <div class="int-section-grid reveal">
+    <div>
+      <div class="int-col">
+        <h3>🇵🇱 Polski rynek (priorytet)</h3>
+        <div class="int-badges">
+          <span class="int-b hot">📬 InPost Paczkomaty</span>
+          <span class="int-b hot">🛒 Allegro</span>
+          <span class="int-b hot">💳 Przelewy24</span>
+          <span class="int-b hot">💳 PayU</span>
+          <span class="int-b hot">📦 BaseLinker</span>
+          <span class="int-b hot">🧾 iFirma</span>
+          <span class="int-b hot">🧾 wFirma</span>
+          <span class="int-b">🧾 Fakturownia</span>
+          <span class="int-b">🏪 Subiekt GT</span>
+          <span class="int-b">🛒 Ceneo</span>
+          <span class="int-b">📦 DPD Polska</span>
+          <span class="int-b">💰 PayPo / Klarna</span>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="int-col">
+        <h3>⚙️ Automatyzacja i narzędzia</h3>
+        <div class="int-badges">
+          <span class="int-b hot">⚙️ n8n</span>
+          <span class="int-b hot">🔄 Make.com</span>
+          <span class="int-b">📧 Klaviyo</span>
+          <span class="int-b">📧 Mailchimp</span>
+          <span class="int-b">📧 ActiveCampaign</span>
+          <span class="int-b">💬 Slack</span>
+          <span class="int-b">📊 Google Sheets</span>
+          <span class="int-b">🤖 Claude AI / ChatGPT</span>
+          <span class="int-b">📱 WhatsApp Business</span>
+          <span class="int-b">📊 Metabase</span>
+          <span class="int-b">🛒 Amazon</span>
+          <span class="int-b">🗃️ Airtable</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="proces">
+  <div class="s-label reveal">Jak działam</div>
+  <h2 class="s-title reveal">Prosto, szybko,<br><em>w 100% zdalnie</em></h2>
+  <div class="proc-grid reveal">
+    <div class="proc-cell">
+      <div class="proc-n">01</div>
+      <h3>Bezpłatna konsultacja</h3>
+      <p>Omawiamy Twój sklep, procesy i cele. E-mail lub video call. Zero zobowiązań.</p>
+      <div class="proc-t">⏱ Dzień 0</div>
+    </div>
+    <div class="proc-cell">
+      <div class="proc-n">02</div>
+      <h3>Oferta i umowa online</h3>
+      <p>Szczegółowa oferta z zakresem i ceną. Umowa elektronicznie, płatność zaliczkowa przez Stripe lub Useme.</p>
+      <div class="proc-t">⏱ Dzień 1</div>
+    </div>
+    <div class="proc-cell">
+      <div class="proc-n">03</div>
+      <h3>Wdrożenie i testy</h3>
+      <p>Buduję na środowisku testowym, sprawdzam każdy scenariusz. Dostajesz podgląd zanim wejdzie na produkcję.</p>
+      <div class="proc-t">⏱ Dzień 2–7</div>
+    </div>
+    <div class="proc-cell">
+      <div class="proc-n">04</div>
+      <h3>Odbiór i dokumentacja</h3>
+      <p>Uruchomienie na produkcji. Dokumentacja + nagranie wideo. Płatność końcowa po Twoim odbiorze.</p>
+      <div class="proc-t">⏱ Dzień 7–10</div>
+    </div>
+    <div class="proc-cell">
+      <div class="proc-n">05</div>
+      <h3>Wsparcie i gwarancja</h3>
+      <p>30 lub 60 dni gwarancji w cenie. Opcjonalny retainer dla ciągłego rozwoju automatyzacji.</p>
+      <div class="proc-t">⏱ Długoterminowo</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="cennik">
+  <div class="s-label reveal">Cennik</div>
+  <h2 class="s-title reveal">Przejrzyste ceny,<br><em>żadnych niespodzianek</em></h2>
+  <p class="s-sub reveal" style="margin-bottom:0.5rem;">Płatność przez Stripe lub Useme. Faktura VAT lub rachunek.</p>
+  <div class="price-grid reveal">
+    <div class="price-card">
+      <h3>Starter</h3>
+      <p class="pdesc">Jedna automatyzacja, szybki efekt. Idealny punkt wejścia.</p>
+      <div class="pnum">2 500 zł</div>
+      <div class="punit">jednorazowo + VAT</div>
+      <ul class="f-list">
+        <li>1 workflow automatyzacji</li>
+        <li>Integracja z 2 systemami</li>
+        <li>Dokumentacja tekstowa</li>
+        <li>30 dni wsparcia</li>
+        <li>Stripe / Useme</li>
+      </ul>
+      <a href="#kontakt" class="p-btn">Zapytaj o ofertę</a>
+    </div>
+    <div class="price-card featured">
+      <div class="price-badge">Najpopularniejszy</div>
+      <h3>Growth</h3>
+      <p class="pdesc">Pełna automatyzacja rosnącego sklepu Shopify na polskim rynku.</p>
+      <div class="pnum">5 500 zł</div>
+      <div class="punit">jednorazowo + VAT</div>
+      <ul class="f-list">
+        <li>Do 4 workflow automatyzacji</li>
+        <li>Integracja z do 5 systemami</li>
+        <li>Polskie integracje priorytetowo</li>
+        <li>60 dni wsparcia priorytetowego</li>
+        <li>Nagranie wideo z dokumentacji</li>
+        <li>Optymalizacja po 30 dniach</li>
+      </ul>
+      <a href="#kontakt" class="p-btn">Zapytaj o ofertę</a>
+    </div>
+    <div class="price-card">
+      <h3>Retainer</h3>
+      <p class="pdesc">Stały rozwój — nowe automatyzacje co miesiąc.</p>
+      <div class="pnum">1 800 zł</div>
+      <div class="punit">miesięcznie + VAT</div>
+      <ul class="f-list">
+        <li>Do 8h pracy miesięcznie</li>
+        <li>Utrzymanie i monitoring</li>
+        <li>Nowe workflow priorytetowo</li>
+        <li>Raport miesięczny</li>
+        <li>Priorytetowy kontakt</li>
+      </ul>
+      <a href="#kontakt" class="p-btn">Zapytaj o retainer</a>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="s-label reveal">FAQ</div>
+  <h2 class="s-title reveal">Najczęstsze pytania<br><em>o automatyzację Shopify</em></h2>
+  <div class="faq-wrap reveal">
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy potrzebuję Shopify Plus do automatyzacji? <span class="ico">+</span></div>
+      <div class="faq-a">Nie. Podstawowy plan Shopify wystarczy do większości automatyzacji. Shopify Plus daje dostęp do dodatkowych funkcji (Shopify Flow, Launchpad), ale przez n8n i Make.com można zautomatyzować niemal wszystko na każdym planie przez REST API i webhooki.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy Shopify zablokuje moje automatyzacje przy aktualizacjach? <span class="ico">+</span></div>
+      <div class="faq-a">Shopify utrzymuje kompatybilność wsteczną API przez wiele wersji. Automatyzacje oparte na API są znacznie stabilniejsze niż integracje oparte na interfejsie graficznym. W razie złamania automatyzacji przez Shopify — naprawiam bezpłatnie w ramach gwarancji.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy mogę zautomatyzować Shopify z Allegro? To kluczowe dla polskich sklepów. <span class="ico">+</span></div>
+      <div class="faq-a">Tak, to jedna z moich flagowych integracji. Synchronizacja produktów, stanów magazynowych, cen i zamówień między Shopify a Allegro w czasie rzeczywistym. To jest dokładnie ta specjalizacja, której nie znajdziesz u zagranicznych freelancerów.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Czy mogę płacić przez Useme zamiast faktury? <span class="ico">+</span></div>
+      <div class="faq-a">Tak, rozliczam się przez Useme — to bezpieczna opcja dla obu stron, szczególnie przy pierwszej współpracy. Możliwy też przelew lub płatność przez Stripe. Wystawiam rachunek lub fakturę VAT.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Mój sklep migruje z WooCommerce na Shopify — możesz pomóc? <span class="ico">+</span></div>
+      <div class="faq-a">Tak i to chętnie. Migracja + wdrożenie automatyzacji w jednym projekcie to coraz częstszy scenariusz. Przenosisz dane (produkty, zamówienia, klientów) i od razu otrzymujesz sklep Shopify z działającymi automatyzacjami. Jeden projekt, jeden specjalista.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q" onclick="toggleFaq(this)">Jak długo trwa nauka obsługi automatyzacji po wdrożeniu? <span class="ico">+</span></div>
+      <div class="faq-a">Dla standardowego użytkownika — praktycznie nic nie musisz umieć. Automatyzacje działają w tle, Ty ich nie dotykasz. Dostajesz dokumentację i nagranie wideo na wypadek gdybyś chciał coś zrozumieć lub zmodyfikować w przyszłości.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="kontakt">
+  <div class="contact-wrap">
+    <div class="contact-left reveal">
+      <div class="s-label">Kontakt</div>
+      <h2>Porozmawiajmy o Twoim <em>Shopify</em></h2>
+      <p>Opisz swój sklep i co chcesz zautomatyzować. Odpiszę w ciągu 24h z konkretną oceną możliwości i szacunkową wyceną.</p>
+      <div class="c-detail"><span class="icon">📧</span><span>kontakt@automatyzacjasklep.pl</span></div>
+      <div class="c-detail"><span class="icon">⏱️</span><span>Odpowiedź do 24h</span></div>
+      <div class="c-detail"><span class="icon">🌍</span><span>Praca w 100% zdalna</span></div>
+      <div class="c-detail"><span class="icon">🔒</span><span>NDA dostępne przed projektem</span></div>
+      <div class="c-detail"><span class="icon">💳</span><span>Useme / Stripe / przelew</span></div>
+    </div>
+    <div class="reveal">
+      <form class="c-form" onsubmit="submitForm(event)">
+        <input type="text" placeholder="Imię / Firma *" required id="fn">
+        <input type="email" placeholder="E-mail *" required id="fe">
+        <input type="text" placeholder="Adres sklepu Shopify" id="furl">
+        <select id="ftype">
+          <option value="">Czego potrzebujesz?</option>
+          <option>Automatyzacja zamówień</option>
+          <option>Integracja Shopify ↔ Allegro</option>
+          <option>Synchronizacja magazynu</option>
+          <option>Raporty automatyczne</option>
+          <option>Migracja z WooCommerce</option>
+          <option>Inne / kilka rzeczy</option>
+        </select>
+        <select id="fbudget">
+          <option value="">Szacowany budżet</option>
+          <option>Do 2 500 zł</option>
+          <option>2 500 – 5 500 zł</option>
+          <option>Powyżej 5 500 zł</option>
+          <option>Retainer miesięczny</option>
+        </select>
+        <textarea placeholder="Opisz co chcesz zautomatyzować i jaki jest obecny problem..." id="fmsg"></textarea>
+        <button type="submit" class="btn-shopify" style="justify-content:center;">Wyślij zapytanie →</button>
+        <p class="priv">Wysyłając formularz akceptujesz <a href="#">Politykę Prywatności</a>.</p>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-inner">
+    <a href="index.html" class="foot-logo">Automatyzacja<span>Sklep.pl</span></a>
+    <div class="foot-links">
+      <a href="#uslugi">Usługi</a>
+      <a href="#cennik">Cennik</a>
+      <a href="#faq">FAQ</a>
+      <a href="#kontakt">Kontakt</a>
+      <a href="woocommerce-automatyzacja.html">→ Wersja WooCommerce</a>
+      <a href="#">Regulamin</a>
+      <a href="#">Polityka Prywatności</a>
+    </div>
+    <span class="foot-copy">© 2026 AutomatyzacjaSklep.pl</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast">✓ Wiadomość wysłana!</div>
+
+<script>
+function toggleFaq(el) {
+  const item = el.closest('.faq-item');
+  const open = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!open) item.classList.add('open');
+}
+function submitForm(e) {
+  e.preventDefault();
+  const t = document.getElementById('toast');
+  t.textContent = '✓ Wysłano! Odpiszę w ciągu 24h.';
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+  e.target.reset();
+}
+const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }), { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitch Deck – Agencja AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;600;700;900&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #050508;
+  --ink: #f0eeff;
+  --ink2: #9490b0;
+  --ink3: #5a5670;
+  --a1: #8b5cf6;
+  --a2: #ec4899;
+  --a3: #06b6d4;
+  --a4: #f59e0b;
+  --surface: rgba(255,255,255,0.04);
+  --surface2: rgba(255,255,255,0.07);
+  --border: rgba(255,255,255,0.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow: hidden;
+}
+
+/* Editor toolbar */
+.toolbar {
+  position:fixed;top:0;left:0;right:0;z-index:1000;
+  background:rgba(5,5,8,0.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:10px 24px;
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.toolbar-brand {
+  font-family:'Unbounded',sans-serif;
+  font-size:12px;font-weight:700;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-right:8px;
+}
+.tb-input {
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--ink);border-radius:6px;padding:7px 12px;
+  font-family:'Outfit',sans-serif;font-size:12px;
+  transition:border-color 0.2s;
+}
+.tb-input:focus{outline:none;border-color:rgba(139,92,246,0.5);}
+.tb-input::placeholder{color:var(--ink3);}
+.tb-label{font-size:11px;color:var(--ink3);white-space:nowrap;}
+.tb-sep{width:1px;height:24px;background:var(--border);}
+.tb-btn {
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--ink2);border-radius:6px;padding:7px 14px;
+  font-family:'Outfit',sans-serif;font-size:12px;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+}
+.tb-btn:hover{border-color:rgba(139,92,246,0.4);color:var(--ink);}
+.tb-btn.primary{
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  border:none;color:white;font-weight:600;
+}
+.tb-btn.primary:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(139,92,246,0.3);}
+
+/* Slide viewport */
+.viewport {
+  width:100vw;height:100vh;
+  padding-top:55px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+
+/* Slides container */
+.slides-wrap {
+  width:960px;height:540px;
+  position:relative;
+  flex-shrink:0;
+}
+@media(max-width:1000px){
+  .slides-wrap{transform:scale(0.85);transform-origin:center;}
+}
+@media(max-width:800px){
+  .slides-wrap{transform:scale(0.65);transform-origin:center;}
+}
+
+.slide {
+  position:absolute;inset:0;
+  border-radius:20px;overflow:hidden;
+  opacity:0;pointer-events:none;
+  transition:opacity 0.4s ease, transform 0.4s ease;
+  transform:translateX(40px);
+}
+.slide.active {opacity:1;pointer-events:auto;transform:translateX(0);}
+.slide.prev {opacity:0;transform:translateX(-40px);}
+
+/* bg common */
+.slide-bg {
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,#0d0b1a,#0b0d1f);
+}
+.slide-bg::before {
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(139,92,246,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(139,92,246,0.04) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.glow-orb {
+  position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;
+}
+
+/* Navigation */
+.nav {
+  position:absolute;bottom:24px;left:50%;transform:translateX(-50%);
+  display:flex;gap:8px;z-index:10;
+}
+.nav-dot {
+  width:6px;height:6px;border-radius:50%;
+  background:var(--ink3);cursor:pointer;
+  transition:all 0.3s;border:none;
+}
+.nav-dot.active{background:var(--a1);width:20px;border-radius:3px;}
+.slide-counter {
+  position:absolute;bottom:24px;right:32px;
+  font-size:11px;color:var(--ink3);z-index:10;
+  font-family:'Unbounded',sans-serif;
+}
+.arrow-btn {
+  position:absolute;bottom:20px;z-index:10;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--ink2);border-radius:8px;padding:8px 16px;
+  cursor:pointer;font-size:13px;transition:all 0.2s;
+}
+.arrow-btn:hover{border-color:rgba(139,92,246,0.4);color:var(--ink);}
+#btn-prev-slide{left:32px;}
+#btn-next-slide{right:80px;}
+
+/* ====== SLIDE STYLES ====== */
+
+/* SLIDE 1 - Cover */
+#s1 .slide-bg{background:linear-gradient(145deg,#070412,#0d0320,#110830);}
+#s1 .orb1{width:500px;height:500px;background:rgba(139,92,246,0.12);top:-150px;right:-100px;}
+#s1 .orb2{width:300px;height:300px;background:rgba(236,72,153,0.08);bottom:-50px;left:-50px;}
+.s1-tag{
+  font-family:'Unbounded',sans-serif;font-size:10px;font-weight:700;
+  letter-spacing:0.2em;text-transform:uppercase;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:20px;display:block;
+}
+.s1-title{
+  font-family:'Unbounded',sans-serif;
+  font-size:52px;font-weight:900;line-height:1;
+  letter-spacing:-0.03em;margin-bottom:16px;
+}
+.s1-title .line2{
+  background:linear-gradient(135deg,var(--a1),var(--a2),var(--a3));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.s1-sub{font-size:16px;color:var(--ink2);font-weight:400;line-height:1.5;max-width:480px;margin-bottom:40px;}
+.s1-badges{display:flex;gap:10px;flex-wrap:wrap;}
+.s1-badge{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  border-radius:100px;padding:7px 16px;font-size:12px;color:var(--ink2);
+  display:flex;align-items:center;gap:6px;
+}
+
+/* SLIDE 2 - Problem */
+#s2 .slide-bg{background:linear-gradient(145deg,#0a050a,#160a10,#0d0810);}
+#s2 .orb1{width:400px;height:400px;background:rgba(236,72,153,0.08);top:-100px;left:-100px;}
+.s2-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:24px;}
+.pain-card{
+  background:rgba(236,72,153,0.06);border:1px solid rgba(236,72,153,0.15);
+  border-radius:12px;padding:18px;
+}
+.pain-icon{font-size:22px;margin-bottom:8px;}
+.pain-title{font-size:14px;font-weight:700;margin-bottom:5px;}
+.pain-stat{font-size:24px;font-weight:900;color:var(--a2);font-family:'Unbounded',sans-serif;margin-bottom:4px;}
+.pain-desc{font-size:11px;color:var(--ink2);line-height:1.5;}
+
+/* SLIDE 3 - Solution */
+#s3 .slide-bg{background:linear-gradient(145deg,#040b0f,#051520,#040e1a);}
+#s3 .orb1{width:400px;height:400px;background:rgba(6,182,212,0.08);bottom:-100px;right:-100px;}
+.s3-services{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:20px;}
+.service-card{
+  background:rgba(6,182,212,0.05);border:1px solid rgba(6,182,212,0.12);
+  border-radius:12px;padding:16px;transition:all 0.2s;cursor:default;
+}
+.service-card:hover{background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.25);transform:translateY(-2px);}
+.sc-icon{font-size:24px;margin-bottom:10px;}
+.sc-name{font-size:13px;font-weight:700;margin-bottom:4px;}
+.sc-desc{font-size:11px;color:var(--ink2);line-height:1.5;}
+
+/* SLIDE 4 - ROI Numbers */
+#s4 .slide-bg{background:linear-gradient(145deg,#080b04,#0f1a06,#0b1304);}
+#s4 .orb1{width:500px;height:500px;background:rgba(245,158,11,0.06);top:-100px;right:-100px;}
+.s4-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:28px;}
+.num-card{
+  background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);
+  border-radius:16px;padding:24px;text-align:center;
+}
+.num-big{font-size:42px;font-weight:900;font-family:'Unbounded',sans-serif;margin-bottom:6px;line-height:1;}
+.num-label{font-size:12px;color:var(--ink2);line-height:1.5;}
+
+/* SLIDE 5 - Process */
+#s5 .slide-bg{background:linear-gradient(145deg,#05080f,#070d1e,#08091a);}
+#s5 .orb1{width:350px;height:350px;background:rgba(139,92,246,0.08);top:-50px;left:50%;transform:translateX(-50%);}
+.process-steps{display:flex;gap:0;margin-top:24px;align-items:flex-start;}
+.p-step{flex:1;text-align:center;position:relative;}
+.p-step:not(:last-child)::after{
+  content:'→';position:absolute;right:-8px;top:22px;
+  font-size:18px;color:var(--ink3);
+}
+.p-num{
+  width:44px;height:44px;border-radius:50%;
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:900;font-family:'Unbounded',sans-serif;
+  margin:0 auto 12px;
+}
+.p-title{font-size:13px;font-weight:700;margin-bottom:6px;}
+.p-desc{font-size:11px;color:var(--ink2);line-height:1.5;padding:0 8px;}
+
+/* SLIDE 6 - Social Proof */
+#s6 .slide-bg{background:linear-gradient(145deg,#050a08,#071410,#060f0b);}
+#s6 .orb1{width:400px;height:400px;background:rgba(6,182,212,0.07);bottom:-100px;left:50%;transform:translateX(-50%);}
+.testimonials{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:20px;}
+.testi{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:12px;padding:20px;
+}
+.testi-text{font-size:13px;line-height:1.7;color:var(--ink2);margin-bottom:14px;font-style:italic;}
+.testi-author{display:flex;align-items:center;gap:10px;}
+.testi-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:linear-gradient(135deg,var(--a1),var(--a3));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;flex-shrink:0;
+}
+.testi-name{font-size:12px;font-weight:700;}
+.testi-company{font-size:11px;color:var(--ink3);}
+.testi-stars{color:var(--a4);font-size:12px;margin-bottom:10px;}
+
+/* SLIDE 7 - Pricing */
+#s7 .slide-bg{background:linear-gradient(145deg,#060410,#0e0620,#0b0418);}
+#s7 .orb1{width:400px;height:400px;background:rgba(139,92,246,0.1);top:-80px;right:-80px;}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:24px;}
+.price-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  border-radius:16px;padding:22px;text-align:center;position:relative;
+}
+.price-card.featured{
+  background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.35);
+}
+.price-badge{
+  position:absolute;top:-10px;left:50%;transform:translateX(-50%);
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  color:white;font-size:10px;font-weight:700;padding:3px 14px;
+  border-radius:100px;white-space:nowrap;
+}
+.price-name{font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;}
+.price-amount{font-size:32px;font-weight:900;font-family:'Unbounded',sans-serif;line-height:1;margin-bottom:4px;}
+.price-period{font-size:11px;color:var(--ink3);margin-bottom:14px;}
+.price-features{list-style:none;text-align:left;}
+.price-features li{font-size:11px;color:var(--ink2);padding:4px 0;display:flex;gap:6px;align-items:flex-start;}
+.price-features li::before{content:'✓';color:var(--a1);flex-shrink:0;font-weight:700;}
+
+/* SLIDE 8 - CTA */
+#s8 .slide-bg{background:linear-gradient(145deg,#070310,#120625,#0d041c);}
+#s8 .orb1{width:600px;height:600px;background:rgba(139,92,246,0.1);top:50%;left:50%;transform:translate(-50%,-50%);}
+#s8 .orb2{width:300px;height:300px;background:rgba(236,72,153,0.08);top:20%;right:-50px;}
+
+/* Common slide layout */
+.slide-inner{
+  position:relative;z-index:2;
+  padding:52px;height:100%;display:flex;flex-direction:column;
+}
+.slide-inner.center{align-items:center;justify-content:center;text-align:center;}
+
+.section-eyebrow{
+  font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--ink3);margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.section-eyebrow::before{content:'';width:20px;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));}
+.slide-title{font-family:'Unbounded',sans-serif;font-size:28px;font-weight:700;line-height:1.15;letter-spacing:-0.02em;}
+.slide-title .grad{background:linear-gradient(135deg,var(--a1),var(--a2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.slide-sub{font-size:14px;color:var(--ink2);line-height:1.6;margin-top:8px;max-width:500px;}
+
+.logo-area{
+  font-family:'Unbounded',sans-serif;font-size:13px;font-weight:900;
+  letter-spacing:-0.01em;margin-bottom:4px;
+}
+.logo-area span{
+  background:linear-gradient(135deg,var(--a1),var(--a2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+/* Editable fields */
+[contenteditable]{
+  border-radius:4px;transition:background 0.2s;cursor:text;
+  min-width:20px;display:inline-block;
+}
+[contenteditable]:hover{background:rgba(139,92,246,0.1);}
+[contenteditable]:focus{outline:2px solid rgba(139,92,246,0.4);background:rgba(139,92,246,0.12);}
+
+/* Color theme picker */
+.theme-btn{
+  width:18px;height:18px;border-radius:50%;border:2px solid transparent;
+  cursor:pointer;transition:all 0.2s;
+}
+.theme-btn:hover{transform:scale(1.2);border-color:rgba(255,255,255,0.3);}
+.theme-btn.active{border-color:white;}
+
+@media print {
+  .toolbar,.nav,.arrow-btn,.slide-counter{display:none!important;}
+  body{overflow:visible;}
+  .viewport{padding-top:0;height:auto;display:block;}
+  .slides-wrap{width:100%;height:auto;position:relative;transform:none!important;}
+  .slide{position:relative;opacity:1!important;pointer-events:auto;transform:none!important;margin-bottom:20px;height:540px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="toolbar-brand">PitchDeck</div>
+  <div class="tb-sep"></div>
+  <span class="tb-label">Twoja firma:</span>
+  <input class="tb-input" id="tb-company" placeholder="Nazwa agencji..." style="width:160px" oninput="updateCompany()">
+  <span class="tb-label">Tagline:</span>
+  <input class="tb-input" id="tb-tagline" placeholder="AI Automation" style="width:140px" oninput="updateTagline()">
+  <div class="tb-sep"></div>
+  <span class="tb-label">Kolor:</span>
+  <div style="display:flex;gap:6px;align-items:center">
+    <div class="theme-btn active" style="background:linear-gradient(135deg,#8b5cf6,#ec4899)" onclick="setTheme('#8b5cf6','#ec4899','#06b6d4',this)" title="Fiolet/Róż"></div>
+    <div class="theme-btn" style="background:linear-gradient(135deg,#06b6d4,#3b82f6)" onclick="setTheme('#06b6d4','#3b82f6','#8b5cf6',this)" title="Cyan/Niebieski"></div>
+    <div class="theme-btn" style="background:linear-gradient(135deg,#f59e0b,#ef4444)" onclick="setTheme('#f59e0b','#ef4444','#8b5cf6',this)" title="Złoto/Czerwień"></div>
+    <div class="theme-btn" style="background:linear-gradient(135deg,#10b981,#06b6d4)" onclick="setTheme('#10b981','#06b6d4','#8b5cf6',this)" title="Zieleń/Cyan"></div>
+  </div>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" onclick="window.print()">🖨️ Eksportuj PDF</button>
+  <button class="tb-btn primary" onclick="presentMode()">▶ Prezentuj</button>
+</div>
+
+<!-- VIEWPORT -->
+<div class="viewport">
+<div class="slides-wrap">
+
+<!-- SLIDE 1: COVER -->
+<div class="slide active" id="s1">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+  <div class="slide-inner" style="justify-content:center">
+    <div class="logo-area"><span id="s1-logo">AutomateAI</span></div>
+    <div style="width:40px;height:2px;background:linear-gradient(90deg,var(--a1),var(--a2));margin:16px 0 24px;border-radius:1px"></div>
+    <span class="s1-tag" id="s1-tag">Automatyzacja Procesów Biznesowych z AI</span>
+    <h1 class="s1-title">
+      Twoja firma.<br>
+      <span class="line2">Na autopilocie.</span>
+    </h1>
+    <p class="s1-sub" id="s1-sub">Wdrażamy agentów AI, którzy pracują 24/7 — obsługują klientów, generują raporty i zarządzają danymi. Ty skupiasz się na rozwoju.</p>
+    <div class="s1-badges">
+      <div class="s1-badge">🤖 AI Agents</div>
+      <div class="s1-badge">⚡ n8n / Zapier</div>
+      <div class="s1-badge">📊 CRM / Analytics</div>
+      <div class="s1-badge">🇵🇱 Wsparcie PL</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2: PROBLEM -->
+<div class="slide" id="s2">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Problem</div>
+    <div class="slide-title">Twoi pracownicy <span class="grad">marnują czas</span><br>na robotę dla robotów</div>
+    <div class="s2-grid">
+      <div class="pain-card">
+        <div class="pain-icon">⏰</div>
+        <div class="pain-stat">68%</div>
+        <div class="pain-title">Czas na powtarzalne zadania</div>
+        <div class="pain-desc">Twój zespół spędza większość dnia na zadaniach, które mógłby wykonać system.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">💸</div>
+        <div class="pain-stat">~40k/rok</div>
+        <div class="pain-title">Koszt marnowanego czasu</div>
+        <div class="pain-desc">Przeciętna firma MŚP traci tyle złotych rocznie na procesach do automatyzacji.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">😤</div>
+        <div class="pain-stat">24h</div>
+        <div class="pain-title">Czas oczekiwania klientów</div>
+        <div class="pain-desc">Klienci pytający poza godzinami pracy czekają do rana. Część odchodzi.</div>
+      </div>
+      <div class="pain-card">
+        <div class="pain-icon">📉</div>
+        <div class="pain-stat">15-30%</div>
+        <div class="pain-title">Utracone leady</div>
+        <div class="pain-desc">Tyle potencjalnych klientów odpada przez zbyt wolną odpowiedź lub brak follow-up.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: SOLUTION -->
+<div class="slide" id="s3">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Rozwiązanie</div>
+    <div class="slide-title">Agenci AI którzy <span class="grad">nigdy nie śpią</span></div>
+    <p class="slide-sub">Wdrażamy kompletny ekosystem automatyzacji dopasowany do Twojej branży i skali działania.</p>
+    <div class="s3-services">
+      <div class="service-card">
+        <div class="sc-icon">💬</div>
+        <div class="sc-name">Agent 24/7</div>
+        <div class="sc-desc">WhatsApp, SMS, obsługa klientów i rezerwacje. Działa całą dobę.</div>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon">🔍</div>
+        <div class="sc-name">Audytor Stron</div>
+        <div class="sc-desc">Skanuje strony konkurencji i Twoich klientów. Gotowy raport w 30s.</div>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon">⭐</div>
+        <div class="sc-name">Agent Opinii</div>
+        <div class="sc-desc">Zbiera opinie Google. Niezadowolony klient? Alert zanim napisze recenzję.</div>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon">🧠</div>
+        <div class="sc-name">RAG Baza Wiedzy</div>
+        <div class="sc-desc">Dokumenty firmowe w chatbocie. Pytasz po polsku — system odpowiada.</div>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon">📑</div>
+        <div class="sc-name">KSeF Agent</div>
+        <div class="sc-desc">Faktury z KSeF, Biała Lista VAT, kolory ryzyka. Zero ręcznego wklepywania.</div>
+      </div>
+      <div class="service-card">
+        <div class="sc-icon">📱</div>
+        <div class="sc-name">Social Media AI</div>
+        <div class="sc-desc">Wpisujesz pomysł — agent tworzy posty i publikuje na LinkedIn, IG, X.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: ROI -->
+<div class="slide" id="s4">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Rezultaty</div>
+    <div class="slide-title">Liczby które <span class="grad" style="background:linear-gradient(135deg,var(--a4),var(--a2));-webkit-background-clip:text;">mówią same za siebie</span></div>
+    <div class="s4-nums">
+      <div class="num-card">
+        <div class="num-big" style="color:var(--a4)">340%</div>
+        <div class="num-label">Średni ROI<br>w pierwszym roku</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big" style="color:var(--a4)">15h</div>
+        <div class="num-label">Tygodniowa oszczędność<br>czasu na pracownika</div>
+      </div>
+      <div class="num-card">
+        <div class="num-big" style="color:var(--a4)">3mies.</div>
+        <div class="num-label">Średni czas<br>zwrotu z inwestycji</div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px;">
+      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--a4);font-family:'Unbounded',sans-serif">24/7</div>
+        <div style="font-size:11px;color:var(--ink2);margin-top:4px">Obsługa klientów</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--a4);font-family:'Unbounded',sans-serif">-80%</div>
+        <div style="font-size:11px;color:var(--ink2);margin-top:4px">Mniej zadań ręcznych</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--a4);font-family:'Unbounded',sans-serif">+25%</div>
+        <div style="font-size:11px;color:var(--ink2);margin-top:4px">Wzrost konwersji</div>
+      </div>
+      <div style="background:rgba(245,158,11,0.05);border:1px solid rgba(245,158,11,0.12);border-radius:10px;padding:14px;text-align:center;">
+        <div style="font-size:22px;font-weight:900;color:var(--a4);font-family:'Unbounded',sans-serif">21dni</div>
+        <div style="font-size:11px;color:var(--ink2);margin-top:4px">Do uruchomienia</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: PROCESS -->
+<div class="slide" id="s5">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Jak działamy</div>
+    <div class="slide-title">Od rozmowy do <span class="grad">działającego systemu</span><br>w 21 dni</div>
+    <div class="process-steps">
+      <div class="p-step">
+        <div class="p-num">1</div>
+        <div class="p-title">Audyt AI</div>
+        <div class="p-desc">45-minutowe spotkanie. Mapujemy procesy i identyfikujemy gdzie AI przyniesie największy ROI.</div>
+      </div>
+      <div class="p-step">
+        <div class="p-num">2</div>
+        <div class="p-title">Projekt systemu</div>
+        <div class="p-desc">Projektujemy architekturę automatyzacji i szczegółowy zakres wdrożenia z harmonogramem.</div>
+      </div>
+      <div class="p-step">
+        <div class="p-num">3</div>
+        <div class="p-title">Wdrożenie</div>
+        <div class="p-desc">Budujemy i testujemy agentów AI. Integrujemy z Twoimi systemami (CRM, mail, WhatsApp).</div>
+      </div>
+      <div class="p-step">
+        <div class="p-num">4</div>
+        <div class="p-title">Launch + Support</div>
+        <div class="p-desc">Uruchamiamy system, szkolimy zespół i zapewniamy wsparcie techniczne 24/7.</div>
+      </div>
+    </div>
+    <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--ink2);">✓ Bez długich kontraktów</div>
+      <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--ink2);">✓ Wdrożenie w 21 dni roboczych</div>
+      <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--ink2);">✓ Wsparcie PL 9:00–17:00</div>
+      <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.15);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--ink2);">✓ Gwarancja SLA 99%</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: SOCIAL PROOF -->
+<div class="slide" id="s6">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Zaufali nam</div>
+    <div class="slide-title">Co mówią <span class="grad" style="background:linear-gradient(135deg,var(--a3),var(--a1));-webkit-background-clip:text;">nasi klienci</span></div>
+    <div class="testimonials">
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" contenteditable>"Agent 24/7 obsługuje teraz 80% zapytań naszych pacjentów. Recepcja skupia się na tym co ważne. ROI zwrócił się w 6 tygodni."</div>
+        <div class="testi-author">
+          <div class="testi-avatar">A</div>
+          <div><div class="testi-name" contenteditable>Anna Wiśniewska</div><div class="testi-company" contenteditable>Klinika Zdrowia Premium, Warszawa</div></div>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" contenteditable>"System RAG zmienił pracę naszego działu HR. Pracownicy pytają bota zamiast dzwonić. Zaoszczędzamy 3h dziennie."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--a2),var(--a4))">M</div>
+          <div><div class="testi-name" contenteditable>Michał Kowalczyk</div><div class="testi-company" contenteditable>TechFlow Sp. z o.o., Kraków</div></div>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" contenteditable>"Audytor Stron to nasze główne narzędzie do pozyskiwania klientów. Przychodzę na spotkanie z gotowym raportem — konwersja 70%."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--a3),var(--a1))">K</div>
+          <div><div class="testi-name" contenteditable>Katarzyna Nowak</div><div class="testi-company" contenteditable>Agencja Digital Growth, Wrocław</div></div>
+        </div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text" contenteditable>"KSeF Agent eliminuje 5h miesięcznie na księgowość. Faktury się kategoryzują same, a alerty o ryzyku VAT ratują nas przed problemami."</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,var(--a4),var(--a2))">P</div>
+          <div><div class="testi-name" contenteditable>Piotr Zieliński</div><div class="testi-company" contenteditable>ImportExport Pro, Gdańsk</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: PRICING -->
+<div class="slide" id="s7">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="slide-inner">
+    <div class="section-eyebrow">Cennik</div>
+    <div class="slide-title">Przejrzysty model <span class="grad">bez ukrytych kosztów</span></div>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <div class="price-name">Starter</div>
+        <div class="price-amount">od <span contenteditable>2 999</span> zł</div>
+        <div class="price-period">wdrożenie + <span contenteditable>499</span> zł/mies.</div>
+        <ul class="price-features">
+          <li>1 agent AI (do wyboru)</li>
+          <li>Integracja 2 systemów</li>
+          <li>Wsparcie email</li>
+          <li>Czas wdrożenia: 14 dni</li>
+          <li>SLA 99%</li>
+        </ul>
+      </div>
+      <div class="price-card featured">
+        <div class="price-badge">⭐ Bestseller</div>
+        <div class="price-name">Professional</div>
+        <div class="price-amount">od <span contenteditable>6 999</span> zł</div>
+        <div class="price-period">wdrożenie + <span contenteditable>999</span> zł/mies.</div>
+        <ul class="price-features">
+          <li>3 agenty AI + RAG</li>
+          <li>Integracja do 5 systemów</li>
+          <li>Wsparcie Slack + email</li>
+          <li>Czas wdrożenia: 21 dni</li>
+          <li>SLA 99.5% + monitoring</li>
+          <li>Kalkulator ROI gratis</li>
+        </ul>
+      </div>
+      <div class="price-card">
+        <div class="price-name">Enterprise</div>
+        <div class="price-amount"><span contenteditable>Wycena</span></div>
+        <div class="price-period">indywidualny projekt</div>
+        <ul class="price-features">
+          <li>Unlimited agentów AI</li>
+          <li>Integracje bez limitu</li>
+          <li>Dedykowany opiekun</li>
+          <li>Umowa SLA enterprise</li>
+          <li>Szkolenie zespołu</li>
+          <li>Safety Pack Prawny w cenie</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: CTA -->
+<div class="slide" id="s8">
+  <div class="slide-bg"></div>
+  <div class="glow-orb orb1"></div>
+  <div class="glow-orb orb2"></div>
+  <div class="slide-inner center">
+    <div class="logo-area" style="font-size:18px;margin-bottom:24px"><span id="s8-logo">AutomateAI</span></div>
+    <div class="slide-title" style="font-size:44px;text-align:center">Zacznij <span class="grad">teraz.</span></div>
+    <p style="font-size:16px;color:var(--ink2);margin:16px 0 36px;max-width:480px;line-height:1.6">Bezpłatna konsultacja 45 minut. Pokażemy Ci gdzie w Twojej firmie AI przyniesie największy ROI — bez zobowiązań.</p>
+    <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:40px">
+      <div style="background:linear-gradient(135deg,var(--a1),var(--a2));border-radius:12px;padding:14px 32px;font-size:16px;font-weight:700;color:white" contenteditable>📅 Umów bezpłatną konsultację</div>
+      <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 28px;font-size:15px;color:var(--ink2)" contenteditable>📊 Zobacz kalkulator ROI</div>
+    </div>
+    <div style="display:flex;gap:32px;justify-content:center">
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px">Email</div>
+        <div style="font-size:14px;font-weight:600" contenteditable>kontakt@automate-ai.pl</div>
+      </div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px">Telefon</div>
+        <div style="font-size:14px;font-weight:600" contenteditable>+48 600 000 000</div>
+      </div>
+      <div style="width:1px;background:var(--border)"></div>
+      <div style="text-align:center">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:4px">Web</div>
+        <div style="font-size:14px;font-weight:600" contenteditable>automate-ai.pl</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<div class="nav" id="nav-dots"></div>
+<div class="slide-counter" id="slide-counter">1 / 8</div>
+<button class="arrow-btn" id="btn-prev-slide" onclick="goSlide(currentSlide-1)">←</button>
+<button class="arrow-btn" id="btn-next-slide" onclick="goSlide(currentSlide+1)">→</button>
+
+</div><!-- slides-wrap -->
+</div><!-- viewport -->
+
+<script>
+const TOTAL = 8;
+let currentSlide = 0;
+
+function buildNav() {
+  const nav = document.getElementById('nav-dots');
+  nav.innerHTML = Array.from({length:TOTAL},(_,i) =>
+    `<button class="nav-dot ${i===0?'active':''}" onclick="goSlide(${i})"></button>`
+  ).join('');
+}
+
+function goSlide(idx) {
+  if (idx < 0 || idx >= TOTAL) return;
+  const slides = document.querySelectorAll('.slide');
+  slides[currentSlide].classList.remove('active');
+  slides[currentSlide].classList.add('prev');
+  setTimeout(() => slides[currentSlide].classList.remove('prev'), 400);
+  currentSlide = idx;
+  slides[currentSlide].classList.add('active');
+  document.querySelectorAll('.nav-dot').forEach((d,i) => d.classList.toggle('active', i===currentSlide));
+  document.getElementById('slide-counter').textContent = `${currentSlide+1} / ${TOTAL}`;
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', e => {
+  if (e.target.isContentEditable || e.target.tagName === 'INPUT') return;
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goSlide(currentSlide+1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goSlide(currentSlide-1);
+  if (e.key === 'Escape') exitPresentMode();
+});
+
+function updateCompany() {
+  const v = document.getElementById('tb-company').value || 'AutomateAI';
+  document.getElementById('s1-logo').textContent = v;
+  document.getElementById('s8-logo').textContent = v;
+}
+
+function updateTagline() {
+  const v = document.getElementById('tb-tagline').value || 'Automatyzacja Procesów Biznesowych z AI';
+  document.getElementById('s1-tag').textContent = v;
+}
+
+function setTheme(c1, c2, c3, btn) {
+  document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.documentElement.style.setProperty('--a1', c1);
+  document.documentElement.style.setProperty('--a2', c2);
+  document.documentElement.style.setProperty('--a3', c3);
+}
+
+function presentMode() {
+  document.querySelector('.toolbar').style.display = 'none';
+  document.querySelector('.viewport').style.paddingTop = '0';
+  const sw = document.querySelector('.slides-wrap');
+  const scale = Math.min(window.innerWidth/960, window.innerHeight/540);
+  sw.style.transform = `scale(${scale})`;
+}
+
+function exitPresentMode() {
+  document.querySelector('.toolbar').style.display = 'flex';
+  document.querySelector('.viewport').style.paddingTop = '55px';
+  document.querySelector('.slides-wrap').style.transform = '';
+}
+
+buildNav();
+</script>
+</body>
+</html>

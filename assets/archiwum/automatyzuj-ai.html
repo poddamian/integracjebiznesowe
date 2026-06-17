@@ -1,0 +1,2446 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AutomatyzujAI – Gotowe agenty AI i automatyzacje dla Twojej firmy. Wdrożenia n8n, GPT-4, RAG, integracje CRM. Oszczędź 40h miesięcznie.">
+<title>AutomatyzujAI – Agenci AI i Automatyzacje dla Twojej Firmy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+/* ============================================================
+   DESIGN SYSTEM
+   ============================================================ */
+:root {
+  --bg:        #06070d;
+  --bg2:       #0c0e1a;
+  --surface:   #111526;
+  --surface2:  #171c30;
+  --surface3:  #1e2440;
+  --border:    rgba(255,255,255,0.07);
+  --border2:   rgba(255,255,255,0.12);
+
+  --lime:      #c8f135;
+  --lime-dim:  rgba(200,241,53,0.12);
+  --lime-glow: rgba(200,241,53,0.25);
+
+  --blue:      #3d8bff;
+  --cyan:      #00d4ff;
+  --purple:    #9b5de5;
+  --orange:    #ff6b35;
+  --red:       #ff4d6d;
+  --green:     #06d6a0;
+
+  --text:      #e8ecf7;
+  --text2:     #8896b8;
+  --text3:     #4a5577;
+
+  --radius:    14px;
+  --radius-sm: 8px;
+  --radius-lg: 20px;
+
+  --font-display: 'Clash Display', sans-serif;
+  --font-body:    'Satoshi', sans-serif;
+
+  --shadow-card: 0 4px 32px rgba(0,0,0,0.5);
+  --shadow-lime: 0 0 40px rgba(200,241,53,0.15);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================================
+   ANIMATED BACKGROUND
+   ============================================================ */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background-image:
+    linear-gradient(rgba(200,241,53,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200,241,53,0.025) 1px, transparent 1px);
+  background-size: 80px 80px;
+  mask-image: radial-gradient(ellipse 100% 100% at 50% 0%, black 20%, transparent 80%);
+}
+.bg-orbs {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(100px); opacity: 0.35;
+  animation: orbFloat 20s ease-in-out infinite;
+}
+.orb-1 { width: 600px; height: 600px; background: radial-gradient(circle, rgba(200,241,53,0.15), transparent 70%); top: -200px; right: -100px; animation-delay: 0s; }
+.orb-2 { width: 500px; height: 500px; background: radial-gradient(circle, rgba(61,139,255,0.12), transparent 70%); top: 300px; left: -150px; animation-delay: -7s; }
+.orb-3 { width: 400px; height: 400px; background: radial-gradient(circle, rgba(155,93,229,0.10), transparent 70%); bottom: 100px; right: 200px; animation-delay: -14s; }
+@keyframes orbFloat {
+  0%,100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(30px,-40px) scale(1.05); }
+  66% { transform: translate(-20px,20px) scale(0.95); }
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  height: 68px;
+  background: rgba(6,7,13,0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 max(24px, calc((100vw - 1200px)/2));
+  transition: all 0.3s;
+}
+nav.scrolled {
+  background: rgba(6,7,13,0.97);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 700;
+  color: var(--text); text-decoration: none;
+  display: flex; align-items: center; gap: 10px;
+  margin-right: 48px; flex-shrink: 0;
+}
+.nav-logo-dot {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: var(--lime);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.nav-logo span { color: var(--lime); }
+.nav-links {
+  display: flex; align-items: center; gap: 2px; flex: 1;
+}
+.nav-link {
+  color: var(--text2); text-decoration: none;
+  font-size: 14px; font-weight: 500;
+  padding: 7px 14px; border-radius: var(--radius-sm);
+  transition: all 0.2s; white-space: nowrap;
+}
+.nav-link:hover { color: var(--text); background: var(--surface2); }
+.nav-actions {
+  display: flex; align-items: center; gap: 10px;
+  margin-left: auto;
+}
+.nav-badge {
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,0.2);
+  color: var(--lime); font-size: 11px; font-weight: 700;
+  padding: 3px 10px; border-radius: 100px; letter-spacing: 0.05em;
+}
+.btn-nav {
+  background: var(--lime); color: var(--bg);
+  border: none; border-radius: var(--radius-sm);
+  padding: 9px 20px; font-family: var(--font-body);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.02em; white-space: nowrap;
+}
+.btn-nav:hover { transform: translateY(-1px); box-shadow: var(--shadow-lime); }
+
+/* Hamburger */
+.hamburger {
+  display: none; background: none; border: none;
+  cursor: pointer; padding: 8px; flex-direction: column;
+  gap: 5px; margin-left: auto;
+}
+.hamburger span {
+  display: block; width: 22px; height: 2px;
+  background: var(--text); border-radius: 2px;
+  transition: all 0.3s;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
+.hamburger.open span:nth-child(2) { opacity: 0; }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
+
+/* Mobile menu */
+.mobile-menu {
+  display: none; position: fixed;
+  top: 68px; left: 0; right: 0; bottom: 0;
+  background: rgba(6,7,13,0.98);
+  backdrop-filter: blur(20px);
+  z-index: 999; padding: 32px 24px;
+  flex-direction: column; gap: 8px;
+}
+.mobile-menu.open { display: flex; }
+.mobile-link {
+  color: var(--text2); text-decoration: none;
+  font-size: 18px; font-weight: 500;
+  padding: 14px 16px; border-radius: var(--radius);
+  transition: all 0.2s; display: block;
+  border: 1px solid transparent;
+}
+.mobile-link:hover { color: var(--text); background: var(--surface2); border-color: var(--border); }
+
+@media(max-width:900px) {
+  .nav-links, .nav-badge { display: none; }
+  .hamburger { display: flex; }
+  .btn-nav { padding: 8px 16px; font-size: 12px; }
+}
+
+/* ============================================================
+   SECTIONS LAYOUT
+   ============================================================ */
+section { position: relative; z-index: 1; }
+.container {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 max(24px, calc((100vw - 1200px)/2 + 24px));
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+#hero {
+  min-height: 100vh;
+  padding: 120px 0 80px;
+  display: flex; align-items: center;
+  overflow: hidden;
+}
+.hero-inner {
+  max-width: 1200px; margin: 0 auto;
+  padding: 0 max(24px, calc((100vw - 1200px)/2 + 24px));
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; align-items: center;
+}
+@media(max-width:900px) {
+  .hero-inner { grid-template-columns: 1fr; gap: 40px; }
+}
+
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,0.2);
+  color: var(--lime); font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 7px 16px; border-radius: 100px; margin-bottom: 28px;
+}
+.hero-eyebrow::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: var(--lime); animation: blink 1.5s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:0.3} }
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(42px, 6vw, 76px);
+  font-weight: 700; line-height: 1.0;
+  letter-spacing: -0.03em; margin-bottom: 20px;
+}
+.hero-title .line-accent {
+  color: var(--lime);
+  position: relative; display: inline-block;
+}
+.hero-title .line-accent::after {
+  content: '';
+  position: absolute; bottom: -4px; left: 0; right: 0;
+  height: 3px; background: var(--lime);
+  border-radius: 2px; opacity: 0.4;
+}
+
+.hero-sub {
+  font-size: 18px; color: var(--text2); line-height: 1.7;
+  margin-bottom: 40px; max-width: 500px; font-weight: 400;
+}
+.hero-sub strong { color: var(--text); font-weight: 600; }
+
+.hero-ctas {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 52px;
+}
+.btn-primary {
+  background: var(--lime); color: var(--bg);
+  border: none; border-radius: var(--radius);
+  padding: 16px 32px; font-family: var(--font-body);
+  font-size: 15px; font-weight: 700; cursor: pointer;
+  transition: all 0.25s; letter-spacing: 0.01em;
+  display: inline-flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(200,241,53,0.35);
+}
+.btn-secondary {
+  background: var(--surface2); color: var(--text);
+  border: 1px solid var(--border2); border-radius: var(--radius);
+  padding: 16px 32px; font-family: var(--font-body);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: all 0.25s; text-decoration: none;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.25); background: var(--surface3); }
+
+.hero-stats {
+  display: flex; gap: 32px; flex-wrap: wrap;
+}
+.hero-stat {}
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 700; color: var(--lime);
+  line-height: 1;
+}
+.hero-stat-label {
+  font-size: 12px; color: var(--text3); margin-top: 4px;
+  font-weight: 500; letter-spacing: 0.03em;
+}
+
+/* Hero visual */
+.hero-visual {
+  position: relative;
+}
+.hero-card-stack {
+  position: relative; height: 480px;
+}
+.flow-card {
+  position: absolute;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-card);
+  animation: floatCard 6s ease-in-out infinite;
+}
+.flow-card:nth-child(2) { animation-delay: -2s; }
+.flow-card:nth-child(3) { animation-delay: -4s; }
+@keyframes floatCard {
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+
+.fc-main {
+  top: 20px; left: 0; right: 0;
+  background: linear-gradient(135deg, #111526, #151a2e);
+  border-color: rgba(200,241,53,0.2);
+}
+.fc-side1 { bottom: 80px; right: -20px; width: 220px; }
+.fc-side2 { bottom: 0; left: -10px; width: 200px; }
+
+.fc-header {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px;
+}
+.fc-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.fc-icon.lime { background: var(--lime-dim); }
+.fc-icon.blue { background: rgba(61,139,255,0.1); }
+.fc-icon.purple { background: rgba(155,93,229,0.1); }
+.fc-title { font-size: 14px; font-weight: 700; }
+.fc-sub { font-size: 11px; color: var(--text3); }
+
+.flow-nodes {
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
+.flow-node {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px;
+  font-size: 11px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+  white-space: nowrap;
+}
+.flow-node.active {
+  border-color: rgba(200,241,53,0.3);
+  background: var(--lime-dim); color: var(--lime);
+}
+.flow-arrow { color: var(--text3); font-size: 12px; }
+
+.mini-metric {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 8px;
+}
+.mini-metric:last-child { margin-bottom: 0; }
+.mm-label { font-size: 11px; color: var(--text3); }
+.mm-bar { flex: 1; height: 4px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.mm-fill { height: 100%; border-radius: 2px; }
+.mm-val { font-size: 11px; font-weight: 700; color: var(--lime); min-width: 30px; text-align: right; }
+
+/* ============================================================
+   LOGOS STRIP
+   ============================================================ */
+#logos {
+  padding: 40px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  overflow: hidden;
+}
+.logos-label {
+  text-align: center; font-size: 12px; color: var(--text3);
+  letter-spacing: 0.1em; text-transform: uppercase;
+  margin-bottom: 28px; font-weight: 600;
+}
+.logos-track {
+  display: flex; gap: 40px; align-items: center;
+  animation: logoScroll 30s linear infinite;
+  width: max-content;
+}
+.logos-track:hover { animation-play-state: paused; }
+@keyframes logoScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.logo-chip {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 20px;
+  font-size: 13px; font-weight: 700; color: var(--text3);
+  white-space: nowrap; display: flex; align-items: center; gap: 8px;
+  transition: all 0.2s;
+}
+.logo-chip:hover { border-color: var(--border2); color: var(--text2); }
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.sec-header { text-align: center; margin-bottom: 60px; }
+.sec-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,0.2);
+  color: var(--lime); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 100px; margin-bottom: 20px;
+}
+.sec-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 700; letter-spacing: -0.02em;
+  line-height: 1.1; margin-bottom: 16px;
+}
+.sec-title em { font-style: normal; color: var(--lime); }
+.sec-sub {
+  font-size: 17px; color: var(--text2);
+  line-height: 1.7; max-width: 560px; margin: 0 auto;
+}
+
+/* ============================================================
+   PROBLEMS SECTION
+   ============================================================ */
+#problems { padding: 100px 0; }
+.problems-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media(max-width:768px) { .problems-grid { grid-template-columns: 1fr; } }
+@media(max-width:1024px) and (min-width:769px) { .problems-grid { grid-template-columns: repeat(2,1fr); } }
+
+.problem-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px;
+  transition: all 0.3s; position: relative; overflow: hidden;
+}
+.problem-card::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,77,109,0.03), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.problem-card:hover { border-color: rgba(255,77,109,0.2); transform: translateY(-4px); }
+.problem-card:hover::before { opacity: 1; }
+.problem-icon { font-size: 32px; margin-bottom: 16px; }
+.problem-stat {
+  font-family: var(--font-display);
+  font-size: 40px; font-weight: 700;
+  color: var(--red); line-height: 1; margin-bottom: 8px;
+}
+.problem-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.problem-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ============================================================
+   PRODUCTS / AGENTS SECTION
+   ============================================================ */
+#products { padding: 100px 0; background: var(--bg2); }
+
+.products-filter {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 48px;
+}
+.filter-btn {
+  background: var(--surface); border: 1px solid var(--border);
+  color: var(--text2); border-radius: 100px;
+  padding: 8px 20px; font-family: var(--font-body);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-btn.active, .filter-btn:hover {
+  background: var(--lime-dim); border-color: rgba(200,241,53,0.3);
+  color: var(--lime);
+}
+
+.products-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+@media(max-width:900px) { .products-grid { grid-template-columns: 1fr; } }
+@media(max-width:1100px) and (min-width:901px) { .products-grid { grid-template-columns: repeat(2,1fr); } }
+
+.product-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px; position: relative; overflow: hidden;
+  transition: all 0.3s;
+  display: flex; flex-direction: column;
+}
+.product-card::after {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(200,241,53,0.4), transparent);
+  opacity: 0; transition: opacity 0.3s;
+}
+.product-card:hover { border-color: rgba(200,241,53,0.2); transform: translateY(-4px); box-shadow: 0 20px 60px rgba(0,0,0,0.4); }
+.product-card:hover::after { opacity: 1; }
+
+.product-card.featured {
+  border-color: rgba(200,241,53,0.25);
+  background: linear-gradient(135deg, #111526, #141929);
+}
+.product-card.featured::after { opacity: 0.5; }
+
+.product-badge {
+  position: absolute; top: 20px; right: 20px;
+  background: var(--lime); color: var(--bg);
+  font-size: 10px; font-weight: 800;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 4px;
+}
+.product-badge.new { background: var(--blue); color: white; }
+.product-badge.hot { background: var(--orange); color: white; }
+
+.product-icon-wrap {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; margin-bottom: 18px; flex-shrink: 0;
+}
+.product-name { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+.product-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 20px; flex: 1; }
+
+.product-features {
+  list-style: none; margin-bottom: 24px;
+}
+.product-features li {
+  font-size: 12px; color: var(--text2);
+  padding: 5px 0; display: flex; align-items: flex-start; gap: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.product-features li:last-child { border-bottom: none; }
+.product-features li::before {
+  content: '✓'; color: var(--lime); font-weight: 700;
+  font-size: 11px; flex-shrink: 0; margin-top: 1px;
+}
+
+.product-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.product-price { }
+.price-amount {
+  font-family: var(--font-display);
+  font-size: 24px; font-weight: 700; line-height: 1;
+}
+.price-period { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.price-old { font-size: 13px; color: var(--text3); text-decoration: line-through; margin-right: 6px; }
+
+.btn-buy {
+  background: var(--lime); color: var(--bg);
+  border: none; border-radius: var(--radius-sm);
+  padding: 11px 22px; font-family: var(--font-body);
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; white-space: nowrap;
+}
+.btn-buy:hover { transform: translateY(-1px); box-shadow: var(--shadow-lime); }
+.btn-buy.outline {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+}
+.btn-buy.outline:hover { background: var(--surface2); box-shadow: none; }
+
+/* ============================================================
+   HOW IT WORKS
+   ============================================================ */
+#how { padding: 100px 0; }
+.steps-grid {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  gap: 24px; position: relative;
+}
+@media(max-width:900px) { .steps-grid { grid-template-columns: repeat(2,1fr); } }
+@media(max-width:600px) { .steps-grid { grid-template-columns: 1fr; } }
+
+.steps-grid::before {
+  content: '';
+  position: absolute; top: 42px; left: 80px; right: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border2), var(--lime-dim), var(--border2), transparent);
+}
+@media(max-width:900px){ .steps-grid::before { display: none; } }
+
+.step {
+  text-align: center; padding: 0 8px;
+  position: relative;
+}
+.step-num {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 1px solid var(--border2);
+  background: var(--surface);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 22px; font-weight: 700;
+  margin: 0 auto 20px; position: relative; z-index: 1;
+  transition: all 0.3s;
+}
+.step:hover .step-num {
+  background: var(--lime-dim); border-color: rgba(200,241,53,0.4);
+  color: var(--lime); box-shadow: var(--shadow-lime);
+}
+.step-icon { font-size: 24px; margin-bottom: 16px; }
+.step-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: var(--text2); line-height: 1.6; }
+
+/* ============================================================
+   TESTIMONIALS
+   ============================================================ */
+#testimonials { padding: 100px 0; background: var(--bg2); }
+.testimonials-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+@media(max-width:900px) { .testimonials-grid { grid-template-columns: 1fr; } }
+@media(max-width:1100px) and (min-width:901px) { .testimonials-grid { grid-template-columns: repeat(2,1fr); } }
+
+.testi-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 28px;
+  transition: all 0.3s; display: flex; flex-direction: column;
+}
+.testi-card:hover { border-color: var(--border2); transform: translateY(-3px); }
+.testi-stars { color: #fbbf24; font-size: 14px; margin-bottom: 14px; letter-spacing: 2px; }
+.testi-quote {
+  font-size: 14px; color: var(--text2); line-height: 1.75;
+  font-style: italic; margin-bottom: 20px; flex: 1;
+}
+.testi-quote strong { color: var(--text); font-style: normal; }
+.testi-author { display: flex; align-items: center; gap: 12px; }
+.testi-avatar {
+  width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+  font-size: 16px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+}
+.testi-name { font-size: 14px; font-weight: 700; }
+.testi-company { font-size: 12px; color: var(--text3); }
+.testi-roi {
+  background: var(--lime-dim); border: 1px solid rgba(200,241,53,0.2);
+  color: var(--lime); font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px; margin-left: auto;
+}
+
+/* ============================================================
+   PRICING SECTION
+   ============================================================ */
+#pricing { padding: 100px 0; }
+.pricing-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  gap: 20px; align-items: start;
+}
+@media(max-width:900px) { .pricing-grid { grid-template-columns: 1fr; max-width: 460px; margin: 0 auto; } }
+
+.pricing-card {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: var(--radius-lg); padding: 32px;
+  position: relative; transition: all 0.3s;
+}
+.pricing-card:hover { transform: translateY(-4px); }
+.pricing-card.popular {
+  border-color: rgba(200,241,53,0.35);
+  background: linear-gradient(170deg, #121728, #111526);
+  transform: scale(1.03);
+}
+.pricing-card.popular:hover { transform: scale(1.03) translateY(-4px); }
+
+.pop-badge {
+  position: absolute; top: -13px; left: 50%; transform: translateX(-50%);
+  background: var(--lime); color: var(--bg);
+  font-size: 11px; font-weight: 800; letter-spacing: 0.08em;
+  padding: 4px 18px; border-radius: 100px; white-space: nowrap;
+}
+.plan-name {
+  font-size: 12px; font-weight: 700; color: var(--text3);
+  letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 12px;
+}
+.plan-price {
+  font-family: var(--font-display);
+  font-size: 48px; font-weight: 700; line-height: 1;
+  margin-bottom: 4px;
+}
+.plan-price span { font-size: 20px; font-weight: 500; color: var(--text2); vertical-align: super; }
+.plan-period { font-size: 12px; color: var(--text3); margin-bottom: 24px; }
+.plan-desc { font-size: 13px; color: var(--text2); margin-bottom: 24px; line-height: 1.6; }
+.plan-features {
+  list-style: none; margin-bottom: 28px;
+}
+.plan-features li {
+  font-size: 13px; color: var(--text2);
+  padding: 9px 0; display: flex; align-items: flex-start; gap: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.plan-features li:last-child { border-bottom: none; }
+.plan-features li::before {
+  content: '✓'; color: var(--lime); font-weight: 700;
+  font-size: 12px; flex-shrink: 0; margin-top: 1px;
+}
+.plan-features li.dim { color: var(--text3); }
+.plan-features li.dim::before { content: '–'; color: var(--text3); }
+
+.btn-plan {
+  width: 100%; border-radius: var(--radius);
+  padding: 14px; font-family: var(--font-body);
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: all 0.25s; border: none; letter-spacing: 0.02em;
+}
+.btn-plan.solid {
+  background: var(--lime); color: var(--bg);
+}
+.btn-plan.solid:hover { box-shadow: var(--shadow-lime); }
+.btn-plan.outline {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border2);
+}
+.btn-plan.outline:hover { background: var(--surface2); }
+
+/* ============================================================
+   FAQ
+   ============================================================ */
+#faq { padding: 100px 0; background: var(--bg2); }
+.faq-list { max-width: 760px; margin: 0 auto; }
+.faq-item {
+  border: 1px solid var(--border);
+  border-radius: var(--radius); overflow: hidden; margin-bottom: 12px;
+  background: var(--surface); transition: border-color 0.3s;
+}
+.faq-item.open { border-color: rgba(200,241,53,0.2); }
+.faq-q {
+  width: 100%; background: none; border: none; color: var(--text);
+  font-family: var(--font-body); font-size: 15px; font-weight: 600;
+  padding: 20px 24px; cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  text-align: left;
+}
+.faq-q:hover { color: var(--lime); }
+.faq-icon {
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--surface2); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 14px; transition: all 0.3s; color: var(--text2);
+}
+.faq-item.open .faq-icon { background: var(--lime-dim); border-color: rgba(200,241,53,0.3); color: var(--lime); transform: rotate(45deg); }
+.faq-a {
+  max-height: 0; overflow: hidden; transition: max-height 0.4s ease;
+  padding: 0 24px;
+}
+.faq-item.open .faq-a { max-height: 400px; padding-bottom: 20px; }
+.faq-a p { font-size: 14px; color: var(--text2); line-height: 1.75; }
+.faq-a a { color: var(--lime); }
+
+/* ============================================================
+   CTA BANNER
+   ============================================================ */
+#cta-banner {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #0f1624, #121a2e);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  text-align: center; overflow: hidden; position: relative;
+}
+#cta-banner::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 100% at 50% 50%, rgba(200,241,53,0.07), transparent);
+}
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px,5vw,56px); font-weight: 700;
+  letter-spacing: -0.02em; margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+.cta-title em { font-style: normal; color: var(--lime); }
+.cta-sub {
+  font-size: 17px; color: var(--text2); max-width: 500px;
+  margin: 0 auto 36px; line-height: 1.7; position: relative; z-index: 1;
+}
+.cta-actions {
+  display: flex; justify-content: center; gap: 14px;
+  flex-wrap: wrap; position: relative; z-index: 1;
+}
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  background: var(--bg); border-top: 1px solid var(--border);
+  padding: 64px 0 32px; position: relative; z-index: 1;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px; margin-bottom: 48px;
+}
+@media(max-width:900px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+@media(max-width:600px) { .footer-grid { grid-template-columns: 1fr; } }
+
+.footer-brand {}
+.footer-logo {
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  margin-bottom: 14px; display: flex; align-items: center; gap: 8px;
+}
+.footer-logo span { color: var(--lime); }
+.footer-about { font-size: 13px; color: var(--text3); line-height: 1.7; max-width: 280px; margin-bottom: 20px; }
+.footer-socials { display: flex; gap: 8px; }
+.footer-social {
+  width: 36px; height: 36px; border-radius: var(--radius-sm);
+  background: var(--surface); border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; text-decoration: none; transition: all 0.2s;
+  color: var(--text2);
+}
+.footer-social:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+
+.footer-col-title {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 18px;
+}
+.footer-links { list-style: none; }
+.footer-links li { margin-bottom: 10px; }
+.footer-links a {
+  color: var(--text2); text-decoration: none; font-size: 13px;
+  transition: color 0.2s;
+}
+.footer-links a:hover { color: var(--lime); }
+
+.footer-bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  padding-top: 24px; border-top: 1px solid var(--border);
+  font-size: 12px; color: var(--text3);
+}
+.footer-bottom a { color: var(--text3); text-decoration: none; }
+.footer-bottom a:hover { color: var(--text2); }
+.footer-payments { display: flex; gap: 8px; align-items: center; }
+.pay-badge {
+  background: var(--surface); border: 1px solid var(--border);
+  border-radius: 4px; padding: 4px 10px; font-size: 11px;
+  color: var(--text3); font-weight: 600;
+}
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.75);
+  backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: auto; }
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-lg);
+  width: 100%; max-width: 560px;
+  max-height: 90vh; overflow-y: auto;
+  transform: translateY(20px) scale(0.98);
+  transition: transform 0.3s;
+}
+.modal-overlay.open .modal { transform: translateY(0) scale(1); }
+
+.modal-header {
+  padding: 28px 28px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 16px;
+}
+.modal-title { font-size: 20px; font-weight: 700; margin-bottom: 4px; }
+.modal-sub { font-size: 13px; color: var(--text2); }
+.modal-close {
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--text2); border-radius: var(--radius-sm);
+  width: 32px; height: 32px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; flex-shrink: 0; transition: all 0.2s;
+}
+.modal-close:hover { background: var(--surface3); color: var(--text); }
+
+.modal-body { padding: 24px 28px; }
+.modal-product-info {
+  display: flex; align-items: center; gap: 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 24px;
+}
+.mpi-icon { font-size: 28px; }
+.mpi-name { font-size: 15px; font-weight: 700; }
+.mpi-price { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.mpi-price strong { color: var(--lime); font-size: 20px; }
+
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block; font-size: 12px; font-weight: 600;
+  color: var(--text2); margin-bottom: 8px; letter-spacing: 0.03em;
+}
+.form-input {
+  width: 100%; background: var(--surface2);
+  border: 1px solid var(--border); color: var(--text);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  font-family: var(--font-body); font-size: 14px;
+  transition: border-color 0.2s;
+}
+.form-input:focus { outline: none; border-color: rgba(200,241,53,0.5); box-shadow: 0 0 0 3px rgba(200,241,53,0.07); }
+.form-input::placeholder { color: var(--text3); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+/* Stripe element */
+.stripe-element-wrap {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius-sm); padding: 13px 14px;
+  transition: border-color 0.2s;
+}
+.stripe-element-wrap.focused { border-color: rgba(200,241,53,0.5); box-shadow: 0 0 0 3px rgba(200,241,53,0.07); }
+
+.order-summary {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 20px;
+}
+.os-row {
+  display: flex; justify-content: space-between;
+  font-size: 13px; color: var(--text2); margin-bottom: 8px;
+}
+.os-row:last-child { margin-bottom: 0; border-top: 1px solid var(--border); padding-top: 10px; font-weight: 700; color: var(--text); font-size: 15px; }
+.os-row span.lime { color: var(--lime); }
+
+.btn-checkout {
+  width: 100%; background: var(--lime); color: var(--bg);
+  border: none; border-radius: var(--radius);
+  padding: 16px; font-family: var(--font-body);
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  transition: all 0.25s; display: flex; align-items: center;
+  justify-content: center; gap: 10px; letter-spacing: 0.02em;
+}
+.btn-checkout:hover { box-shadow: var(--shadow-lime); transform: translateY(-1px); }
+.btn-checkout:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.secure-badges {
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px; margin-top: 16px; flex-wrap: wrap;
+}
+.secure-badge {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 11px; color: var(--text3);
+}
+
+/* Error / Success */
+.form-error {
+  background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.25);
+  color: var(--red); border-radius: var(--radius-sm);
+  padding: 10px 14px; font-size: 13px; margin-bottom: 16px;
+  display: none;
+}
+.form-error.show { display: block; }
+.success-msg {
+  text-align: center; padding: 32px;
+}
+.success-icon { font-size: 52px; margin-bottom: 16px; }
+.success-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.success-sub { font-size: 14px; color: var(--text2); line-height: 1.6; }
+
+/* ============================================================
+   SCROLL ANIMATIONS
+   ============================================================ */
+.reveal {
+  opacity: 0; transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================================
+   CURSOR GLOW (desktop only)
+   ============================================================ */
+.cursor-glow {
+  width: 400px; height: 400px;
+  position: fixed; pointer-events: none; z-index: 0;
+  background: radial-gradient(circle, rgba(200,241,53,0.04), transparent 70%);
+  border-radius: 50%;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s linear;
+}
+@media(max-width:900px) { .cursor-glow { display: none; } }
+
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+.text-lime { color: var(--lime); }
+.text-center { text-align: center; }
+.mt-4 { margin-top: 16px; }
+.mt-8 { margin-top: 32px; }
+.divider { height: 1px; background: var(--border); margin: 0; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+</style>
+</head>
+<body>
+
+<!-- Cursor Glow -->
+<div class="cursor-glow" id="cursorGlow"></div>
+
+<!-- Background -->
+<div class="bg-grid"></div>
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<!-- ============================================================
+     NAVBAR
+     ============================================================ -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-dot">⚡</div>
+    Automatyzuj<span>AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="#products" class="nav-link">Agenci AI</a>
+    <a href="#how" class="nav-link">Jak to działa</a>
+    <a href="#pricing" class="nav-link">Cennik</a>
+    <a href="#testimonials" class="nav-link">Opinie</a>
+    <a href="#faq" class="nav-link">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <span class="nav-badge">🔥 -30% do końca miesiąca</span>
+    <button class="btn-nav" onclick="openModal('agent24', 'System Agentów 24/7', '⚡', 3490, 4990)">Kup teraz</button>
+  </div>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#products" class="mobile-link" onclick="closeMobileMenu()">🤖 Agenci AI</a>
+  <a href="#how" class="mobile-link" onclick="closeMobileMenu()">📋 Jak to działa</a>
+  <a href="#pricing" class="mobile-link" onclick="closeMobileMenu()">💰 Cennik</a>
+  <a href="#testimonials" class="mobile-link" onclick="closeMobileMenu()">⭐ Opinie klientów</a>
+  <a href="#faq" class="mobile-link" onclick="closeMobileMenu()">❓ FAQ</a>
+  <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--border)">
+    <button class="btn-primary" style="width:100%;justify-content:center" onclick="openModal('agent24','System Agentów 24/7','⚡',3490,4990);closeMobileMenu()">⚡ Kup agenta AI</button>
+  </div>
+</div>
+
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section id="hero">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Ponad 240 firm już automatyzuje</div>
+      <h1 class="hero-title">
+        Twoja firma<br>
+        na <span class="line-accent">autopilocie</span><br>
+        24/7
+      </h1>
+      <p class="hero-sub">
+        Gotowe agenty AI wdrażamy w <strong>21 dni</strong>. Obsługują klientów, fakturują, raportują i zamykają leady — bez etatów, bez przerw, bez błędów.
+      </p>
+      <div class="hero-ctas">
+        <a href="#products" class="btn-primary">
+          🤖 Zobacz agentów AI
+        </a>
+        <a href="#how" class="btn-secondary">
+          Jak to działa →
+        </a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="hero-stat-num">340%</div>
+          <div class="hero-stat-label">Średni ROI rok 1</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">40h</div>
+          <div class="hero-stat-label">Oszczędność / mies.</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">21 dni</div>
+          <div class="hero-stat-label">Do uruchomienia</div>
+        </div>
+        <div class="hero-stat">
+          <div class="hero-stat-num">240+</div>
+          <div class="hero-stat-label">Firm klientów</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <!-- Main flow card -->
+        <div class="flow-card fc-main">
+          <div class="fc-header">
+            <div class="fc-icon lime">⚡</div>
+            <div>
+              <div class="fc-title">Agent 24/7 — aktywny</div>
+              <div class="fc-sub">Obsłużono dziś: 47 zapytań klientów</div>
+            </div>
+          </div>
+          <div class="flow-nodes">
+            <div class="flow-node active">📱 WhatsApp</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node active">🧠 GPT-4o</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node active">📋 CRM</div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-node">📅 Rezerwacja</div>
+          </div>
+          <div style="margin-top:14px;display:flex;align-items:center;gap:8px">
+            <div style="width:8px;height:8px;border-radius:50%;background:var(--lime);animation:blink 1.5s infinite"></div>
+            <span style="font-size:11px;color:var(--text3)">Ostatnia aktywność: 2 minuty temu</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--lime);font-weight:700">99.8% uptime</span>
+          </div>
+        </div>
+
+        <!-- Side card 1: metrics -->
+        <div class="flow-card fc-side1">
+          <div class="fc-header">
+            <div class="fc-icon blue">📊</div>
+            <div>
+              <div class="fc-title">ROI ten miesiąc</div>
+              <div class="fc-sub">Analytics live</div>
+            </div>
+          </div>
+          <div>
+            <div class="mini-metric">
+              <span class="mm-label">Czas zaoszczędzony</span>
+              <div class="mm-bar"><div class="mm-fill" style="width:83%;background:var(--lime)"></div></div>
+              <span class="mm-val">83%</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mm-label">Konwersja leadów</span>
+              <div class="mm-bar"><div class="mm-fill" style="width:67%;background:var(--blue)"></div></div>
+              <span class="mm-val">+67%</span>
+            </div>
+            <div class="mini-metric">
+              <span class="mm-label">Zad. klientów</span>
+              <div class="mm-bar"><div class="mm-fill" style="width:94%;background:var(--green)"></div></div>
+              <span class="mm-val">9.4</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Side card 2: KSeF alert -->
+        <div class="flow-card fc-side2">
+          <div class="fc-header">
+            <div class="fc-icon lime">🟢</div>
+            <div>
+              <div class="fc-title">KSeF Agent</div>
+              <div class="fc-sub">Faktura zweryfikowana</div>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--text2)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+              <span>FV/2025/0847</span>
+              <span style="color:var(--lime);font-weight:700">🟢 OK</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span>Biała Lista VAT</span>
+              <span style="color:var(--lime);font-weight:700">✓ Czynny</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     LOGOS
+     ============================================================ -->
+<section id="logos">
+  <div class="container">
+    <div class="logos-label">Technologie i integracje które używamy</div>
+  </div>
+  <div class="logos-track" id="logosTrack">
+    <div class="logo-chip">⚡ n8n</div>
+    <div class="logo-chip">🧠 GPT-4o</div>
+    <div class="logo-chip">📱 WhatsApp</div>
+    <div class="logo-chip">📊 Airtable</div>
+    <div class="logo-chip">🔒 KSeF API</div>
+    <div class="logo-chip">📈 Google Analytics</div>
+    <div class="logo-chip">💬 Slack</div>
+    <div class="logo-chip">📬 Telegram</div>
+    <div class="logo-chip">🗃️ PostgreSQL</div>
+    <div class="logo-chip">🔄 Make.com</div>
+    <div class="logo-chip">📧 Twilio SMS</div>
+    <div class="logo-chip">☁️ Google Drive</div>
+    <div class="logo-chip">📋 Notion</div>
+    <div class="logo-chip">🌐 Blotato</div>
+    <!-- duplicate for seamless loop -->
+    <div class="logo-chip">⚡ n8n</div>
+    <div class="logo-chip">🧠 GPT-4o</div>
+    <div class="logo-chip">📱 WhatsApp</div>
+    <div class="logo-chip">📊 Airtable</div>
+    <div class="logo-chip">🔒 KSeF API</div>
+    <div class="logo-chip">📈 Google Analytics</div>
+    <div class="logo-chip">💬 Slack</div>
+    <div class="logo-chip">📬 Telegram</div>
+    <div class="logo-chip">🗃️ PostgreSQL</div>
+    <div class="logo-chip">🔄 Make.com</div>
+    <div class="logo-chip">📧 Twilio SMS</div>
+    <div class="logo-chip">☁️ Google Drive</div>
+    <div class="logo-chip">📋 Notion</div>
+    <div class="logo-chip">🌐 Blotato</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PROBLEMS
+     ============================================================ -->
+<section id="problems">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Problem</div>
+      <h2 class="sec-title">Tracisz pieniądze<br><em>każdego dnia</em></h2>
+      <p class="sec-sub">Twoi pracownicy spędzają większość czasu na zadaniach, które mógłby wykonywać system — tańszy, szybszy i bezbłędny.</p>
+    </div>
+    <div class="problems-grid">
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-icon">⏰</div>
+        <div class="problem-stat">68%</div>
+        <div class="problem-title">Czas na powtarzalne zadania</div>
+        <div class="problem-desc">Twój zespół spędza niemal 70% dnia na copy-paste, maile, raporty i dane — zamiast na pracę która napędza wzrost.</div>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-icon">💸</div>
+        <div class="problem-stat">~52k zł</div>
+        <div class="problem-title">Roczny koszt manualnej pracy</div>
+        <div class="problem-desc">Przeciętna polska firma MŚP traci tyle złotych rocznie na procesach gotowych do automatyzacji. Policz ile tracisz Ty.</div>
+      </div>
+      <div class="problem-card reveal reveal-delay-3">
+        <div class="problem-icon">😤</div>
+        <div class="problem-stat">24h</div>
+        <div class="problem-title">Klienci czekają na odpowiedź</div>
+        <div class="problem-desc">Zapytania po 17:00 i w weekendy czekają do rana. Część klientów odchodzi do konkurencji — zanim zdążysz odpisać.</div>
+      </div>
+      <div class="problem-card reveal reveal-delay-1">
+        <div class="problem-icon">📉</div>
+        <div class="problem-stat">22%</div>
+        <div class="problem-title">Utracone leady przez brak follow-up</div>
+        <div class="problem-desc">Co piąty potencjalny klient odpada bo nie dostał follow-up na czas. Każdy miesiąc bez automatyzacji to wyrzucone pieniądze.</div>
+      </div>
+      <div class="problem-card reveal reveal-delay-2">
+        <div class="problem-icon">🧾</div>
+        <div class="problem-stat">5h</div>
+        <div class="problem-title">Miesięcznie na faktury ręcznie</div>
+        <div class="problem-desc">Przepisywanie faktur, kategoryzacja VAT, Biała Lista — pięć godzin miesięcznie na zadanie, które KSeF Agent robi automatycznie.</div>
+      </div>
+      <div class="problem-card reveal reveal-delay-3">
+        <div class="problem-icon">😔</div>
+        <div class="problem-stat">3×</div>
+        <div class="problem-title">Droższe niż automatyzacja</div>
+        <div class="problem-desc">Utrzymanie recepcji, asystentki i pracownika administracji kosztuje 3× więcej niż kompletny system automatyzacji AI.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     PRODUCTS / AGENTS
+     ============================================================ -->
+<section id="products">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Sklep z agentami AI</div>
+      <h2 class="sec-title">Wybierz <em>agenta</em><br>dla swojej firmy</h2>
+      <p class="sec-sub">Gotowe do wdrożenia systemy automatyzacji. Każdy z dokumentacją, supportem i gwarancją działania.</p>
+    </div>
+
+    <div class="products-filter">
+      <button class="filter-btn active" onclick="filterProducts('all', this)">Wszystkie</button>
+      <button class="filter-btn" onclick="filterProducts('flagowy', this)">⭐ Flagowe</button>
+      <button class="filter-btn" onclick="filterProducts('obsługa', this)">💬 Obsługa klienta</button>
+      <button class="filter-btn" onclick="filterProducts('finanse', this)">💼 Finanse</button>
+      <button class="filter-btn" onclick="filterProducts('marketing', this)">📢 Marketing</button>
+      <button class="filter-btn" onclick="filterProducts('hr', this)">👥 HR / Ops</button>
+    </div>
+
+    <div class="products-grid" id="productsGrid">
+
+      <!-- 1. Agent 24/7 -->
+      <div class="product-card featured" data-cat="flagowy obsługa">
+        <div class="product-badge">⭐ FLAGOWY</div>
+        <div class="product-icon-wrap" style="background:rgba(200,241,53,0.1)">💬</div>
+        <div class="product-name">System Agentów 24/7</div>
+        <div class="product-desc">Wirtualny pracownik który nigdy nie śpi. Odpowiada klientom na WhatsApp i SMS, umawia wizyty, sprzedaje usługi i zapisuje wszystko w CRM. Adaptowalny do każdej branży.</div>
+        <ul class="product-features">
+          <li>WhatsApp + SMS + email obsługa 24/7</li>
+          <li>Automatyczne rezerwacje i przypomnienia</li>
+          <li>Integracja z Airtable CRM</li>
+          <li>AI odpowiedzi po polsku (GPT-4o-mini)</li>
+          <li>Panel zarządzania i raporty tygodniowe</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount"><span class="price-old">4 990 zł</span>3 490 zł</div>
+            <div class="price-period">jednorazowo + 699 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('agent24','System Agentów 24/7','💬',3490,4990)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 2. Agent Głosowy -->
+      <div class="product-card" data-cat="obsługa">
+        <div class="product-badge new">Nowość</div>
+        <div class="product-icon-wrap" style="background:rgba(61,139,255,0.1)">📞</div>
+        <div class="product-name">Agent Głosowy</div>
+        <div class="product-desc">Klient dzwoni — agent odbiera, sprawdza dostępność w kalendarzu konkretnego specjalisty i rezerwuje wizytę. Automatyczne potwierdzenie SMS-em. Zero recepcji.</div>
+        <ul class="product-features">
+          <li>Automatyczne odbieranie połączeń</li>
+          <li>Integracja z kalendarzem Google / Calendly</li>
+          <li>SMS potwierdzenie rezerwacji</li>
+          <li>Wykrywanie intencji klienta NLP</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">2 490 zł</div>
+            <div class="price-period">jednorazowo + 399 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('agent-glos','Agent Głosowy','📞',2490,3200)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 3. Audytor Stron -->
+      <div class="product-card" data-cat="marketing">
+        <div class="product-icon-wrap" style="background:rgba(0,212,255,0.1)">🔍</div>
+        <div class="product-name">Agent Audytor Stron</div>
+        <div class="product-desc">Tajna broń do zdobywania klientów. Skanuje stronę potencjalnego klienta, generuje profesjonalny raport SEO/UX/Konwersja — i daje Ci powód do kontaktu z gotową wartością.</div>
+        <ul class="product-features">
+          <li>Automatyczne skanowanie SEO, UX, konwersji</li>
+          <li>Raport HTML gotowy do wysłania klientowi</li>
+          <li>Webhook + wysyłka emailem</li>
+          <li>Wyróżniaj się na spotkaniach sprzedażowych</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">1 990 zł</div>
+            <div class="price-period">jednorazowo + 299 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('audytor','Agent Audytor Stron','🔍',1990,2800)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 4. KSeF FLAGOWY -->
+      <div class="product-card featured" data-cat="flagowy finanse">
+        <div class="product-badge">⭐ FLAGOWY</div>
+        <div class="product-icon-wrap" style="background:rgba(200,241,53,0.1)">📑</div>
+        <div class="product-name">KSeF — Faktury Kosztowe</div>
+        <div class="product-desc">Zaciąga faktury z państwowego KSeF, sprawdza Białą Listę VAT, wykrywa duplikaty i nadaje kolor ryzyka 🟢🟡🔴. Zgodne z obowiązkowymi wymogami KSeF dla firm w Polsce.</div>
+        <ul class="product-features">
+          <li>Integracja z KSeF API (MF)</li>
+          <li>Weryfikacja Białej Listy VAT automatycznie</li>
+          <li>Kolorowy system ryzyka w Google Sheets</li>
+          <li>Alert Slack dla ryzykownych faktur</li>
+          <li>Zgodność z wymogami KSeF 2025</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount"><span class="price-old">5 990 zł</span>4 490 zł</div>
+            <div class="price-period">jednorazowo + 599 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('ksef','KSeF Faktury Kosztowe','📑',4490,5990)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 5. Weryfikacja NIP -->
+      <div class="product-card" data-cat="finanse">
+        <div class="product-icon-wrap" style="background:rgba(6,214,160,0.1)">🔍</div>
+        <div class="product-name">Weryfikacja Kontrahenta NIP</div>
+        <div class="product-desc">Werdykt ryzyka transakcji w kilka sekund przez Telegram. Sprawdza Białą Listę VAT, KRS, CEIDG i generuje krótki raport z uzasadnieniem AI.</div>
+        <ul class="product-features">
+          <li>Bot Telegram — odpowiada w sekundy</li>
+          <li>Biała Lista VAT + KRS + CEIDG</li>
+          <li>Werdykt AI: bezpiecznie / z ostrożnością / unikaj</li>
+          <li>Bezpłatne API rządowe (bez kosztów)</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">2 490 zł</div>
+            <div class="price-period">jednorazowo + 199 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('nip','Weryfikacja NIP','🔍',2490,3200)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 6. System RAG -->
+      <div class="product-card" data-cat="hr flagowy">
+        <div class="product-badge new">AI</div>
+        <div class="product-icon-wrap" style="background:rgba(155,93,229,0.1)">🧠</div>
+        <div class="product-name">System RAG — Baza Wiedzy</div>
+        <div class="product-desc">Dokumenty firmowe trafiają do folderu — system buduje bazę. Pytasz na Telegramie, bot odpowiada na podstawie treści plików. Hybrid search: semantyczny + słowa kluczowe.</div>
+        <ul class="product-features">
+          <li>Hybrid search (pgvector + full-text)</li>
+          <li>Bot Telegram dla całego zespołu</li>
+          <li>Obsługa PDF, Word, Excel, TXT</li>
+          <li>Kontekstowe odpowiedzi GPT-4o</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount"><span class="price-old">5 500 zł</span>3 990 zł</div>
+            <div class="price-period">jednorazowo + 499 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('rag','System RAG','🧠',3990,5500)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 7. Agent Opinii -->
+      <div class="product-card" data-cat="obsługa marketing">
+        <div class="product-icon-wrap" style="background:rgba(251,191,36,0.1)">⭐</div>
+        <div class="product-name">Agent Opinii Google Maps</div>
+        <div class="product-desc">Po każdej wizycie analizuje sentyment klienta. Zadowolony? Dostaje prośbę o opinię Google. Niezadowolony? Dostajesz alert zanim napisze złą recenzję.</div>
+        <ul class="product-features">
+          <li>Email ankieta po wizycie automatycznie</li>
+          <li>Redirect zadowolonych → Google Review</li>
+          <li>Alert Slack dla niezadowolonych</li>
+          <li>Integracja z CRM (Airtable)</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">1 990 zł</div>
+            <div class="price-period">jednorazowo + 199 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('opinie','Agent Opinii Google Maps','⭐',1990,2800)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 8. Auto Follow-Up -->
+      <div class="product-card" data-cat="marketing">
+        <div class="product-icon-wrap" style="background:rgba(255,107,53,0.1)">📧</div>
+        <div class="product-name">Auto Follow-Up Ofert</div>
+        <div class="product-desc">Pilnuje wysłanych ofert, wyłapuje brak odpowiedzi. Agent przygotowuje treść maila przypominającego — zatwierdzasz jednym kliknięciem w Slack.</div>
+        <ul class="product-features">
+          <li>Monitoring ofert z Airtable</li>
+          <li>AI draft follow-up maila</li>
+          <li>Zatwierdzenie jednym kliknięciem</li>
+          <li>Automatyczna aktualizacja CRM</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">1 790 zł</div>
+            <div class="price-period">jednorazowo + 199 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('followup','Auto Follow-Up Ofert','📧',1790,2500)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 9. Social Media -->
+      <div class="product-card" data-cat="marketing">
+        <div class="product-badge hot">🔥 Hit</div>
+        <div class="product-icon-wrap" style="background:rgba(236,72,153,0.1)">📱</div>
+        <div class="product-name">Auto-Publikacja Social Media</div>
+        <div class="product-desc">Wpisujesz pomysł — agent generuje kilka propozycji postów na maila. Akceptujesz wersję, system publikuje na X, LinkedIn i Instagramie przez Blotato.</div>
+        <ul class="product-features">
+          <li>AI generuje 3 warianty postów</li>
+          <li>Publikacja LinkedIn + Instagram + X</li>
+          <li>Zatwierdzanie emailem</li>
+          <li>Integracja Blotato API</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">2 290 zł</div>
+            <div class="price-period">jednorazowo + 299 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('social','Auto Publikacja Social Media','📱',2290,3200)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 10. Onboarding -->
+      <div class="product-card" data-cat="hr">
+        <div class="product-icon-wrap" style="background:rgba(6,214,160,0.1)">🚀</div>
+        <div class="product-name">System Onboardingu</div>
+        <div class="product-desc">Nowy klient lub pracownik? Agent zakłada folder na Drive, wysyła powitalnego maila, dodaje do CRM, powiadamia zespół na Slacku. Wszystko w jednym flow.</div>
+        <ul class="product-features">
+          <li>Automatyczne tworzenie folderów Drive</li>
+          <li>Powitalny email + Slack notification</li>
+          <li>Dodawanie do CRM automatycznie</li>
+          <li>Personalizacja dla klientów i pracowników</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">1 990 zł</div>
+            <div class="price-period">jednorazowo + 249 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('onboarding','System Onboardingu','🚀',1990,2800)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 11. Agent Lojalności -->
+      <div class="product-card" data-cat="obsługa">
+        <div class="product-icon-wrap" style="background:rgba(61,139,255,0.1)">🔄</div>
+        <div class="product-name">Agent Lojalności</div>
+        <div class="product-desc">Automatycznie przypomina klientom o wizytach kontrolnych, przeglądach i odnowieniach. Odzyskuje przychody, które normalnie by uciekły.</div>
+        <ul class="product-features">
+          <li>Automatyczne przypomnienia SMS/email</li>
+          <li>Segmentacja klientów według historii</li>
+          <li>Personalizowane komunikaty AI</li>
+          <li>Raport odzyskanych przychodów</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount">1 490 zł</div>
+            <div class="price-period">jednorazowo + 199 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('lojalnosc','Agent Lojalności','🔄',1490,2000)">Kup →</button>
+        </div>
+      </div>
+
+      <!-- 12. Wyszukiwarka Przetargów -->
+      <div class="product-card" data-cat="finanse flagowy">
+        <div class="product-icon-wrap" style="background:rgba(200,241,53,0.1)">📋</div>
+        <div class="product-name">Wyszukiwarka Przetargów BZP</div>
+        <div class="product-desc">Codziennie przegląda Biuletyn Zamówień Publicznych, ocenia przetargi pod profil firmy, wyłapuje ryzyka. Pętla ucząca — im dłużej działa, tym lepiej trafia.</div>
+        <ul class="product-features">
+          <li>Codzienne przeszukiwanie BZP</li>
+          <li>AI ocena dopasowania do profilu firmy</li>
+          <li>Wykrywanie ryzyk przetargowych</li>
+          <li>Alert email / Telegram z linkami</li>
+        </ul>
+        <div class="product-footer">
+          <div class="product-price">
+            <div class="price-amount"><span class="price-old">4 990 zł</span>3 490 zł</div>
+            <div class="price-period">jednorazowo + 399 zł/mies.</div>
+          </div>
+          <button class="btn-buy" onclick="openModal('bzp','Wyszukiwarka Przetargów BZP','📋',3490,4990)">Kup →</button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Narzędzia sprzedażowe -->
+    <div style="margin-top:60px">
+      <div class="sec-header reveal" style="margin-bottom:32px">
+        <div class="sec-tag">Narzędzia sprzedażowe</div>
+        <h2 class="sec-title" style="font-size:clamp(26px,3vw,38px)">Domknij deal<br><em>szybciej</em></h2>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+
+        <div class="product-card" data-cat="all" style="text-align:center;align-items:center">
+          <div class="product-icon-wrap" style="background:rgba(200,241,53,0.1)">📈</div>
+          <div class="product-name" style="font-size:15px">Kalkulator ROI</div>
+          <div class="product-desc" style="font-size:12px">Pokaż klientowi czarno na białym ile zaoszczędzi.</div>
+          <div class="product-footer" style="flex-direction:column;gap:8px;align-items:stretch">
+            <div class="price-amount" style="font-size:18px;text-align:center">890 zł</div>
+            <button class="btn-buy" onclick="openModal('roi','Kalkulator ROI','📈',890,1490)" style="width:100%;text-align:center">Kup →</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="all" style="text-align:center;align-items:center">
+          <div class="product-icon-wrap" style="background:rgba(236,72,153,0.1)">🎯</div>
+          <div class="product-name" style="font-size:15px">Pitch Deck AI</div>
+          <div class="product-desc" style="font-size:12px">Gotowa prezentacja. Zmieniasz logo — wyglądasz jak agencja.</div>
+          <div class="product-footer" style="flex-direction:column;gap:8px;align-items:stretch">
+            <div class="price-amount" style="font-size:18px;text-align:center">1 290 zł</div>
+            <button class="btn-buy" onclick="openModal('pitch','Pitch Deck AI','🎯',1290,2200)" style="width:100%;text-align:center">Kup →</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="all" style="text-align:center;align-items:center">
+          <div class="product-icon-wrap" style="background:rgba(255,107,53,0.1)">🩺</div>
+          <div class="product-name" style="font-size:15px">Audyt Potencjału AI</div>
+          <div class="product-desc" style="font-size:12px">20 pytań. Diagnozujesz, klient sam prosi o rozwiązanie.</div>
+          <div class="product-footer" style="flex-direction:column;gap:8px;align-items:stretch">
+            <div class="price-amount" style="font-size:18px;text-align:center">1 490 zł</div>
+            <button class="btn-buy" onclick="openModal('audyt-ai','Audyt Potencjału AI','🩺',1490,2500)" style="width:100%;text-align:center">Kup →</button>
+          </div>
+        </div>
+
+        <div class="product-card" data-cat="all" style="text-align:center;align-items:center">
+          <div class="product-icon-wrap" style="background:rgba(61,139,255,0.1)">🛡️</div>
+          <div class="product-name" style="font-size:15px">Safety Pack Prawny</div>
+          <div class="product-desc" style="font-size:12px">Umowa + RODO. Zdejmuje strach, zamyka korporacyjne deale.</div>
+          <div class="product-footer" style="flex-direction:column;gap:8px;align-items:stretch">
+            <div class="price-amount" style="font-size:18px;text-align:center">2 190 zł</div>
+            <button class="btn-buy" onclick="openModal('legal','Safety Pack Prawny','🛡️',2190,3800)" style="width:100%;text-align:center">Kup →</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ============================================================
+     HOW IT WORKS
+     ============================================================ -->
+<section id="how">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Proces</div>
+      <h2 class="sec-title">Od zakupu do<br><em>działającego agenta</em></h2>
+      <p class="sec-sub">Cztery kroki. 21 dni roboczych. Zero stresu technicznego — całość po naszej stronie.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step reveal reveal-delay-1">
+        <div class="step-num">01</div>
+        <div class="step-icon">🛒</div>
+        <div class="step-title">Kupujesz agenta</div>
+        <div class="step-desc">Wybierasz agenta, płacisz bezpiecznie przez Stripe. Odbierasz potwierdzenie i ankietę onboardingową emailem.</div>
+      </div>
+      <div class="step reveal reveal-delay-2">
+        <div class="step-num">02</div>
+        <div class="step-icon">📋</div>
+        <div class="step-title">Wypełniasz brief</div>
+        <div class="step-desc">15-minutowa ankieta o Twojej firmie, branży, systemach. To wszystko czego potrzebujemy — reszta po naszej stronie.</div>
+      </div>
+      <div class="step reveal reveal-delay-3">
+        <div class="step-num">03</div>
+        <div class="step-icon">⚙️</div>
+        <div class="step-title">Wdrażamy system</div>
+        <div class="step-desc">Konfigurujemy, testujemy i integrujemy agenta z Twoimi systemami. Cały proces techniczny jest po naszej stronie.</div>
+      </div>
+      <div class="step reveal reveal-delay-4">
+        <div class="step-num">04</div>
+        <div class="step-icon">🚀</div>
+        <div class="step-title">Odpalasz i zarabiasz</div>
+        <div class="step-desc">Przekazujemy gotowy system z dokumentacją i szkoleniem. Potem miesięczne wsparcie i optymalizacja.</div>
+      </div>
+    </div>
+
+    <!-- Guarantee strip -->
+    <div style="margin-top:60px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px" class="reveal">
+      <div style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">🔒</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">Płatność przez Stripe</div>
+        <div style="font-size:12px;color:var(--text3)">256-bit SSL, 3D Secure, karty i BLIK</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">📅</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">21 dni roboczych</div>
+        <div style="font-size:12px;color:var(--text3)">Gwarancja terminu lub zwrot pieniędzy</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">🛠️</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">3 miesiące wsparcia</div>
+        <div style="font-size:12px;color:var(--text3)">Poprawki i optymalizacje gratis</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:28px;margin-bottom:8px">📞</div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">Dedykowany opiekun</div>
+        <div style="font-size:12px;color:var(--text3)">Slack/email, odpowiedź do 4h</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section id="testimonials">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Opinie klientów</div>
+      <h2 class="sec-title">240+ firm<br><em>już automatyzuje</em></h2>
+      <p class="sec-sub">Sprawdzone rezultaty z polskich firm MŚP. Prawdziwe liczby, prawdziwe oszczędności.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">Agent 24/7 dosłownie zmienił nasze życie. Recepcja przestała odbierać powtarzające się pytania — bot obsługuje <strong>80% zapytań automatycznie</strong>. ROI zwrócił się w 5 tygodni.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#c8f135,#06d6a0)">A</div>
+          <div>
+            <div class="testi-name">Anna Wiśniewska</div>
+            <div class="testi-company">Klinika Zdrowia Premium, Warszawa</div>
+          </div>
+          <div class="testi-roi">ROI 420%</div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">KSeF Agent to absolutna rewolucja. <strong>5 godzin miesięcznie z głowy</strong> — faktury się kategoryzują same, Biała Lista sprawdzana automatycznie. Polecam każdej firmie.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#3d8bff,#9b5de5)">M</div>
+          <div>
+            <div class="testi-name">Michał Kowalczyk</div>
+            <div class="testi-company">TechFlow Sp. z o.o., Kraków</div>
+          </div>
+          <div class="testi-roi">5h/mies.</div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-3">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">System RAG zmienił pracę zespołu. Zamiast dzwonić do mnie z pytaniami o procedury — pytają bota. <strong>Oszczędzam 3 godziny dziennie</strong> na odpowiadaniu na te same pytania.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#ff6b35,#ff4d6d)">K</div>
+          <div>
+            <div class="testi-name">Katarzyna Nowak</div>
+            <div class="testi-company">LogiHub Sp. z o.o., Wrocław</div>
+          </div>
+          <div class="testi-roi">3h/dzień</div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-1">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">Audytor Stron to moje główne narzędzie do pozyskiwania klientów SEO. Przychodzę na spotkanie z gotowym raportem ich strony — <strong>konwersja sprzedażowa wzrosła do 70%</strong>.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#00d4ff,#3d8bff)">P</div>
+          <div>
+            <div class="testi-name">Piotr Zieliński</div>
+            <div class="testi-company">Digital Growth Agency, Gdańsk</div>
+          </div>
+          <div class="testi-roi">+70% konw.</div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-2">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">Agent Lojalności odzyskuje nam klientów, o których byśmy zapomnieli. W pierwszym miesiącu <strong>wróciło 23 klientów</strong> na przeglądy — to prawie 15 000 zł odzyskanego przychodu.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#fbbf24,#f59e0b)">T</div>
+          <div>
+            <div class="testi-name">Tomasz Malinowski</div>
+            <div class="testi-company">AutoSerwis Premium, Poznań</div>
+          </div>
+          <div class="testi-roi">+15 000 zł</div>
+        </div>
+      </div>
+
+      <div class="testi-card reveal reveal-delay-3">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-quote">Social Media AI to game changer. Wpisuję temat, dostaję 3 gotowe posty emailem, zatwierdzam jedno kliknięciem i idą na LinkedIn, Instagram i X. <strong>Z 1 godziny do 5 minut tygodniowo</strong>.</div>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:linear-gradient(135deg,#ec4899,#9b5de5)">M</div>
+          <div>
+            <div class="testi-name">Marta Dąbrowska</div>
+            <div class="testi-company">Konsulting HR Nexus, Warszawa</div>
+          </div>
+          <div class="testi-roi">-95% czasu</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PRICING
+     ============================================================ -->
+<section id="pricing">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Cennik pakietów</div>
+      <h2 class="sec-title">Wybierz pakiet<br><em>dla swojego biznesu</em></h2>
+      <p class="sec-sub">Albo kup pojedynczego agenta ze sklepu powyżej. Pakiety to najlepsza cena jeśli potrzebujesz kilku narzędzi.</p>
+    </div>
+    <div class="pricing-grid">
+
+      <div class="pricing-card reveal reveal-delay-1">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price"><span>od </span>2 990 zł</div>
+        <div class="plan-period">wdrożenie + 499 zł / miesiąc</div>
+        <div class="plan-desc">Idealny start dla małej firmy lub freelancera AI. Jeden agent, pełne wsparcie.</div>
+        <ul class="plan-features">
+          <li>1 agent AI do wyboru</li>
+          <li>Integracja z 2 systemami</li>
+          <li>Wdrożenie do 14 dni roboczych</li>
+          <li>3 miesiące wsparcia email</li>
+          <li>SLA 99% uptime</li>
+          <li>Dokumentacja techniczna</li>
+          <li class="dim">Slack support</li>
+          <li class="dim">Dedykowany opiekun</li>
+          <li class="dim">Szkolenie dla zespołu</li>
+        </ul>
+        <button class="btn-plan outline" onclick="openModal('starter','Pakiet Starter','🚀',2990,4500)">Wybierz Starter</button>
+      </div>
+
+      <div class="pricing-card popular reveal reveal-delay-2">
+        <div class="pop-badge">⭐ Najpopularniejszy</div>
+        <div class="plan-name">Professional</div>
+        <div class="plan-price"><span>od </span>7 490 zł</div>
+        <div class="plan-period">wdrożenie + 999 zł / miesiąc</div>
+        <div class="plan-desc">Kompletny ekosystem dla firmy, która chce realne oszczędności i mierzalne wyniki.</div>
+        <ul class="plan-features">
+          <li>3 agenty AI do wyboru</li>
+          <li>Integracja z 5 systemami</li>
+          <li>Wdrożenie do 21 dni roboczych</li>
+          <li>6 miesięcy wsparcia Slack + email</li>
+          <li>SLA 99.5% + monitoring</li>
+          <li>Dokumentacja + video tutorial</li>
+          <li>Slack support (4h response)</li>
+          <li>Dedykowany opiekun projektu</li>
+          <li>Kalkulator ROI gratis (890 zł)</li>
+        </ul>
+        <button class="btn-plan solid" onclick="openModal('pro','Pakiet Professional','⭐',7490,11000)">Wybierz Professional</button>
+      </div>
+
+      <div class="pricing-card reveal reveal-delay-3">
+        <div class="plan-name">Enterprise</div>
+        <div class="plan-price">Wycena</div>
+        <div class="plan-period">indywidualny projekt</div>
+        <div class="plan-desc">Dla firm z większą skalą, złożonymi integracjami i wymaganiami enterprise.</div>
+        <ul class="plan-features">
+          <li>Unlimited agentów AI</li>
+          <li>Integracje bez limitu</li>
+          <li>Wdrożenie na miarę (roadmap)</li>
+          <li>Wsparcie 24/7 priorytetowe</li>
+          <li>SLA enterprise (gwarancja umowna)</li>
+          <li>Szkolenie zespołu na miejscu</li>
+          <li>Dedykowany Slack workspace</li>
+          <li>Safety Pack Prawny w cenie</li>
+          <li>Audyt AI firmy gratis</li>
+        </ul>
+        <button class="btn-plan outline" onclick="openContactModal()">Zapytaj o wycenę</button>
+      </div>
+
+    </div>
+    <div style="text-align:center;margin-top:32px;font-size:13px;color:var(--text3)">
+      Wszystkie ceny netto + 23% VAT. Płatność przez Stripe — karta, przelew, BLIK. Faktura VAT automatycznie.
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FAQ
+     ============================================================ -->
+<section id="faq">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">FAQ</div>
+      <h2 class="sec-title">Masz pytania?<br><em>Mamy odpowiedzi</em></h2>
+    </div>
+    <div class="faq-list">
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Czy potrzebuję wiedzy technicznej żeby to obsługiwać?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Nie. Całą konfigurację, integracje i setup wykonujemy my. Ty dostaje gotowy, działający system z prostym panelem zarządzania. Jeśli coś się zmieni w Twoim biznesie — piszesz do nas, my aktualizujemy agenta.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Ile czasu zajmuje wdrożenie?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Standardowe wdrożenie to <strong>14–21 dni roboczych</strong> od momentu opłacenia i wypełnienia briefa. Prostsze agenty (Weryfikacja NIP, Agent Opinii) wdrażamy nawet w 7–10 dni. Gwarantujemy termin — jeśli go nie dotrzymamy, zwracamy 20% kwoty wdrożenia.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Czy to działa z moją branżą?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Agenci AI są adaptowalni do praktycznie każdej branży usługowej: medycyna, uroda, prawo, nieruchomości, gastronomia, IT, edukacja, e-commerce. Agent 24/7 ma wbudowane presety dla 8 popularnych branż. W briefie opisujesz swoją firmę — my dostosowujemy prompty i logikę pod Ciebie.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Jakie narzędzia i konta są potrzebne?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Dla większości agentów potrzebujesz: konto OpenAI (API, ~30–100 zł/mies. zależnie od ruchu), konto n8n (cloud od ~100 zł/mies. lub self-hosted za darmo). Do WhatsApp — Twilio (~30 zł/mies.). Do KSeF — Profil Zaufany lub certyfikat kwalifikowany. Szczegółową listę dostaniesz z zakupem.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Co się dzieje po wdrożeniu? Czy zostaję sam?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Nie. Przez <strong>3 miesiące (Starter) lub 6 miesięcy (Professional)</strong> masz dostęp do wsparcia technicznego email/Slack. Jeśli coś przestanie działać, zgłaszasz — my naprawiamy w max. 24h. Po tym czasie możesz przejść na abonament wsparcia od 199 zł/mies.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Czy otrzymam kod źródłowy i dokumentację?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Tak. Dostajesz pełny export workflow n8n (JSON), dokumentację techniczną PDF, instrukcję konfiguracji i nagranie wideo z omówieniem systemu. Jesteś właścicielem swojego systemu — nie jesteś uzależniony od nas.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Jak wygląda płatność? Czy mogę zapłacić BLIK-iem lub przelewem?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Płatności obsługuje <strong>Stripe</strong> — najbezpieczniejszy system płatności (256-bit SSL, 3D Secure). Akceptujemy: kartę debetową/kredytową, BLIK, przelew bankowy, Apple Pay, Google Pay. Po zapłacie automatycznie otrzymujesz fakturę VAT na podany email.</p>
+        </div>
+      </div>
+
+      <div class="faq-item">
+        <button class="faq-q" onclick="toggleFaq(this)">
+          Czy mogę zwrócić agenta jeśli nie spełni oczekiwań?
+          <div class="faq-icon">+</div>
+        </button>
+        <div class="faq-a">
+          <p>Oferujemy <strong>14-dniową gwarancję</strong>. Jeśli po wdrożeniu agent nie działa zgodnie ze specyfikacją z opisu — naprawiamy bezpłatnie lub zwracamy 100% kwoty wdrożeniowej. Nie zwracamy abonamentów za miesiące już opłacone i uruchomione.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     CTA BANNER
+     ============================================================ -->
+<section id="cta-banner">
+  <div class="container">
+    <div class="cta-title">Przestań tracić <em>czas i pieniądze.</em><br>Zacznij dziś.</div>
+    <p class="cta-sub">Bezpłatna konsultacja 30 minut. Pokażemy Ci dokładnie który agent przyniesie Ci największy ROI.</p>
+    <div class="cta-actions">
+      <a href="#products" class="btn-primary">🤖 Kup agenta AI teraz</a>
+      <button class="btn-secondary" onclick="openContactModal()">📅 Umów bezpłatną konsultację</button>
+    </div>
+    <div style="margin-top:32px;display:flex;justify-content:center;gap:32px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)">✅ Płatność Stripe (karta/BLIK)</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)">✅ Wdrożenie w 21 dni lub zwrot</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)">✅ 14 dni gwarancji</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text3)">✅ Wsparcie 3–6 miesięcy</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FOOTER
+     ============================================================ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">⚡ Automatyzuj<span>AI</span></div>
+        <p class="footer-about">Wdrażamy agentów AI dla polskich firm MŚP. n8n, GPT-4o, integracje, automatyzacje. Pracujemy zdalnie z całą Polską.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">▶</a>
+          <a href="#" class="footer-social">📘</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Agenci AI</div>
+        <ul class="footer-links">
+          <li><a href="#products">System 24/7</a></li>
+          <li><a href="#products">KSeF Faktury</a></li>
+          <li><a href="#products">RAG Baza Wiedzy</a></li>
+          <li><a href="#products">Audytor Stron</a></li>
+          <li><a href="#products">Social Media AI</a></li>
+          <li><a href="#products">Weryfikacja NIP</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Narzędzia</div>
+        <ul class="footer-links">
+          <li><a href="#products">Kalkulator ROI</a></li>
+          <li><a href="#products">Pitch Deck AI</a></li>
+          <li><a href="#products">Audyt Potencjału AI</a></li>
+          <li><a href="#products">Safety Pack Prawny</a></li>
+          <li><a href="#pricing">Pakiet Professional</a></li>
+          <li><a href="#pricing">Pakiet Enterprise</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Firma</div>
+        <ul class="footer-links">
+          <li><a href="#how">Jak działamy</a></li>
+          <li><a href="#testimonials">Opinie klientów</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#">Blog</a></li>
+          <li><a href="#">Kontakt</a></li>
+          <li><a href="#">Polityka prywatności</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 AutomatyzujAI Sp. z o.o. · NIP: 000-000-00-00 · Wszelkie prawa zastrzeżone</div>
+      <div class="footer-payments">
+        <span style="font-size:11px;color:var(--text3);margin-right:4px">Płatności:</span>
+        <div class="pay-badge">💳 Stripe</div>
+        <div class="pay-badge">BLIK</div>
+        <div class="pay-badge">Visa</div>
+        <div class="pay-badge">Mastercard</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ============================================================
+     CHECKOUT MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modalTitle">Kup agenta AI</div>
+        <div class="modal-sub" id="modalSub">Bezpieczna płatność przez Stripe</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody">
+
+      <div class="modal-product-info" id="modalProductInfo">
+        <div class="mpi-icon" id="mpiIcon">⚡</div>
+        <div>
+          <div class="mpi-name" id="mpiName">—</div>
+          <div class="mpi-price">Cena: <strong id="mpiPrice">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Buyer form -->
+      <div id="buyerForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Imię</label>
+            <input type="text" class="form-input" id="buyerFirst" placeholder="Jan" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nazwisko</label>
+            <input type="text" class="form-input" id="buyerLast" placeholder="Kowalski" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email (na który wyślemy fakturę i dostęp)</label>
+          <input type="email" class="form-input" id="buyerEmail" placeholder="jan@firma.pl" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Firma (opcjonalnie — dla faktury VAT)</label>
+          <input type="text" class="form-input" id="buyerCompany" placeholder="Kowalski Sp. z o.o.">
+        </div>
+        <div class="form-group">
+          <label class="form-label">NIP (opcjonalnie — dla faktury VAT)</label>
+          <input type="text" class="form-input" id="buyerNip" placeholder="123-456-78-90">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Dane karty płatniczej</label>
+          <div class="stripe-element-wrap" id="cardElementWrap">
+            <div id="card-element"><!-- Stripe Card Element --></div>
+          </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:6px">Akceptujemy: Visa, Mastercard, BLIK, Apple Pay, Google Pay</div>
+        </div>
+
+        <div class="form-error" id="formError"></div>
+
+        <div class="order-summary">
+          <div class="os-row"><span>Produkt:</span><span id="osProd">—</span></div>
+          <div class="os-row"><span>Cena regularna:</span><span id="osOrig" style="text-decoration:line-through;color:var(--text3)">—</span></div>
+          <div class="os-row"><span>Rabat:</span><span class="lime" id="osDisc">-0%</span></div>
+          <div class="os-row"><span>Razem netto:</span><span id="osNetto">—</span></div>
+          <div class="os-row"><span>Do zapłaty (+ VAT 23%):</span><span id="osTotal">—</span></div>
+        </div>
+
+        <button class="btn-checkout" id="checkoutBtn" onclick="processPayment()">
+          🔒 Zapłać bezpiecznie — <span id="btnAmount">—</span>
+        </button>
+        <div class="secure-badges">
+          <div class="secure-badge">🔒 256-bit SSL</div>
+          <div class="secure-badge">🛡️ 3D Secure</div>
+          <div class="secure-badge">💳 Stripe Certified</div>
+          <div class="secure-badge">🇵🇱 Faktura VAT</div>
+        </div>
+      </div>
+
+      <!-- Loading state -->
+      <div id="paymentLoading" style="display:none;text-align:center;padding:40px">
+        <div style="width:44px;height:44px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--lime);animation:spin 0.8s linear infinite;margin:0 auto 20px"></div>
+        <div style="font-size:15px;font-weight:700;margin-bottom:8px">Przetwarzam płatność...</div>
+        <div style="font-size:13px;color:var(--text2)">Nie zamykaj okna. To zajmie chwilę.</div>
+      </div>
+
+      <!-- Success state -->
+      <div id="paymentSuccess" style="display:none">
+        <div class="success-msg">
+          <div class="success-icon">🎉</div>
+          <div class="success-title">Płatność przyjęta!</div>
+          <div class="success-sub">
+            Dziękujemy za zakup! W ciągu kilku minut otrzymasz email z potwierdzeniem i ankietą onboardingową.<br><br>
+            Nasz zespół skontaktuje się z Tobą w ciągu <strong>1 dnia roboczego</strong> żeby uruchomić wdrożenie.
+          </div>
+          <button class="btn-primary" style="margin-top:24px;margin-left:auto;margin-right:auto" onclick="closeModal()">
+            Zamknij okno
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Contact Modal -->
+<div class="modal-overlay" id="contactModal">
+  <div class="modal" style="max-width:480px">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Bezpłatna konsultacja</div>
+        <div class="modal-sub">30 minut z ekspertem AI. Bez zobowiązań.</div>
+      </div>
+      <button class="modal-close" onclick="closeContactModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">Imię i nazwisko</label>
+        <input type="text" class="form-input" id="contactName" placeholder="Jan Kowalski">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="contactEmail" placeholder="jan@firma.pl">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Telefon</label>
+        <input type="text" class="form-input" id="contactPhone" placeholder="+48 600 000 000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Czego szukasz? (opcjonalnie)</label>
+        <textarea class="form-input" id="contactMsg" rows="3" placeholder="Np. obsługa klientów WhatsApp, automatyzacja faktur..."></textarea>
+      </div>
+      <button class="btn-checkout" onclick="submitContact()" style="margin-top:4px">
+        📅 Umów bezpłatną konsultację
+      </button>
+      <div class="secure-badges" style="margin-top:12px">
+        <div class="secure-badge">✅ Zero spamu</div>
+        <div class="secure-badge">✅ Oddzwonimy w 24h</div>
+        <div class="secure-badge">✅ Bez zobowiązań</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+@media(max-width:600px){
+  .pricing-card.popular { transform: scale(1); }
+  .form-row { grid-template-columns: 1fr; }
+  .step { padding: 0; }
+}
+</style>
+
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
+<script>
+/* ---- Cursor glow ---- */
+const glow = document.getElementById('cursorGlow');
+document.addEventListener('mousemove', e => {
+  glow.style.left = e.clientX + 'px';
+  glow.style.top = e.clientY + 'px';
+});
+
+/* ---- Navbar scroll ---- */
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 50);
+});
+
+/* ---- Hamburger ---- */
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  mobileMenu.classList.toggle('open');
+});
+function closeMobileMenu() {
+  hamburger.classList.remove('open');
+  mobileMenu.classList.remove('open');
+}
+
+/* ---- Scroll reveal ---- */
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+/* ---- Product filter ---- */
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card[data-cat]').forEach(card => {
+    if (cat === 'all' || card.dataset.cat.includes(cat)) {
+      card.style.display = 'flex';
+      card.style.animation = 'none';
+      card.offsetHeight;
+      card.style.animation = '';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* ---- FAQ ---- */
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+/* ---- Stripe & Modal ---- */
+let stripe, cardElement;
+let currentProduct = {};
+
+// Initialize Stripe when modal opens
+function initStripe() {
+  if (!stripe) {
+    // Use test key - replace with live key in production
+    stripe = Stripe('pk_test_51placeholder_REPLACE_WITH_YOUR_STRIPE_PUBLISHABLE_KEY');
+    const elements = stripe.elements({
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#c8f135',
+          colorBackground: '#1e2440',
+          colorText: '#e8ecf7',
+          colorDanger: '#ff4d6d',
+          fontFamily: 'Satoshi, sans-serif',
+          borderRadius: '8px',
+        }
+      }
+    });
+    cardElement = elements.create('card', {
+      style: {
+        base: {
+          color: '#e8ecf7',
+          fontFamily: 'Satoshi, sans-serif',
+          fontSize: '14px',
+          '::placeholder': { color: '#4a5577' }
+        }
+      }
+    });
+    cardElement.mount('#card-element');
+    cardElement.addEventListener('focus', () => {
+      document.getElementById('cardElementWrap').classList.add('focused');
+    });
+    cardElement.addEventListener('blur', () => {
+      document.getElementById('cardElementWrap').classList.remove('focused');
+    });
+    cardElement.addEventListener('change', (e) => {
+      const err = document.getElementById('formError');
+      if (e.error) {
+        err.textContent = e.error.message;
+        err.classList.add('show');
+      } else {
+        err.classList.remove('show');
+      }
+    });
+  }
+}
+
+function openModal(id, name, icon, price, origPrice) {
+  currentProduct = { id, name, icon, price, origPrice };
+  document.getElementById('modalTitle').textContent = name;
+  document.getElementById('mpiIcon').textContent = icon;
+  document.getElementById('mpiName').textContent = name;
+  document.getElementById('mpiPrice').textContent = price.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('osProd').textContent = name;
+  document.getElementById('osOrig').textContent = origPrice.toLocaleString('pl-PL') + ' zł';
+  const disc = Math.round(((origPrice - price) / origPrice) * 100);
+  document.getElementById('osDisc').textContent = '-' + disc + '%';
+  document.getElementById('osNetto').textContent = price.toLocaleString('pl-PL') + ' zł';
+  const total = Math.round(price * 1.23);
+  document.getElementById('osTotal').textContent = total.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('btnAmount').textContent = total.toLocaleString('pl-PL') + ' zł brutto';
+
+  // Reset states
+  document.getElementById('buyerForm').style.display = 'block';
+  document.getElementById('paymentLoading').style.display = 'none';
+  document.getElementById('paymentSuccess').style.display = 'none';
+  document.getElementById('formError').classList.remove('show');
+  document.getElementById('checkoutBtn').disabled = false;
+
+  const overlay = document.getElementById('checkoutModal');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+
+  setTimeout(initStripe, 100);
+}
+
+function closeModal() {
+  document.getElementById('checkoutModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function openContactModal() {
+  document.getElementById('contactModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeContactModal() {
+  document.getElementById('contactModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Close modals on overlay click
+document.getElementById('checkoutModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.getElementById('contactModal').addEventListener('click', function(e) {
+  if (e.target === this) closeContactModal();
+});
+
+// ESC key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeContactModal(); }
+});
+
+async function processPayment() {
+  const first = document.getElementById('buyerFirst').value.trim();
+  const last = document.getElementById('buyerLast').value.trim();
+  const email = document.getElementById('buyerEmail').value.trim();
+  const errEl = document.getElementById('formError');
+
+  if (!first || !last || !email) {
+    errEl.textContent = 'Proszę uzupełnić imię, nazwisko i email.';
+    errEl.classList.add('show');
+    return;
+  }
+  if (!email.includes('@')) {
+    errEl.textContent = 'Podaj poprawny adres email.';
+    errEl.classList.add('show');
+    return;
+  }
+
+  errEl.classList.remove('show');
+  document.getElementById('buyerForm').style.display = 'none';
+  document.getElementById('paymentLoading').style.display = 'block';
+  document.getElementById('checkoutBtn').disabled = true;
+
+  try {
+    // In production: call your backend to create PaymentIntent
+    // const response = await fetch('/api/create-payment-intent', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({ product: currentProduct.id, amount: Math.round(currentProduct.price * 1.23 * 100) })
+    // });
+    // const { clientSecret } = await response.json();
+    // const result = await stripe.confirmCardPayment(clientSecret, {
+    //   payment_method: { card: cardElement, billing_details: { name: `${first} ${last}`, email } }
+    // });
+
+    // DEMO: simulate successful payment after 2s
+    await new Promise(r => setTimeout(r, 2000));
+
+    document.getElementById('paymentLoading').style.display = 'none';
+    document.getElementById('paymentSuccess').style.display = 'block';
+
+    // In production: send confirmation email, create order in DB, etc.
+    console.log('Payment demo success:', { product: currentProduct, buyer: { first, last, email } });
+
+  } catch (err) {
+    document.getElementById('paymentLoading').style.display = 'none';
+    document.getElementById('buyerForm').style.display = 'block';
+    document.getElementById('checkoutBtn').disabled = false;
+    errEl.textContent = 'Wystąpił błąd płatności: ' + (err.message || 'Spróbuj ponownie.');
+    errEl.classList.add('show');
+  }
+}
+
+async function submitContact() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  if (!name || !email) {
+    alert('Proszę podać imię i email.');
+    return;
+  }
+  // In production: send to CRM / email
+  closeContactModal();
+  setTimeout(() => {
+    alert('✅ Dziękujemy! Odezwiemy się w ciągu 24 godzin na adres ' + email);
+  }, 300);
+}
+
+/* ---- Smooth scroll for nav links ---- */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) {
+      e.preventDefault();
+      const top = target.getBoundingClientRect().top + window.scrollY - 80;
+      window.scrollTo({ top, behavior: 'smooth' });
+    }
+  });
+});
+
+/* ---- Animated counters in hero stats ---- */
+function animateCounter(el, target, suffix = '') {
+  let current = 0;
+  const inc = target / 60;
+  const timer = setInterval(() => {
+    current += inc;
+    if (current >= target) {
+      el.textContent = target + suffix;
+      clearInterval(timer);
+    } else {
+      el.textContent = Math.floor(current) + suffix;
+    }
+  }, 25);
+}
+
+// Animate when hero is visible
+const heroObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    // subtle scroll indicator
+    heroObs.disconnect();
+  }
+}, { threshold: 0.5 });
+const heroEl = document.getElementById('hero');
+if (heroEl) heroObs.observe(heroEl);
+
+/* ---- Add product card animations on load ---- */
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.product-card').forEach((card, i) => {
+    card.style.animationDelay = (i * 0.05) + 's';
+  });
+});
+
+/* ---- Duplicate logos for infinite scroll fix ---- */
+// Already duplicated in HTML
+
+/* ---- Animate number stats on scroll ---- */
+const statEls = document.querySelectorAll('.hero-stat-num');
+const statsObs = new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting) {
+    statsObs.disconnect();
+  }
+}, { threshold: 0.5 });
+if (statEls[0]) statsObs.observe(statEls[0].closest('.hero-stats'));
+</script>
+</body>
+</html>

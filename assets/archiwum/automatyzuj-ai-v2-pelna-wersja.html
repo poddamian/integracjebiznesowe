@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="pl" itemscope itemtype="https://schema.org/WebSite">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="AutomatyzujAI – gotowe agenty AI dla polskich firm MŚP. Wdrożenia n8n, GPT-4o, KSeF, RAG, WhatsApp Bot. Oszczędź 40h miesięcznie. Płatność Stripe.">
+<meta name="keywords" content="agenci AI, automatyzacja procesów, n8n workflow, KSeF agent, bot WhatsApp, automatyzacja MŚP Polska">
+<meta property="og:title" content="AutomatyzujAI – Agenci AI dla Twojej Firmy">
+<meta property="og:description" content="Gotowe agenty AI wdrażamy w 21 dni. Obsługują klientów, fakturują, raportują 24/7.">
+<meta property="og:type" content="website">
+<!-- Schema.org for GEO -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "AutomatyzujAI",
+  "url": "https://automatyzujai.pl",
+  "description": "Firma specjalizująca się we wdrożeniach agentów AI i automatyzacji procesów biznesowych dla polskich firm MŚP",
+  "foundingDate": "2024",
+  "areaServed": "PL",
+  "serviceType": ["Automatyzacja AI", "Wdrożenia n8n", "Agenci AI", "Integracje API"],
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": "Agenci AI dla firm",
+    "itemListElement": [
+      {"@type": "Offer", "name": "System Agentów 24/7", "price": "3490", "priceCurrency": "PLN"},
+      {"@type": "Offer", "name": "KSeF Faktury Kosztowe", "price": "4490", "priceCurrency": "PLN"},
+      {"@type": "Offer", "name": "System RAG Baza Wiedzy", "price": "3990", "priceCurrency": "PLN"}
+    ]
+  },
+  "sameAs": ["https://linkedin.com/company/automatyzujai", "https://twitter.com/automatyzujai"]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question","name": "Ile trwa wdrożenie agenta AI?","acceptedAnswer": {"@type": "Answer","text": "Standardowe wdrożenie trwa 14–21 dni roboczych od opłacenia i wypełnienia briefa. Prostsze agenty wdrażamy nawet w 7–10 dni."}},
+    {"@type": "Question","name": "Czy potrzebuję wiedzy technicznej?","acceptedAnswer": {"@type": "Answer","text": "Nie. Całą konfigurację i integracje wykonujemy my. Ty otrzymujesz gotowy system z dokumentacją."}},
+    {"@type": "Question","name": "Jakie platformy obsługujecie?","acceptedAnswer": {"@type": "Answer","text": "n8n, Make.com, GPT-4o, WhatsApp (Twilio), Airtable, Google Sheets, Slack, Telegram, KSeF API."}}
+  ]
+}
+</script>
+<title>AutomatyzujAI – Agenci AI i Automatyzacje dla Twojej Firmy | n8n GPT-4 KSeF</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;500;600;700&family=Satoshi:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root {
+  --bg:#06070d;--bg2:#0c0e1a;--surface:#111526;--surface2:#171c30;--surface3:#1e2440;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);
+  --lime:#c8f135;--lime-dim:rgba(200,241,53,0.12);--lime-glow:rgba(200,241,53,0.25);
+  --blue:#3d8bff;--cyan:#00d4ff;--purple:#9b5de5;--orange:#ff6b35;--red:#ff4d6d;--green:#06d6a0;
+  --text:#e8ecf7;--text2:#8896b8;--text3:#4a5577;
+  --radius:14px;--radius-sm:8px;--radius-lg:20px;
+  --font-display:'Clash Display',sans-serif;--font-body:'Satoshi',sans-serif;
+  --shadow-lime:0 0 40px rgba(200,241,53,0.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(200,241,53,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(200,241,53,0.025) 1px,transparent 1px);
+  background-size:80px 80px;mask-image:radial-gradient(ellipse 100% 100% at 50% 0%,black 20%,transparent 80%)}
+.bg-orbs{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.orb{position:absolute;border-radius:50%;filter:blur(100px);opacity:.35;animation:orbFloat 20s ease-in-out infinite}
+.orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(200,241,53,.15),transparent 70%);top:-200px;right:-100px}
+.orb-2{width:500px;height:500px;background:radial-gradient(circle,rgba(61,139,255,.12),transparent 70%);top:300px;left:-150px;animation-delay:-7s}
+.orb-3{width:400px;height:400px;background:radial-gradient(circle,rgba(155,93,229,.10),transparent 70%);bottom:100px;right:200px;animation-delay:-14s}
+@keyframes orbFloat{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-40px) scale(1.05)}66%{transform:translate(-20px,20px) scale(.95)}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba(6,7,13,.85);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1200px)/2));transition:all .3s}
+nav.scrolled{background:rgba(6,7,13,.97);box-shadow:0 4px 32px rgba(0,0,0,.4)}
+.nav-logo{font-family:var(--font-display);font-size:20px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}
+.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-logo span{color:var(--lime)}
+.nav-links{display:flex;align-items:center;gap:2px;flex:1}
+.nav-link{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;padding:7px 12px;border-radius:var(--radius-sm);transition:all .2s;white-space:nowrap}
+.nav-link:hover{color:var(--text);background:var(--surface2)}
+.nav-link.active{color:var(--lime)}
+.nav-actions{display:flex;align-items:center;gap:10px;margin-left:auto}
+.nav-badge{background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;letter-spacing:.05em}
+.btn-nav{background:var(--lime);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:9px 20px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-nav:hover{transform:translateY(-1px);box-shadow:var(--shadow-lime)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(6,7,13,.98);backdrop-filter:blur(20px);z-index:999;padding:32px 24px;flex-direction:column;gap:8px;overflow-y:auto}
+.mobile-menu.open{display:flex}
+.mobile-link{color:var(--text2);text-decoration:none;font-size:17px;font-weight:500;padding:12px 16px;border-radius:var(--radius);transition:all .2s;display:block;border:1px solid transparent}
+.mobile-link:hover{color:var(--text);background:var(--surface2);border-color:var(--border)}
+@media(max-width:1000px){.nav-links,.nav-badge{display:none}.hamburger{display:flex}.btn-nav{padding:8px 16px;font-size:12px}}
+
+/* LAYOUT */
+section{position:relative;z-index:1}
+.container{max-width:1200px;margin:0 auto;padding:0 max(24px,calc((100vw - 1200px)/2 + 24px))}
+
+/* HERO */
+#hero{min-height:100vh;padding:120px 0 80px;display:flex;align-items:center;overflow:hidden}
+.hero-inner{max-width:1200px;margin:0 auto;padding:0 max(24px,calc((100vw - 1200px)/2 + 24px));display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+@media(max-width:900px){.hero-inner{grid-template-columns:1fr;gap:40px}}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:7px 16px;border-radius:100px;margin-bottom:28px}
+.hero-eyebrow::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--lime);animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-family:var(--font-display);font-size:clamp(40px,5.5vw,70px);font-weight:700;line-height:1.05;letter-spacing:-.03em;margin-bottom:20px}
+.hero-title .line-accent{color:var(--lime)}
+.hero-sub{font-size:17px;color:var(--text2);line-height:1.7;margin-bottom:40px;max-width:500px}
+.hero-sub strong{color:var(--text);font-weight:600}
+.hero-ctas{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:48px}
+.btn-primary{background:var(--lime);color:var(--bg);border:none;border-radius:var(--radius);padding:15px 30px;font-family:var(--font-body);font-size:15px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,241,53,.35)}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:15px 28px;font-family:var(--font-body);font-size:15px;font-weight:600;cursor:pointer;transition:all .25s;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn-secondary:hover{border-color:rgba(255,255,255,.25);background:var(--surface3)}
+.hero-stats{display:flex;gap:32px;flex-wrap:wrap}
+.hero-stat-num{font-family:var(--font-display);font-size:28px;font-weight:700;color:var(--lime);line-height:1}
+.hero-stat-label{font-size:12px;color:var(--text3);margin-top:4px;font-weight:500;letter-spacing:.03em}
+
+/* Hero visual cards */
+.hero-visual{position:relative}
+.hero-card-stack{position:relative;height:460px}
+.flow-card{position:absolute;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:18px 22px;backdrop-filter:blur(12px);box-shadow:0 4px 32px rgba(0,0,0,.5);animation:floatCard 6s ease-in-out infinite}
+.flow-card:nth-child(2){animation-delay:-2s}
+.flow-card:nth-child(3){animation-delay:-4s}
+@keyframes floatCard{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fc-main{top:20px;left:0;right:0;background:linear-gradient(135deg,#111526,#151a2e);border-color:rgba(200,241,53,.2)}
+.fc-side1{bottom:70px;right:-20px;width:220px}
+.fc-side2{bottom:0;left:-10px;width:200px}
+.fc-header{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.fc-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.fc-title{font-size:13px;font-weight:700}
+.fc-sub{font-size:11px;color:var(--text3)}
+.flow-nodes{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.flow-node{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;white-space:nowrap}
+.flow-node.active{border-color:rgba(200,241,53,.3);background:var(--lime-dim);color:var(--lime)}
+.flow-arrow{color:var(--text3);font-size:12px}
+.mini-metric{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:7px}
+.mini-metric:last-child{margin-bottom:0}
+.mm-label{font-size:10px;color:var(--text3);white-space:nowrap}
+.mm-bar{flex:1;height:4px;background:var(--surface3);border-radius:2px;overflow:hidden}
+.mm-fill{height:100%;border-radius:2px}
+.mm-val{font-size:11px;font-weight:700;color:var(--lime);min-width:28px;text-align:right}
+
+/* LOGOS */
+#logos{padding:40px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);overflow:hidden}
+.logos-label{text-align:center;font-size:12px;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px;font-weight:600}
+.logos-track{display:flex;gap:32px;align-items:center;animation:logoScroll 28s linear infinite;width:max-content}
+@keyframes logoScroll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.logo-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:9px 18px;font-size:13px;font-weight:700;color:var(--text3);white-space:nowrap;display:flex;align-items:center;gap:7px;transition:all .2s}
+.logo-chip:hover{border-color:var(--border2);color:var(--text2)}
+
+/* SEC HEADERS */
+.sec-header{text-align:center;margin-bottom:56px}
+.sec-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:18px}
+.sec-title{font-family:var(--font-display);font-size:clamp(30px,4vw,50px);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:14px}
+.sec-title em{font-style:normal;color:var(--lime)}
+.sec-sub{font-size:17px;color:var(--text2);line-height:1.7;max-width:560px;margin:0 auto}
+
+/* PROBLEMS */
+#problems{padding:100px 0}
+.problems-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:768px){.problems-grid{grid-template-columns:1fr}}
+@media(max-width:1024px) and (min-width:769px){.problems-grid{grid-template-columns:repeat(2,1fr)}}
+.problem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;transition:all .3s;position:relative;overflow:hidden}
+.problem-card:hover{border-color:rgba(255,77,109,.2);transform:translateY(-4px)}
+.problem-icon{font-size:30px;margin-bottom:14px}
+.problem-stat{font-family:var(--font-display);font-size:38px;font-weight:700;color:var(--red);line-height:1;margin-bottom:7px}
+.problem-title{font-size:15px;font-weight:700;margin-bottom:7px}
+.problem-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* PRODUCTS */
+#products{padding:100px 0;background:var(--bg2)}
+.products-filter{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:44px}
+.filter-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);border-radius:100px;padding:8px 20px;font-family:var(--font-body);font-size:13px;font-weight:600;cursor:pointer;transition:all .2s}
+.filter-btn.active,.filter-btn:hover{background:var(--lime-dim);border-color:rgba(200,241,53,.3);color:var(--lime)}
+.products-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.products-grid{grid-template-columns:1fr}}
+@media(max-width:1100px) and (min-width:901px){.products-grid{grid-template-columns:repeat(2,1fr)}}
+.product-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;position:relative;overflow:hidden;transition:all .3s;display:flex;flex-direction:column}
+.product-card::after{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,241,53,.4),transparent);opacity:0;transition:opacity .3s}
+.product-card:hover{border-color:rgba(200,241,53,.2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.product-card:hover::after{opacity:1}
+.product-card.featured{border-color:rgba(200,241,53,.25);background:linear-gradient(135deg,#111526,#141929)}
+.product-badge{position:absolute;top:18px;right:18px;background:var(--lime);color:var(--bg);font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px}
+.product-badge.new{background:var(--blue);color:white}
+.product-badge.hot{background:var(--orange);color:white}
+.product-icon-wrap{width:50px;height:50px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:25px;margin-bottom:16px;flex-shrink:0}
+.product-name{font-size:17px;font-weight:700;margin-bottom:6px}
+.product-desc{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:18px;flex:1}
+.product-features{list-style:none;margin-bottom:22px}
+.product-features li{font-size:12px;color:var(--text2);padding:5px 0;display:flex;align-items:flex-start;gap:7px;border-bottom:1px solid var(--border)}
+.product-features li:last-child{border-bottom:none}
+.product-features li::before{content:'✓';color:var(--lime);font-weight:700;font-size:11px;flex-shrink:0;margin-top:1px}
+.product-footer{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.price-amount{font-family:var(--font-display);font-size:22px;font-weight:700;line-height:1}
+.price-period{font-size:11px;color:var(--text3);margin-top:2px}
+.price-old{font-size:12px;color:var(--text3);text-decoration:line-through;margin-right:5px}
+.btn-buy{background:var(--lime);color:var(--bg);border:none;border-radius:var(--radius-sm);padding:10px 20px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-buy:hover{transform:translateY(-1px);box-shadow:var(--shadow-lime)}
+.btn-buy.outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-buy.outline:hover{background:var(--surface2);box-shadow:none}
+
+/* HOW */
+#how{padding:100px 0}
+.steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative}
+@media(max-width:900px){.steps-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:600px){.steps-grid{grid-template-columns:1fr}}
+.steps-grid::before{content:'';position:absolute;top:42px;left:80px;right:80px;height:1px;background:linear-gradient(90deg,transparent,var(--border2),var(--lime-dim),var(--border2),transparent)}
+@media(max-width:900px){.steps-grid::before{display:none}}
+.step{text-align:center;padding:0 8px;position:relative}
+.step-num{width:64px;height:64px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:22px;font-weight:700;margin:0 auto 18px;position:relative;z-index:1;transition:all .3s}
+.step:hover .step-num{background:var(--lime-dim);border-color:rgba(200,241,53,.4);color:var(--lime);box-shadow:var(--shadow-lime)}
+.step-icon{font-size:24px;margin-bottom:14px}
+.step-title{font-size:15px;font-weight:700;margin-bottom:7px}
+.step-desc{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* TESTIMONIALS */
+#testimonials{padding:100px 0;background:var(--bg2)}
+.testimonials-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+@media(max-width:900px){.testimonials-grid{grid-template-columns:1fr}}
+@media(max-width:1100px) and (min-width:901px){.testimonials-grid{grid-template-columns:repeat(2,1fr)}}
+.testi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px;transition:all .3s;display:flex;flex-direction:column}
+.testi-card:hover{border-color:var(--border2);transform:translateY(-3px)}
+.testi-stars{color:#fbbf24;font-size:13px;margin-bottom:12px;letter-spacing:2px}
+.testi-quote{font-size:13px;color:var(--text2);line-height:1.75;font-style:italic;margin-bottom:18px;flex:1}
+.testi-quote strong{color:var(--text);font-style:normal}
+.testi-author{display:flex;align-items:center;gap:12px}
+.testi-avatar{width:38px;height:38px;border-radius:50%;flex-shrink:0;font-size:15px;font-weight:800;display:flex;align-items:center;justify-content:center;color:white}
+.testi-name{font-size:13px;font-weight:700}
+.testi-company{font-size:11px;color:var(--text3)}
+.testi-roi{background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-left:auto;flex-shrink:0}
+
+/* PRICING */
+#pricing{padding:100px 0}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;align-items:start}
+@media(max-width:900px){.pricing-grid{grid-template-columns:1fr;max-width:460px;margin:0 auto}}
+.pricing-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:30px;position:relative;transition:all .3s}
+.pricing-card:hover{transform:translateY(-4px)}
+.pricing-card.popular{border-color:rgba(200,241,53,.35);background:linear-gradient(170deg,#121728,#111526);transform:scale(1.03)}
+.pricing-card.popular:hover{transform:scale(1.03) translateY(-4px)}
+.pop-badge{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--lime);color:var(--bg);font-size:11px;font-weight:800;letter-spacing:.08em;padding:4px 18px;border-radius:100px;white-space:nowrap}
+.plan-name{font-size:12px;font-weight:700;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px}
+.plan-price{font-family:var(--font-display);font-size:46px;font-weight:700;line-height:1;margin-bottom:4px}
+.plan-price span{font-size:18px;font-weight:500;color:var(--text2);vertical-align:super}
+.plan-period{font-size:12px;color:var(--text3);margin-bottom:20px}
+.plan-desc{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6}
+.plan-features{list-style:none;margin-bottom:24px}
+.plan-features li{font-size:13px;color:var(--text2);padding:8px 0;display:flex;align-items:flex-start;gap:9px;border-bottom:1px solid var(--border)}
+.plan-features li:last-child{border-bottom:none}
+.plan-features li::before{content:'✓';color:var(--lime);font-weight:700;font-size:12px;flex-shrink:0;margin-top:1px}
+.plan-features li.dim{color:var(--text3)}
+.plan-features li.dim::before{content:'–';color:var(--text3)}
+.btn-plan{width:100%;border-radius:var(--radius);padding:13px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;border:none;letter-spacing:.02em}
+.btn-plan.solid{background:var(--lime);color:var(--bg)}
+.btn-plan.solid:hover{box-shadow:var(--shadow-lime)}
+.btn-plan.outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-plan.outline:hover{background:var(--surface2)}
+
+/* BLOG */
+#blog{padding:100px 0}
+.blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+@media(max-width:900px){.blog-grid{grid-template-columns:1fr}}
+@media(max-width:1100px) and (min-width:901px){.blog-grid{grid-template-columns:repeat(2,1fr)}}
+.blog-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .3s;display:flex;flex-direction:column;cursor:pointer}
+.blog-card:hover{border-color:rgba(200,241,53,.2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.blog-thumb{height:180px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:56px}
+.blog-cat{position:absolute;top:12px;left:12px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 10px;border-radius:4px}
+.blog-body{padding:22px;flex:1;display:flex;flex-direction:column}
+.blog-meta{display:flex;align-items:center;gap:12px;font-size:11px;color:var(--text3);margin-bottom:10px}
+.blog-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text3)}
+.blog-title{font-size:16px;font-weight:700;line-height:1.4;margin-bottom:10px;color:var(--text);transition:color .2s}
+.blog-card:hover .blog-title{color:var(--lime)}
+.blog-excerpt{font-size:13px;color:var(--text2);line-height:1.6;flex:1;margin-bottom:16px}
+.blog-read-more{font-size:12px;font-weight:700;color:var(--lime);display:flex;align-items:center;gap:5px;letter-spacing:.03em;margin-top:auto}
+
+/* KEYWORDS TABLE */
+#keywords-table{padding:100px 0;background:var(--bg2)}
+.table-wrap{overflow-x:auto;border-radius:var(--radius-lg);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+thead{background:var(--surface2)}
+th{padding:14px 16px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child{width:40px;text-align:center}
+td{padding:12px 16px;border-bottom:1px solid var(--border);vertical-align:top;line-height:1.5}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:rgba(255,255,255,.02)}
+.kw-tag{display:inline-flex;align-items:center;gap:4px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.15);color:var(--lime);font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.intent-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:3px;white-space:nowrap}
+.intent-info{background:rgba(61,139,255,.1);color:var(--blue);border:1px solid rgba(61,139,255,.2)}
+.intent-trans{background:rgba(6,214,160,.1);color:var(--green);border:1px solid rgba(6,214,160,.2)}
+.intent-comp{background:rgba(155,93,229,.1);color:var(--purple);border:1px solid rgba(155,93,229,.2)}
+.vol-bar{display:flex;align-items:center;gap:8px}
+.vol-dots{display:flex;gap:2px}
+.vol-dot{width:6px;height:6px;border-radius:50%;background:var(--surface3)}
+.vol-dot.active{background:var(--lime)}
+.prompt-cell{font-size:11px;color:var(--text3);line-height:1.5;max-width:280px}
+.prompt-cell code{background:var(--surface3);padding:1px 5px;border-radius:3px;font-size:10px;color:var(--text2)}
+
+/* FAQ */
+#faq{padding:100px 0}
+.faq-list{max-width:760px;margin:0 auto}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px;background:var(--surface);transition:border-color .3s}
+.faq-item.open{border-color:rgba(200,241,53,.2)}
+.faq-q{width:100%;background:none;border:none;color:var(--text);font-family:var(--font-body);font-size:15px;font-weight:600;padding:18px 22px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:14px;text-align:left}
+.faq-q:hover{color:var(--lime)}
+.faq-icon{width:22px;height:22px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:all .3s;color:var(--text2)}
+.faq-item.open .faq-icon{background:var(--lime-dim);border-color:rgba(200,241,53,.3);color:var(--lime);transform:rotate(45deg)}
+.faq-a{max-height:0;overflow:hidden;transition:max-height .4s ease;padding:0 22px}
+.faq-item.open .faq-a{max-height:400px;padding-bottom:18px}
+.faq-a p{font-size:14px;color:var(--text2);line-height:1.75}
+.faq-a a{color:var(--lime)}
+
+/* LEGAL PAGES */
+.legal-page{max-width:860px;margin:0 auto;padding:120px 24px 80px;position:relative;z-index:1}
+.legal-title{font-family:var(--font-display);font-size:clamp(32px,4vw,48px);font-weight:700;margin-bottom:8px;letter-spacing:-.02em}
+.legal-date{font-size:12px;color:var(--text3);margin-bottom:48px;font-family:var(--font-body)}
+.legal-body h2{font-size:18px;font-weight:700;margin:36px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);color:var(--lime)}
+.legal-body h3{font-size:15px;font-weight:700;margin:20px 0 8px;color:var(--text)}
+.legal-body p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:12px}
+.legal-body ul,.legal-body ol{padding-left:24px;margin-bottom:14px}
+.legal-body li{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:5px}
+.legal-body strong{color:var(--text)}
+.legal-body a{color:var(--lime)}
+.legal-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
+.legal-box p{margin-bottom:0}
+
+/* CTA */
+#cta-banner{padding:80px 0;background:linear-gradient(135deg,#0f1624,#121a2e);border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center;overflow:hidden;position:relative}
+#cta-banner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 100% at 50% 50%,rgba(200,241,53,.07),transparent)}
+.cta-title{font-family:var(--font-display);font-size:clamp(30px,5vw,54px);font-weight:700;letter-spacing:-.02em;margin-bottom:14px;position:relative;z-index:1}
+.cta-title em{font-style:normal;color:var(--lime)}
+.cta-sub{font-size:17px;color:var(--text2);max-width:500px;margin:0 auto 32px;line-height:1.7;position:relative;z-index:1}
+.cta-actions{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;position:relative;z-index:1}
+
+/* FOOTER */
+footer{background:var(--bg);border-top:1px solid var(--border);padding:64px 0 32px;position:relative;z-index:1}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
+@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr;gap:32px}}
+@media(max-width:600px){.footer-grid{grid-template-columns:1fr}}
+.footer-logo{font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.footer-logo span{color:var(--lime)}
+.footer-about{font-size:13px;color:var(--text3);line-height:1.7;max-width:280px;margin-bottom:18px}
+.footer-socials{display:flex;gap:8px}
+.footer-social{width:34px;height:34px;border-radius:var(--radius-sm);background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;text-decoration:none;transition:all .2s;color:var(--text2)}
+.footer-social:hover{border-color:var(--border2);color:var(--text);background:var(--surface2)}
+.footer-col-title{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:9px}
+.footer-links a{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s}
+.footer-links a:hover{color:var(--lime)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;padding-top:22px;border-top:1px solid var(--border);font-size:12px;color:var(--text3)}
+.footer-bottom a{color:var(--text3);text-decoration:none}
+.footer-bottom a:hover{color:var(--text2)}
+.footer-payments{display:flex;gap:8px;align-items:center}
+.pay-badge{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 9px;font-size:11px;color:var(--text3);font-weight:600}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .3s}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(.98);transition:transform .3s}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-header{padding:26px 26px 18px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.modal-title{font-size:19px;font-weight:700;margin-bottom:3px}
+.modal-sub{font-size:13px;color:var(--text2)}
+.modal-close{background:var(--surface2);border:1px solid var(--border);color:var(--text2);border-radius:var(--radius-sm);width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;transition:all .2s}
+.modal-close:hover{background:var(--surface3);color:var(--text)}
+.modal-body{padding:22px 26px}
+.modal-product-info{display:flex;align-items:center;gap:13px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:22px}
+.mpi-icon{font-size:26px}
+.mpi-name{font-size:14px;font-weight:700}
+.mpi-price{font-size:12px;color:var(--text2);margin-top:2px}
+.mpi-price strong{color:var(--lime);font-size:18px}
+.form-group{margin-bottom:16px}
+.form-label{display:block;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:7px;letter-spacing:.03em}
+.form-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:var(--radius-sm);padding:11px 13px;font-family:var(--font-body);font-size:14px;transition:border-color .2s}
+.form-input:focus{outline:none;border-color:rgba(200,241,53,.5);box-shadow:0 0 0 3px rgba(200,241,53,.07)}
+.form-input::placeholder{color:var(--text3)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.stripe-element-wrap{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 13px;transition:border-color .2s}
+.stripe-element-wrap.focused{border-color:rgba(200,241,53,.5);box-shadow:0 0 0 3px rgba(200,241,53,.07)}
+.order-summary{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:18px}
+.os-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text2);margin-bottom:7px}
+.os-row:last-child{margin-bottom:0;border-top:1px solid var(--border);padding-top:9px;font-weight:700;color:var(--text);font-size:14px}
+.os-row span.lime{color:var(--lime)}
+.btn-checkout{width:100%;background:var(--lime);color:var(--bg);border:none;border-radius:var(--radius);padding:15px;font-family:var(--font-body);font-size:15px;font-weight:800;cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;gap:9px;letter-spacing:.02em}
+.btn-checkout:hover{box-shadow:var(--shadow-lime);transform:translateY(-1px)}
+.btn-checkout:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.secure-badges{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:13px;flex-wrap:wrap}
+.secure-badge{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)}
+.form-error{background:rgba(255,77,109,.1);border:1px solid rgba(255,77,109,.25);color:var(--red);border-radius:var(--radius-sm);padding:9px 13px;font-size:13px;margin-bottom:14px;display:none}
+.form-error.show{display:block}
+.success-msg{text-align:center;padding:30px}
+.success-icon{font-size:50px;margin-bottom:14px}
+.success-title{font-size:21px;font-weight:700;margin-bottom:7px}
+.success-sub{font-size:14px;color:var(--text2);line-height:1.6}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:.1s}
+.reveal-delay-2{transition-delay:.2s}
+.reveal-delay-3{transition-delay:.3s}
+.reveal-delay-4{transition-delay:.4s}
+
+/* DOMAIN NAMES SECTION */
+#domains{padding:70px 0;background:var(--bg2);border-top:1px solid var(--border)}
+.domains-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+@media(max-width:900px){.domains-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.domains-grid{grid-template-columns:1fr}}
+.domain-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;text-align:center;transition:all .3s;position:relative;overflow:hidden}
+.domain-card:hover{border-color:rgba(200,241,53,.3);transform:translateY(-3px)}
+.domain-card.recommended{border-color:rgba(200,241,53,.35);background:linear-gradient(135deg,#111526,#141929)}
+.domain-name{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--lime);margin-bottom:8px;letter-spacing:-.01em}
+.domain-reason{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:10px}
+.domain-score{font-size:11px;font-weight:700;color:var(--text3)}
+.domain-rec-badge{position:absolute;top:10px;right:10px;background:var(--lime);color:var(--bg);font-size:9px;font-weight:800;padding:2px 8px;border-radius:3px;letter-spacing:.05em}
+
+/* UTILITY */
+.text-lime{color:var(--lime)}
+.text-center{text-align:center}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:600px){.form-row{grid-template-columns:1fr}.pricing-card.popular{transform:scale(1)}}
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orbs"><div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div></div>
+
+<!-- ======= NAV ======= -->
+<nav id="navbar">
+  <a href="index.html" class="nav-logo">
+    <div class="nav-logo-dot">⚡</div>
+    Automatyzuj<span>AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="index.html#products" class="nav-link">Agenci AI</a>
+    <a href="index.html#how" class="nav-link">Jak to działa</a>
+    <a href="index.html#pricing" class="nav-link">Cennik</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+    <a href="index.html#faq" class="nav-link">FAQ</a>
+  </div>
+  <div class="nav-actions">
+    <span class="nav-badge">🔥 -30% do końca miesiąca</span>
+    <button class="btn-nav" onclick="openModal('agent24','System Agentów 24/7','💬',3490,4990)">Kup teraz</button>
+  </div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#products" class="mobile-link" onclick="closeMobileMenu()">🤖 Agenci AI</a>
+  <a href="index.html#how" class="mobile-link" onclick="closeMobileMenu()">📋 Jak to działa</a>
+  <a href="index.html#pricing" class="mobile-link" onclick="closeMobileMenu()">💰 Cennik</a>
+  <a href="blog.html" class="mobile-link" onclick="closeMobileMenu()">✍️ Blog</a>
+  <a href="index.html#faq" class="mobile-link" onclick="closeMobileMenu()">❓ FAQ</a>
+  <div style="margin-top:auto;padding-top:24px;border-top:1px solid var(--border)">
+    <button class="btn-primary" style="width:100%;justify-content:center" onclick="openModal('agent24','System Agentów 24/7','💬',3490,4990);closeMobileMenu()">⚡ Kup agenta AI</button>
+  </div>
+</div>
+
+<!-- ======= HERO ======= -->
+<section id="hero">
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Ponad 240 firm już automatyzuje</div>
+      <h1 class="hero-title">Twoja firma<br>na <span class="line-accent">autopilocie</span><br>24/7</h1>
+      <p class="hero-sub">Gotowe agenty AI wdrażamy w <strong>21 dni</strong>. Obsługują klientów, fakturują, raportują i zamykają leady — bez etatów, bez przerw.</p>
+      <div class="hero-ctas">
+        <a href="#products" class="btn-primary">🤖 Zobacz agentów AI</a>
+        <a href="#how" class="btn-secondary">Jak to działa →</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">340%</div><div class="hero-stat-label">Średni ROI rok 1</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">40h</div><div class="hero-stat-label">Oszczędność / mies.</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">21 dni</div><div class="hero-stat-label">Do uruchomienia</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">240+</div><div class="hero-stat-label">Firm klientów</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card-stack">
+        <div class="flow-card fc-main">
+          <div class="fc-header"><div class="fc-icon" style="background:var(--lime-dim)">⚡</div><div><div class="fc-title">Agent 24/7 — aktywny</div><div class="fc-sub">Obsłużono dziś: 47 zapytań klientów</div></div></div>
+          <div class="flow-nodes">
+            <div class="flow-node active">📱 WhatsApp</div><div class="flow-arrow">→</div>
+            <div class="flow-node active">🧠 GPT-4o</div><div class="flow-arrow">→</div>
+            <div class="flow-node active">📋 CRM</div><div class="flow-arrow">→</div>
+            <div class="flow-node">📅 Rezerwacja</div>
+          </div>
+          <div style="margin-top:12px;display:flex;align-items:center;gap:8px">
+            <div style="width:7px;height:7px;border-radius:50%;background:var(--lime);animation:blink 1.5s infinite"></div>
+            <span style="font-size:11px;color:var(--text3)">Ostatnia aktywność: 2 min temu</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--lime);font-weight:700">99.8% uptime</span>
+          </div>
+        </div>
+        <div class="flow-card fc-side1">
+          <div class="fc-header"><div class="fc-icon" style="background:rgba(61,139,255,.1)">📊</div><div><div class="fc-title">ROI ten miesiąc</div><div class="fc-sub">Analytics live</div></div></div>
+          <div class="mini-metric"><span class="mm-label">Czas zaoszcz.</span><div class="mm-bar"><div class="mm-fill" style="width:83%;background:var(--lime)"></div></div><span class="mm-val">83%</span></div>
+          <div class="mini-metric"><span class="mm-label">Konwersja</span><div class="mm-bar"><div class="mm-fill" style="width:67%;background:var(--blue)"></div></div><span class="mm-val">+67%</span></div>
+          <div class="mini-metric"><span class="mm-label">Zad. klientów</span><div class="mm-bar"><div class="mm-fill" style="width:94%;background:var(--green)"></div></div><span class="mm-val">9.4</span></div>
+        </div>
+        <div class="flow-card fc-side2">
+          <div class="fc-header"><div class="fc-icon" style="background:var(--lime-dim)">🟢</div><div><div class="fc-title">KSeF Agent</div><div class="fc-sub">Faktura zweryfikowana</div></div></div>
+          <div style="font-size:11px;color:var(--text2)">
+            <div style="display:flex;justify-content:space-between;margin-bottom:5px"><span>FV/2025/0847</span><span style="color:var(--lime);font-weight:700">🟢 OK</span></div>
+            <div style="display:flex;justify-content:space-between"><span>Biała Lista VAT</span><span style="color:var(--lime);font-weight:700">✓ Czynny</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= LOGOS ======= -->
+<section id="logos" style="padding:38px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--bg2);overflow:hidden">
+  <div class="logos-label">Technologie i integracje</div>
+  <div class="logos-track">
+    <div class="logo-chip">⚡ n8n</div><div class="logo-chip">🧠 GPT-4o</div><div class="logo-chip">📱 WhatsApp</div><div class="logo-chip">📊 Airtable</div><div class="logo-chip">🔒 KSeF API</div><div class="logo-chip">📈 Google Analytics</div><div class="logo-chip">💬 Slack</div><div class="logo-chip">📬 Telegram</div><div class="logo-chip">🗃️ PostgreSQL</div><div class="logo-chip">🔄 Make.com</div><div class="logo-chip">📧 Twilio SMS</div><div class="logo-chip">☁️ Google Drive</div><div class="logo-chip">📋 Notion</div><div class="logo-chip">🌐 Blotato</div>
+    <div class="logo-chip">⚡ n8n</div><div class="logo-chip">🧠 GPT-4o</div><div class="logo-chip">📱 WhatsApp</div><div class="logo-chip">📊 Airtable</div><div class="logo-chip">🔒 KSeF API</div><div class="logo-chip">📈 Google Analytics</div><div class="logo-chip">💬 Slack</div><div class="logo-chip">📬 Telegram</div><div class="logo-chip">🗃️ PostgreSQL</div><div class="logo-chip">🔄 Make.com</div><div class="logo-chip">📧 Twilio SMS</div><div class="logo-chip">☁️ Google Drive</div><div class="logo-chip">📋 Notion</div><div class="logo-chip">🌐 Blotato</div>
+  </div>
+</section>
+
+<!-- ======= DOMAINS ======= -->
+<section id="domains">
+  <div class="container">
+    <div class="sec-header reveal" style="margin-bottom:36px">
+      <div class="sec-tag">Propozycje domen .pl</div>
+      <h2 class="sec-title" style="font-size:clamp(26px,3vw,38px)">5 propozycji nazw<br><em>domeny .pl</em></h2>
+      <p class="sec-sub" style="font-size:14px">Analiza pod kątem GEO (Generative Engine Optimization), brandingu i pozycjonowania w AI — ChatGPT, Perplexity, Google AI Overviews.</p>
+    </div>
+    <div class="domains-grid">
+      <div class="domain-card recommended reveal reveal-delay-1">
+        <div class="domain-rec-badge">⭐ TOP</div>
+        <div class="domain-name">automatyzujai.pl</div>
+        <div class="domain-reason">Najlepsza dla GEO — zawiera kluczowe słowo "automatyzacja" + "AI". Modele językowe często cytują nazwy opisowe. Czytelna, prosta, łatwa do wymówienia.</div>
+        <div class="domain-score">GEO Score: ★★★★★</div>
+      </div>
+      <div class="domain-card reveal reveal-delay-2">
+        <div class="domain-name">agenciaisklep.pl</div>
+        <div class="domain-reason">Bezpośrednia analogia do modelu marketplace. "Sklep" sygnalizuje e-commerce, "agenci AI" definiuje niszę. Dobra dla pytań typu "gdzie kupić agenta AI".</div>
+        <div class="domain-score">GEO Score: ★★★★☆</div>
+      </div>
+      <div class="domain-card reveal reveal-delay-3">
+        <div class="domain-name">wdrozai.pl</div>
+        <div class="domain-reason">Krótka, brandowa, łatwa do zapamiętania. "Wdróż AI" jako komenda — idealna dla reklam. Słabsza dla GEO bo mniej opisowa, ale silniejsza brandingowo.</div>
+        <div class="domain-score">GEO Score: ★★★☆☆</div>
+      </div>
+      <div class="domain-card reveal reveal-delay-1">
+        <div class="domain-name">automatyzacjaprocessow.pl</div>
+        <div class="domain-reason">Długa, ale bardzo opisowa — świetna dla GEO. AI często cytuje strony o nazwie zgodnej z zapytaniem. Dobra dla B2B i fraz "automatyzacja procesów biznesowych".</div>
+        <div class="domain-score">GEO Score: ★★★★★</div>
+      </div>
+      <div class="domain-card reveal reveal-delay-2">
+        <div class="domain-name">n8nagenci.pl</div>
+        <div class="domain-reason">Techniczna, niszowa — świetna jeśli targetujesz deweloperów i agencje. n8n to rosnące słowo kluczowe. AI jak Perplexity cytuje specjalistyczne strony branżowe.</div>
+        <div class="domain-score">GEO Score: ★★★★☆</div>
+      </div>
+    </div>
+    <div style="margin-top:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px" class="reveal">
+      <p style="font-size:13px;color:var(--text2);line-height:1.7"><strong style="color:var(--lime)">💡 Rekomendacja GEO:</strong> Zarejestruj <strong>automatyzujai.pl</strong> jako domenę główną + <strong>automatyzacjaprocessow.pl</strong> jako domenę przekierowania. Modele LLM (ChatGPT, Perplexity, Gemini) preferują strony z opisowymi URL-ami, strukturą danych schema.org i treściami odpowiadającymi bezpośrednio na pytania użytkowników.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PROBLEMS ======= -->
+<section id="problems">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Problem</div>
+      <h2 class="sec-title">Tracisz pieniądze<br><em>każdego dnia</em></h2>
+      <p class="sec-sub">Twoi pracownicy spędzają większość czasu na zadaniach, które mógłby wykonywać system.</p>
+    </div>
+    <div class="problems-grid">
+      <div class="problem-card reveal reveal-delay-1"><div class="problem-icon">⏰</div><div class="problem-stat">68%</div><div class="problem-title">Czas na powtarzalne zadania</div><div class="problem-desc">Twój zespół spędza niemal 70% dnia na copy-paste, maile i raporty zamiast na pracę napędzającą wzrost.</div></div>
+      <div class="problem-card reveal reveal-delay-2"><div class="problem-icon">💸</div><div class="problem-stat">~52k zł</div><div class="problem-title">Roczny koszt manualnej pracy</div><div class="problem-desc">Przeciętna polska firma MŚP traci tyle rocznie na procesach gotowych do automatyzacji.</div></div>
+      <div class="problem-card reveal reveal-delay-3"><div class="problem-icon">😤</div><div class="problem-stat">24h</div><div class="problem-title">Klienci czekają na odpowiedź</div><div class="problem-desc">Zapytania po 17:00 i weekendy czekają do rana. Część klientów odchodzi do konkurencji.</div></div>
+      <div class="problem-card reveal reveal-delay-1"><div class="problem-icon">📉</div><div class="problem-stat">22%</div><div class="problem-title">Utracone leady przez brak follow-up</div><div class="problem-desc">Co piąty potencjalny klient odpada bo nie dostał follow-up na czas.</div></div>
+      <div class="problem-card reveal reveal-delay-2"><div class="problem-icon">🧾</div><div class="problem-stat">5h</div><div class="problem-title">Miesięcznie na faktury ręcznie</div><div class="problem-desc">Przepisywanie faktur, kategoryzacja VAT, Biała Lista — zadanie które KSeF Agent robi automatycznie.</div></div>
+      <div class="problem-card reveal reveal-delay-3"><div class="problem-icon">😔</div><div class="problem-stat">3×</div><div class="problem-title">Droższe niż automatyzacja</div><div class="problem-desc">Utrzymanie recepcji i pracownika administracji kosztuje 3× więcej niż kompletny system AI.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRODUCTS ======= -->
+<section id="products">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Sklep z agentami AI</div>
+      <h2 class="sec-title">Wybierz <em>agenta</em><br>dla swojej firmy</h2>
+      <p class="sec-sub">Gotowe do wdrożenia systemy automatyzacji z dokumentacją, supportem i gwarancją działania.</p>
+    </div>
+    <div class="products-filter">
+      <button class="filter-btn active" onclick="filterProducts('all',this)">Wszystkie</button>
+      <button class="filter-btn" onclick="filterProducts('flagowy',this)">⭐ Flagowe</button>
+      <button class="filter-btn" onclick="filterProducts('obs',this)">💬 Obsługa klienta</button>
+      <button class="filter-btn" onclick="filterProducts('fin',this)">💼 Finanse</button>
+      <button class="filter-btn" onclick="filterProducts('mkt',this)">📢 Marketing</button>
+      <button class="filter-btn" onclick="filterProducts('hr',this)">👥 HR/Ops</button>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <div class="product-card featured" data-cat="flagowy obs"><div class="product-badge">⭐ FLAGOWY</div><div class="product-icon-wrap" style="background:rgba(200,241,53,.1)">💬</div><div class="product-name">System Agentów 24/7</div><div class="product-desc">Wirtualny pracownik który nigdy nie śpi. Odpowiada na WhatsApp i SMS, umawia wizyty i zapisuje do CRM.</div><ul class="product-features"><li>WhatsApp + SMS obsługa 24/7</li><li>Automatyczne rezerwacje</li><li>Integracja Airtable CRM</li><li>AI odpowiedzi GPT-4o-mini</li><li>Raporty tygodniowe</li></ul><div class="product-footer"><div><div class="price-amount"><span class="price-old">4 990</span>3 490 zł</div><div class="price-period">+ 699 zł/mies.</div></div><button class="btn-buy" onclick="openModal('agent24','System Agentów 24/7','💬',3490,4990)">Kup →</button></div></div>
+      <div class="product-card" data-cat="obs"><div class="product-badge new">Nowość</div><div class="product-icon-wrap" style="background:rgba(61,139,255,.1)">📞</div><div class="product-name">Agent Głosowy</div><div class="product-desc">Klient dzwoni — agent odbiera, sprawdza kalendarz i rezerwuje wizytę. SMS potwierdzenie. Zero recepcji.</div><ul class="product-features"><li>Automatyczne odbieranie połączeń</li><li>Integracja Google Calendar</li><li>SMS potwierdzenie rezerwacji</li><li>Wykrywanie intencji NLP</li></ul><div class="product-footer"><div><div class="price-amount">2 490 zł</div><div class="price-period">+ 399 zł/mies.</div></div><button class="btn-buy" onclick="openModal('agent-glos','Agent Głosowy','📞',2490,3200)">Kup →</button></div></div>
+      <div class="product-card" data-cat="mkt"><div class="product-icon-wrap" style="background:rgba(0,212,255,.1)">🔍</div><div class="product-name">Agent Audytor Stron</div><div class="product-desc">Skanuje stronę klienta, generuje profesjonalny raport SEO/UX — gotowy powód do kontaktu handlowego.</div><ul class="product-features"><li>Skanowanie SEO, UX, konwersji</li><li>Raport HTML do wysłania</li><li>Webhook + email</li><li>Wyróżniasz się na spotkaniach</li></ul><div class="product-footer"><div><div class="price-amount">1 990 zł</div><div class="price-period">+ 299 zł/mies.</div></div><button class="btn-buy" onclick="openModal('audytor','Agent Audytor Stron','🔍',1990,2800)">Kup →</button></div></div>
+      <div class="product-card featured" data-cat="flagowy fin"><div class="product-badge">⭐ FLAGOWY</div><div class="product-icon-wrap" style="background:rgba(200,241,53,.1)">📑</div><div class="product-name">KSeF — Faktury Kosztowe</div><div class="product-desc">Zaciąga faktury z KSeF, sprawdza Białą Listę VAT, nadaje kolor ryzyka 🟢🟡🔴. Zgodne z wymogami 2025.</div><ul class="product-features"><li>Integracja z KSeF API (MF)</li><li>Weryfikacja Białej Listy VAT</li><li>Kolorowy system ryzyka w Sheets</li><li>Alert Slack dla ryzykownych faktur</li><li>Zgodność KSeF 2025</li></ul><div class="product-footer"><div><div class="price-amount"><span class="price-old">5 990</span>4 490 zł</div><div class="price-period">+ 599 zł/mies.</div></div><button class="btn-buy" onclick="openModal('ksef','KSeF Faktury Kosztowe','📑',4490,5990)">Kup →</button></div></div>
+      <div class="product-card" data-cat="fin"><div class="product-icon-wrap" style="background:rgba(6,214,160,.1)">🔍</div><div class="product-name">Weryfikacja NIP</div><div class="product-desc">Werdykt ryzyka transakcji w kilka sekund przez Telegram. Biała Lista VAT + KRS + CEIDG + raport AI.</div><ul class="product-features"><li>Bot Telegram — odpowiada w sekundy</li><li>Biała Lista + KRS + CEIDG</li><li>Werdykt AI z uzasadnieniem</li><li>Bezpłatne API rządowe</li></ul><div class="product-footer"><div><div class="price-amount">2 490 zł</div><div class="price-period">+ 199 zł/mies.</div></div><button class="btn-buy" onclick="openModal('nip','Weryfikacja NIP','🔍',2490,3200)">Kup →</button></div></div>
+      <div class="product-card" data-cat="hr flagowy"><div class="product-badge new">AI</div><div class="product-icon-wrap" style="background:rgba(155,93,229,.1)">🧠</div><div class="product-name">System RAG — Baza Wiedzy</div><div class="product-desc">Dokumenty firmowe → bot Telegram. Hybrid search: semantyczny + słowa kluczowe. GPT-4o odpowiada z dokumentów.</div><ul class="product-features"><li>Hybrid search (pgvector + FTS)</li><li>Bot Telegram dla zespołu</li><li>Obsługa PDF, Word, Excel</li><li>Kontekstowe odpowiedzi GPT-4o</li></ul><div class="product-footer"><div><div class="price-amount"><span class="price-old">5 500</span>3 990 zł</div><div class="price-period">+ 499 zł/mies.</div></div><button class="btn-buy" onclick="openModal('rag','System RAG','🧠',3990,5500)">Kup →</button></div></div>
+      <div class="product-card" data-cat="obs mkt"><div class="product-icon-wrap" style="background:rgba(251,191,36,.1)">⭐</div><div class="product-name">Agent Opinii Google Maps</div><div class="product-desc">Po wizycie analizuje sentyment. Zadowolony → Google Review. Niezadowolony → alert Slack, zanim napisze recenzję.</div><ul class="product-features"><li>Email ankieta po wizycie</li><li>Redirect zadowolonych → Google</li><li>Alert Slack dla niezadowolonych</li><li>Integracja CRM Airtable</li></ul><div class="product-footer"><div><div class="price-amount">1 990 zł</div><div class="price-period">+ 199 zł/mies.</div></div><button class="btn-buy" onclick="openModal('opinie','Agent Opinii Google','⭐',1990,2800)">Kup →</button></div></div>
+      <div class="product-card" data-cat="mkt"><div class="product-badge hot">🔥 Hit</div><div class="product-icon-wrap" style="background:rgba(236,72,153,.1)">📱</div><div class="product-name">Auto-Publikacja Social Media</div><div class="product-desc">Wpisujesz pomysł → 3 warianty postów na email → zatwierdzasz → system publikuje na LinkedIn, Instagram, X.</div><ul class="product-features"><li>AI generuje 3 warianty</li><li>LinkedIn + Instagram + X</li><li>Zatwierdzanie emailem</li><li>Blotato API integracja</li></ul><div class="product-footer"><div><div class="price-amount">2 290 zł</div><div class="price-period">+ 299 zł/mies.</div></div><button class="btn-buy" onclick="openModal('social','Social Media AI','📱',2290,3200)">Kup →</button></div></div>
+      <div class="product-card" data-cat="hr"><div class="product-icon-wrap" style="background:rgba(6,214,160,.1)">🚀</div><div class="product-name">System Onboardingu</div><div class="product-desc">Nowy klient/pracownik? Folder Drive + email powitalny + CRM + Slack powiadomienie. Automatycznie.</div><ul class="product-features"><li>Tworzenie folderów Drive</li><li>Powitalny email + Slack</li><li>Dodawanie do CRM</li><li>Personalizacja flow</li></ul><div class="product-footer"><div><div class="price-amount">1 990 zł</div><div class="price-period">+ 249 zł/mies.</div></div><button class="btn-buy" onclick="openModal('onboarding','System Onboardingu','🚀',1990,2800)">Kup →</button></div></div>
+    </div>
+    <!-- Narzędzia sprzedażowe -->
+    <div style="margin-top:56px">
+      <div class="sec-header reveal" style="margin-bottom:28px"><div class="sec-tag">Narzędzia sprzedażowe</div><h2 class="sec-title" style="font-size:clamp(24px,3vw,36px)">Domknij deal <em>szybciej</em></h2></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px">
+        <div class="product-card" style="text-align:center;align-items:center"><div class="product-icon-wrap" style="background:rgba(200,241,53,.1)">📈</div><div class="product-name" style="font-size:15px">Kalkulator ROI</div><div class="product-desc" style="font-size:12px">Pokaż klientowi czarno na białym ile zaoszczędzi.</div><div style="margin-top:auto"><div class="price-amount" style="font-size:18px;text-align:center;margin-bottom:8px">890 zł</div><button class="btn-buy" style="width:100%" onclick="openModal('roi','Kalkulator ROI','📈',890,1490)">Kup →</button></div></div>
+        <div class="product-card" style="text-align:center;align-items:center"><div class="product-icon-wrap" style="background:rgba(236,72,153,.1)">🎯</div><div class="product-name" style="font-size:15px">Pitch Deck AI</div><div class="product-desc" style="font-size:12px">Gotowa prezentacja. Zmieniasz logo — wyglądasz jak agencja.</div><div style="margin-top:auto"><div class="price-amount" style="font-size:18px;text-align:center;margin-bottom:8px">1 290 zł</div><button class="btn-buy" style="width:100%" onclick="openModal('pitch','Pitch Deck AI','🎯',1290,2200)">Kup →</button></div></div>
+        <div class="product-card" style="text-align:center;align-items:center"><div class="product-icon-wrap" style="background:rgba(255,107,53,.1)">🩺</div><div class="product-name" style="font-size:15px">Audyt Potencjału AI</div><div class="product-desc" style="font-size:12px">20 pytań. Klient sam prosi o rozwiązanie.</div><div style="margin-top:auto"><div class="price-amount" style="font-size:18px;text-align:center;margin-bottom:8px">1 490 zł</div><button class="btn-buy" style="width:100%" onclick="openModal('audyt-ai','Audyt Potencjału AI','🩺',1490,2500)">Kup →</button></div></div>
+        <div class="product-card" style="text-align:center;align-items:center"><div class="product-icon-wrap" style="background:rgba(61,139,255,.1)">🛡️</div><div class="product-name" style="font-size:15px">Safety Pack Prawny</div><div class="product-desc" style="font-size:12px">Umowa + RODO. Zamyka korporacyjne deale.</div><div style="margin-top:auto"><div class="price-amount" style="font-size:18px;text-align:center;margin-bottom:8px">2 190 zł</div><button class="btn-buy" style="width:100%" onclick="openModal('legal','Safety Pack Prawny','🛡️',2190,3800)">Kup →</button></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= HOW ======= -->
+<section id="how">
+  <div class="container">
+    <div class="sec-header reveal"><div class="sec-tag">Proces</div><h2 class="sec-title">Od zakupu do<br><em>działającego agenta</em></h2><p class="sec-sub">Cztery kroki. 21 dni roboczych. Zero stresu technicznego.</p></div>
+    <div class="steps-grid">
+      <div class="step reveal reveal-delay-1"><div class="step-num">01</div><div class="step-icon">🛒</div><div class="step-title">Kupujesz agenta</div><div class="step-desc">Wybierasz agenta, płacisz przez Stripe. Odbierasz potwierdzenie i ankietę onboardingową.</div></div>
+      <div class="step reveal reveal-delay-2"><div class="step-num">02</div><div class="step-icon">📋</div><div class="step-title">Wypełniasz brief</div><div class="step-desc">15-minutowa ankieta o firmie, branży, systemach. Reszta po naszej stronie.</div></div>
+      <div class="step reveal reveal-delay-3"><div class="step-num">03</div><div class="step-icon">⚙️</div><div class="step-title">Wdrażamy system</div><div class="step-desc">Konfigurujemy, testujemy i integrujemy agenta z Twoimi systemami.</div></div>
+      <div class="step reveal reveal-delay-4"><div class="step-num">04</div><div class="step-icon">🚀</div><div class="step-title">Odpalasz i zarabiasz</div><div class="step-desc">Gotowy system z dokumentacją i szkoleniem. Potem miesięczne wsparcie.</div></div>
+    </div>
+    <div style="margin-top:52px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;display:grid;grid-template-columns:repeat(4,1fr);gap:20px" class="reveal">
+      <div style="text-align:center"><div style="font-size:26px;margin-bottom:7px">🔒</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Płatność Stripe</div><div style="font-size:12px;color:var(--text3)">256-bit SSL, 3D Secure</div></div>
+      <div style="text-align:center"><div style="font-size:26px;margin-bottom:7px">📅</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">21 dni roboczych</div><div style="font-size:12px;color:var(--text3)">Gwarancja lub zwrot</div></div>
+      <div style="text-align:center"><div style="font-size:26px;margin-bottom:7px">🛠️</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">3 mies. wsparcia</div><div style="font-size:12px;color:var(--text3)">Poprawki gratis</div></div>
+      <div style="text-align:center"><div style="font-size:26px;margin-bottom:7px">📞</div><div style="font-size:13px;font-weight:700;margin-bottom:4px">Dedykowany opiekun</div><div style="font-size:12px;color:var(--text3)">Odpowiedź do 4h</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= TESTIMONIALS ======= -->
+<section id="testimonials">
+  <div class="container">
+    <div class="sec-header reveal"><div class="sec-tag">Opinie klientów</div><h2 class="sec-title">240+ firm<br><em>już automatyzuje</em></h2></div>
+    <div class="testimonials-grid">
+      <div class="testi-card reveal reveal-delay-1"><div class="testi-stars">★★★★★</div><div class="testi-quote">Agent 24/7 zmienił nasze życie. Recepcja przestała odbierać powtarzające się pytania — bot obsługuje <strong>80% zapytań automatycznie</strong>. ROI zwrócił się w 5 tygodni.</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#c8f135,#06d6a0)">A</div><div><div class="testi-name">Anna Wiśniewska</div><div class="testi-company">Klinika Zdrowia Premium, Warszawa</div></div><div class="testi-roi">ROI 420%</div></div></div>
+      <div class="testi-card reveal reveal-delay-2"><div class="testi-stars">★★★★★</div><div class="testi-quote">KSeF Agent to rewolucja. <strong>5 godzin miesięcznie z głowy</strong> — faktury kategoryzują się same, Biała Lista sprawdzana automatycznie. Polecam każdej firmie.</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#3d8bff,#9b5de5)">M</div><div><div class="testi-name">Michał Kowalczyk</div><div class="testi-company">TechFlow Sp. z o.o., Kraków</div></div><div class="testi-roi">5h/mies.</div></div></div>
+      <div class="testi-card reveal reveal-delay-3"><div class="testi-stars">★★★★★</div><div class="testi-quote">System RAG zmienił pracę zespołu. Zamiast dzwonić do mnie z pytaniami — pytają bota. <strong>Oszczędzam 3 godziny dziennie</strong> na odpowiadaniu na te same pytania.</div><div class="testi-author"><div class="testi-avatar" style="background:linear-gradient(135deg,#ff6b35,#ff4d6d)">K</div><div><div class="testi-name">Katarzyna Nowak</div><div class="testi-company">LogiHub Sp. z o.o., Wrocław</div></div><div class="testi-roi">3h/dzień</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= PRICING ======= -->
+<section id="pricing">
+  <div class="container">
+    <div class="sec-header reveal"><div class="sec-tag">Cennik pakietów</div><h2 class="sec-title">Wybierz pakiet<br><em>dla swojego biznesu</em></h2></div>
+    <div class="pricing-grid">
+      <div class="pricing-card reveal reveal-delay-1"><div class="plan-name">Starter</div><div class="plan-price"><span>od </span>2 990 zł</div><div class="plan-period">wdrożenie + 499 zł/mies.</div><div class="plan-desc">Idealny start dla małej firmy. Jeden agent, pełne wsparcie.</div><ul class="plan-features"><li>1 agent AI do wyboru</li><li>Integracja z 2 systemami</li><li>Wdrożenie 14 dni</li><li>3 mies. wsparcia email</li><li>SLA 99% uptime</li><li class="dim">Slack support</li><li class="dim">Dedykowany opiekun</li></ul><button class="btn-plan outline" onclick="openModal('starter','Pakiet Starter','🚀',2990,4500)">Wybierz Starter</button></div>
+      <div class="pricing-card popular reveal reveal-delay-2"><div class="pop-badge">⭐ Najpopularniejszy</div><div class="plan-name">Professional</div><div class="plan-price"><span>od </span>7 490 zł</div><div class="plan-period">wdrożenie + 999 zł/mies.</div><div class="plan-desc">Kompletny ekosystem dla firmy z ambicjami.</div><ul class="plan-features"><li>3 agenty AI do wyboru</li><li>Integracja z 5 systemami</li><li>Wdrożenie 21 dni</li><li>6 mies. wsparcia Slack</li><li>SLA 99.5% + monitoring</li><li>Kalkulator ROI gratis</li><li>Dedykowany opiekun</li></ul><button class="btn-plan solid" onclick="openModal('pro','Pakiet Professional','⭐',7490,11000)">Wybierz Professional</button></div>
+      <div class="pricing-card reveal reveal-delay-3"><div class="plan-name">Enterprise</div><div class="plan-price">Wycena</div><div class="plan-period">indywidualny projekt</div><div class="plan-desc">Dla firm z większą skalą i wymogami enterprise.</div><ul class="plan-features"><li>Unlimited agentów AI</li><li>Integracje bez limitu</li><li>SLA enterprise (umowny)</li><li>Szkolenie zespołu</li><li>Safety Pack Prawny w cenie</li><li>Audyt AI gratis</li><li>Dedykowany Slack workspace</li></ul><button class="btn-plan outline" onclick="openContactModal()">Zapytaj o wycenę</button></div>
+    </div>
+    <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--text3)">Wszystkie ceny netto + 23% VAT · Płatność Stripe — karta, BLIK, przelew · Faktura VAT automatycznie</div>
+  </div>
+</section>
+
+<!-- ======= BLOG ======= -->
+<section id="blog">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Blog / GEO Content</div>
+      <h2 class="sec-title">Wiedza o <em>automatyzacji AI</em><br>dla polskich firm</h2>
+      <p class="sec-sub">Artykuły zoptymalizowane pod GEO — cytowane przez ChatGPT, Perplexity i Google AI Overviews. Odpowiadamy na pytania zanim je zadasz.</p>
+    </div>
+    <div class="blog-grid">
+      <article class="blog-card reveal reveal-delay-1" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#0f2a0f,#1a3d1a)">🤖<div class="blog-cat">Agenci AI</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>12 maja 2025</span><div class="blog-meta-dot"></div><span>8 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">Czym jest agent AI i jak różni się od zwykłej automatyzacji? Kompletny przewodnik dla firm MŚP</h2>
+          <p class="blog-excerpt">Agent AI to system zdolny do samodzielnego podejmowania decyzji i wykonywania zadań w imieniu firmy. W odróżnieniu od tradycyjnych automatyzacji, agent rozumie kontekst i działa proaktywnie...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+      <article class="blog-card reveal reveal-delay-2" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#0d1f3c,#1a3060)">⚡<div class="blog-cat">n8n</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>8 maja 2025</span><div class="blog-meta-dot"></div><span>12 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">n8n vs Make.com 2025: Który wybrać do automatyzacji procesów w firmie? Porównanie kosztów i możliwości</h2>
+          <p class="blog-excerpt">n8n i Make.com to dwie najpopularniejsze platformy do automatyzacji no-code. n8n daje pełną kontrolę i możliwość self-hostingu, Make.com jest prostszy dla początkujących...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+      <article class="blog-card reveal reveal-delay-3" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#2a1a0a,#3d2a12)">📑<div class="blog-cat">KSeF</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>3 maja 2025</span><div class="blog-meta-dot"></div><span>10 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">KSeF 2025: Jak zautomatyzować faktury kosztowe i weryfikację Białej Listy VAT w n8n?</h2>
+          <p class="blog-excerpt">Obowiązkowy KSeF dla wszystkich firm w Polsce wchodzi etapami. Pokażemy jak zbudować kompletny workflow w n8n, który automatycznie pobiera faktury, weryfikuje kontrahentów i kategoryzuje...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+      <article class="blog-card reveal reveal-delay-1" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#1a0a2a,#2a1040)">🧠<div class="blog-cat">RAG / LLM</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>28 kwi 2025</span><div class="blog-meta-dot"></div><span>15 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">RAG (Retrieval-Augmented Generation) dla firm: Jak zbudować bazę wiedzy firmowej z botem Telegram?</h2>
+          <p class="blog-excerpt">RAG to technika łącząca wyszukiwanie dokumentów z generatywnym AI. Dzięki RAG możesz stworzyć bota, który odpowiada na pytania pracowników na podstawie Twoich procedur, umów i instrukcji...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+      <article class="blog-card reveal reveal-delay-2" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#1a2a0a,#2a3d12)">📊<div class="blog-cat">GEO / SEO</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>22 kwi 2025</span><div class="blog-meta-dot"></div><span>11 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">GEO (Generative Engine Optimization) 2025: Jak sprawić żeby ChatGPT cytował Twoją firmę?</h2>
+          <p class="blog-excerpt">GEO to nowe SEO — zamiast rankować w Google, optymalizujesz treści pod cytowania w ChatGPT, Perplexity i Google AI Overviews. W 2025 roku 58% użytkowników szuka produktów przez AI...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+      <article class="blog-card reveal reveal-delay-3" itemscope itemtype="https://schema.org/BlogPosting">
+        <div class="blog-thumb" style="background:linear-gradient(135deg,#2a0a1a,#3d1030)">💬<div class="blog-cat">WhatsApp Bot</div></div>
+        <div class="blog-body">
+          <div class="blog-meta"><span>18 kwi 2025</span><div class="blog-meta-dot"></div><span>9 min czytania</span></div>
+          <h2 class="blog-title" itemprop="headline">Jak zbudować bota WhatsApp dla firmy w 2025? Twilio + n8n + GPT-4o krok po kroku</h2>
+          <p class="blog-excerpt">WhatsApp ma 2,9 miliarda użytkowników i 98% wskaźnik otwarcia wiadomości. Bot WhatsApp zintegrowany z GPT-4o i n8n może obsługiwać klientów 24/7, umawiać wizyty i odpowiadać na pytania...</p>
+          <div class="blog-read-more">Czytaj artykuł <span>→</span></div>
+        </div>
+      </article>
+    </div>
+    <div style="text-align:center;margin-top:40px">
+      <a href="blog.html" class="btn-secondary">📚 Zobacz wszystkie artykuły (52 wpisów) →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ======= KEYWORDS TABLE ======= -->
+<section id="keywords-table">
+  <div class="container">
+    <div class="sec-header reveal">
+      <div class="sec-tag">Strategia GEO / Content</div>
+      <h2 class="sec-title">52 tematy bloga<br><em>zoptymalizowane pod GEO</em></h2>
+      <p class="sec-sub">Każdy artykuł ma prompt gotowy do wygenerowania przez AI — zoptymalizowany pod cytowania przez ChatGPT, Perplexity i Google AI Overviews.</p>
+    </div>
+    <div class="table-wrap reveal">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Słowo kluczowe / Temat GEO</th>
+            <th>Tytuł artykułu</th>
+            <th>Intencja</th>
+            <th>Vol.</th>
+            <th>Prompt do generowania artykułu (GEO)</th>
+          </tr>
+        </thead>
+        <tbody id="kwTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FAQ ======= -->
+<section id="faq">
+  <div class="container">
+    <div class="sec-header reveal"><div class="sec-tag">FAQ</div><h2 class="sec-title">Masz pytania?<br><em>Mamy odpowiedzi</em></h2></div>
+    <div class="faq-list">
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Czy potrzebuję wiedzy technicznej?<div class="faq-icon">+</div></button><div class="faq-a"><p>Nie. Całą konfigurację i integracje wykonujemy my. Ty dostajesz gotowy system z dokumentacją i prostym panelem.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Ile czasu zajmuje wdrożenie?<div class="faq-icon">+</div></button><div class="faq-a"><p>14–21 dni roboczych od wpłaty i wypełnienia briefa. Prostsze agenty wdrażamy w 7–10 dni. Gwarancja terminu lub 20% zwrotu.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Czy to działa z moją branżą?<div class="faq-icon">+</div></button><div class="faq-a"><p>Tak — agenci są adaptowalni dla: medycyny, urody, prawa, nieruchomości, gastronomii, IT, e-commerce i wielu innych. W briefie opisujesz firmę — my dostosowujemy.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Jakie narzędzia i konta są potrzebne?<div class="faq-icon">+</div></button><div class="faq-a"><p>Dla większości agentów: OpenAI API (~30–100 zł/mies.), n8n cloud (~100 zł/mies. lub self-hosted gratis). Do WhatsApp — Twilio. Do KSeF — Profil Zaufany. Pełna lista przy zakupie.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Jak wygląda płatność — BLIK, karta, przelew?<div class="faq-icon">+</div></button><div class="faq-a"><p>Płatności przez <strong>Stripe</strong> (256-bit SSL, 3D Secure). Akceptujemy kartę Visa/Mastercard, BLIK, przelew bankowy, Apple Pay, Google Pay. Faktura VAT automatycznie.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Czy mogę zwrócić agenta?<div class="faq-icon">+</div></button><div class="faq-a"><p>14-dniowa gwarancja. Jeśli agent nie działa zgodnie ze specyfikacją — naprawiamy gratis lub zwracamy 100% kwoty wdrożeniowej.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Czy otrzymam kod źródłowy?<div class="faq-icon">+</div></button><div class="faq-a"><p>Tak — pełny export JSON workflow n8n, dokumentacja techniczna PDF, instrukcja i nagranie wideo. Jesteś właścicielem systemu.</p></div></div>
+      <div class="faq-item"><button class="faq-q" onclick="toggleFaq(this)">Jak agent AI jest zgodny z RODO?<div class="faq-icon">+</div></button><div class="faq-a"><p>Wszystkie wdrożenia zawierają wzór umowy powierzenia danych (art. 28 RODO). Używamy certyfikowanych podprocesorów (OpenAI EU DPF, Google EU). Dane przechowywane w UE.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======= CTA ======= -->
+<section id="cta-banner">
+  <div class="container">
+    <div class="cta-title">Przestań tracić <em>czas i pieniądze.</em><br>Zacznij dziś.</div>
+    <p class="cta-sub">Bezpłatna konsultacja 30 min. Pokażemy który agent przyniesie Ci największy ROI.</p>
+    <div class="cta-actions">
+      <a href="#products" class="btn-primary">🤖 Kup agenta AI teraz</a>
+      <button class="btn-secondary" onclick="openContactModal()">📅 Bezpłatna konsultacja</button>
+    </div>
+    <div style="margin-top:28px;display:flex;justify-content:center;gap:28px;flex-wrap:wrap">
+      <span style="font-size:13px;color:var(--text3)">✅ Płatność Stripe</span>
+      <span style="font-size:13px;color:var(--text3)">✅ 21 dni lub zwrot</span>
+      <span style="font-size:13px;color:var(--text3)">✅ 14 dni gwarancji</span>
+      <span style="font-size:13px;color:var(--text3)">✅ Wsparcie 3–6 mies.</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======= FOOTER ======= -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo">⚡ Automatyzuj<span>AI</span></div>
+        <p class="footer-about">Wdrażamy agentów AI dla polskich firm MŚP. n8n, GPT-4o, KSeF, RAG, integracje. Pracujemy zdalnie z całą Polską.</p>
+        <div class="footer-socials">
+          <a href="#" class="footer-social">in</a>
+          <a href="#" class="footer-social">𝕏</a>
+          <a href="#" class="footer-social">▶</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Agenci AI</div>
+        <ul class="footer-links">
+          <li><a href="#products">System 24/7</a></li>
+          <li><a href="#products">KSeF Faktury</a></li>
+          <li><a href="#products">RAG Baza Wiedzy</a></li>
+          <li><a href="#products">Audytor Stron</a></li>
+          <li><a href="#products">Social Media AI</a></li>
+          <li><a href="#products">Weryfikacja NIP</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Firma</div>
+        <ul class="footer-links">
+          <li><a href="blog.html">Blog / GEO Content</a></li>
+          <li><a href="#how">Jak działamy</a></li>
+          <li><a href="#testimonials">Opinie klientów</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#" onclick="openContactModal()">Kontakt</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Prawne</div>
+        <ul class="footer-links">
+          <li><a href="regulamin.html">📄 Regulamin</a></li>
+          <li><a href="polityka-prywatnosci.html">🔒 Polityka Prywatności</a></li>
+          <li><a href="polityka-prywatnosci.html#rodo">RODO / GDPR</a></li>
+          <li><a href="polityka-prywatnosci.html#cookies">Polityka Cookies</a></li>
+          <li><a href="regulamin.html#zwroty">Zwroty i reklamacje</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 AutomatyzujAI Sp. z o.o. · NIP: 000-000-00-00 · Wszelkie prawa zastrzeżone · <a href="regulamin.html">Regulamin</a> · <a href="polityka-prywatnosci.html">Polityka Prywatności</a></div>
+      <div class="footer-payments">
+        <span style="font-size:11px;color:var(--text3);margin-right:4px">Płatności:</span>
+        <div class="pay-badge">💳 Stripe</div><div class="pay-badge">BLIK</div><div class="pay-badge">Visa</div><div class="pay-badge">Mastercard</div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ======= MODALS ======= -->
+<div class="modal-overlay" id="checkoutModal">
+  <div class="modal"><div class="modal-header"><div><div class="modal-title" id="modalTitle">Kup agenta AI</div><div class="modal-sub">Bezpieczna płatność przez Stripe</div></div><button class="modal-close" onclick="closeModal()">✕</button></div>
+  <div class="modal-body" id="modalBody">
+    <div class="modal-product-info"><div class="mpi-icon" id="mpiIcon">⚡</div><div><div class="mpi-name" id="mpiName">—</div><div class="mpi-price">Cena: <strong id="mpiPrice">—</strong></div></div></div>
+    <div id="buyerForm">
+      <div class="form-row"><div class="form-group"><label class="form-label">Imię</label><input type="text" class="form-input" id="buyerFirst" placeholder="Jan"></div><div class="form-group"><label class="form-label">Nazwisko</label><input type="text" class="form-input" id="buyerLast" placeholder="Kowalski"></div></div>
+      <div class="form-group"><label class="form-label">Email (faktura + dostęp)</label><input type="email" class="form-input" id="buyerEmail" placeholder="jan@firma.pl"></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Firma (opcjonalnie)</label><input type="text" class="form-input" id="buyerCompany" placeholder="Firma Sp. z o.o."></div><div class="form-group"><label class="form-label">NIP (opcjonalnie)</label><input type="text" class="form-input" id="buyerNip" placeholder="123-456-78-90"></div></div>
+      <div class="form-group"><label class="form-label">Dane karty płatniczej</label><div class="stripe-element-wrap" id="cardElementWrap"><div id="card-element"></div></div><div style="font-size:11px;color:var(--text3);margin-top:5px">Visa · Mastercard · BLIK · Apple Pay · Google Pay</div></div>
+      <div class="form-error" id="formError"></div>
+      <div class="order-summary"><div class="os-row"><span>Produkt:</span><span id="osProd">—</span></div><div class="os-row"><span>Regularna cena:</span><span id="osOrig" style="text-decoration:line-through;color:var(--text3)">—</span></div><div class="os-row"><span>Rabat:</span><span class="lime" id="osDisc">-0%</span></div><div class="os-row"><span>Netto:</span><span id="osNetto">—</span></div><div class="os-row"><span>Do zapłaty (+ VAT 23%):</span><span id="osTotal">—</span></div></div>
+      <button class="btn-checkout" id="checkoutBtn" onclick="processPayment()">🔒 Zapłać bezpiecznie — <span id="btnAmount">—</span></button>
+      <div class="secure-badges"><div class="secure-badge">🔒 256-bit SSL</div><div class="secure-badge">🛡️ 3D Secure</div><div class="secure-badge">💳 Stripe</div><div class="secure-badge">🇵🇱 Faktura VAT</div></div>
+    </div>
+    <div id="paymentLoading" style="display:none;text-align:center;padding:40px"><div style="width:42px;height:42px;border-radius:50%;border:3px solid var(--border);border-top-color:var(--lime);animation:spin .8s linear infinite;margin:0 auto 18px"></div><div style="font-size:15px;font-weight:700;margin-bottom:7px">Przetwarzam płatność...</div><div style="font-size:13px;color:var(--text2)">Nie zamykaj okna.</div></div>
+    <div id="paymentSuccess" style="display:none"><div class="success-msg"><div class="success-icon">🎉</div><div class="success-title">Płatność przyjęta!</div><div class="success-sub">Email z potwierdzeniem i ankietą onboardingową dotrze za chwilę.<br><br>Nasz zespół skontaktuje się w ciągu <strong>1 dnia roboczego</strong>.</div><button class="btn-primary" style="margin:24px auto 0;display:flex" onclick="closeModal()">Zamknij</button></div></div>
+  </div></div>
+</div>
+
+<div class="modal-overlay" id="contactModal">
+  <div class="modal" style="max-width:460px"><div class="modal-header"><div><div class="modal-title">Bezpłatna konsultacja</div><div class="modal-sub">30 minut z ekspertem AI. Bez zobowiązań.</div></div><button class="modal-close" onclick="closeContactModal()">✕</button></div>
+  <div class="modal-body">
+    <div class="form-group"><label class="form-label">Imię i nazwisko</label><input type="text" class="form-input" id="contactName" placeholder="Jan Kowalski"></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="contactEmail" placeholder="jan@firma.pl"></div>
+    <div class="form-group"><label class="form-label">Telefon</label><input type="text" class="form-input" id="contactPhone" placeholder="+48 600 000 000"></div>
+    <div class="form-group"><label class="form-label">Czego szukasz?</label><textarea class="form-input" id="contactMsg" rows="3" placeholder="Np. obsługa klientów WhatsApp, automatyzacja faktur..."></textarea></div>
+    <button class="btn-checkout" onclick="submitContact()">📅 Umów konsultację</button>
+    <div class="secure-badges" style="margin-top:12px"><div class="secure-badge">✅ Zero spamu</div><div class="secure-badge">✅ Odpowiedź 24h</div><div class="secure-badge">✅ Bez zobowiązań</div></div>
+  </div></div>
+</div>
+
+<!-- ======= JAVASCRIPT ======= -->
+<script>
+// Navbar scroll
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+
+// Hamburger
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+function closeMobileMenu() { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }
+
+// Scroll reveal
+const revealObs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } }), { threshold: 0.08 });
+document.querySelectorAll('.reveal').forEach(el => revealObs.observe(el));
+
+// Product filter
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.product-card[data-cat]').forEach(card => { card.style.display = (cat === 'all' || card.dataset.cat.includes(cat)) ? 'flex' : 'none'; });
+}
+
+// FAQ
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); window.scrollTo({ top: t.getBoundingClientRect().top + window.scrollY - 78, behavior: 'smooth' }); }
+  });
+});
+
+// ---- STRIPE & MODAL ----
+let stripe, cardElement, currentProduct = {};
+function initStripe() {
+  if (!stripe) {
+    stripe = Stripe('pk_test_REPLACE_WITH_YOUR_STRIPE_PUBLISHABLE_KEY');
+    const els = stripe.elements({ appearance: { theme: 'night', variables: { colorPrimary: '#c8f135', colorBackground: '#1e2440', colorText: '#e8ecf7', colorDanger: '#ff4d6d', borderRadius: '8px' } } });
+    cardElement = els.create('card');
+    cardElement.mount('#card-element');
+    cardElement.on('focus', () => document.getElementById('cardElementWrap').classList.add('focused'));
+    cardElement.on('blur', () => document.getElementById('cardElementWrap').classList.remove('focused'));
+    cardElement.on('change', e => {
+      const err = document.getElementById('formError');
+      e.error ? (err.textContent = e.error.message, err.classList.add('show')) : err.classList.remove('show');
+    });
+  }
+}
+function openModal(id, name, icon, price, origPrice) {
+  currentProduct = { id, name, icon, price, origPrice };
+  document.getElementById('modalTitle').textContent = name;
+  document.getElementById('mpiIcon').textContent = icon;
+  document.getElementById('mpiName').textContent = name;
+  document.getElementById('mpiPrice').textContent = price.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('osProd').textContent = name;
+  document.getElementById('osOrig').textContent = origPrice.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('osDisc').textContent = '-' + Math.round(((origPrice-price)/origPrice)*100) + '%';
+  document.getElementById('osNetto').textContent = price.toLocaleString('pl-PL') + ' zł';
+  const total = Math.round(price*1.23);
+  document.getElementById('osTotal').textContent = total.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('btnAmount').textContent = total.toLocaleString('pl-PL') + ' zł brutto';
+  ['buyerForm','paymentLoading','paymentSuccess'].forEach((id,i) => document.getElementById(id).style.display = i===0?'block':'none');
+  document.getElementById('formError').classList.remove('show');
+  document.getElementById('checkoutBtn').disabled = false;
+  document.getElementById('checkoutModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  setTimeout(initStripe, 100);
+}
+function closeModal() { document.getElementById('checkoutModal').classList.remove('open'); document.body.style.overflow = ''; }
+function openContactModal() { document.getElementById('contactModal').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeContactModal() { document.getElementById('contactModal').classList.remove('open'); document.body.style.overflow = ''; }
+document.getElementById('checkoutModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeModal(); });
+document.getElementById('contactModal').addEventListener('click', e => { if(e.target===e.currentTarget) closeContactModal(); });
+document.addEventListener('keydown', e => { if(e.key==='Escape') { closeModal(); closeContactModal(); } });
+
+async function processPayment() {
+  const first = document.getElementById('buyerFirst').value.trim();
+  const last = document.getElementById('buyerLast').value.trim();
+  const email = document.getElementById('buyerEmail').value.trim();
+  const err = document.getElementById('formError');
+  if (!first||!last||!email) { err.textContent='Uzupełnij imię, nazwisko i email.'; err.classList.add('show'); return; }
+  if (!email.includes('@')) { err.textContent='Podaj poprawny email.'; err.classList.add('show'); return; }
+  err.classList.remove('show');
+  document.getElementById('buyerForm').style.display = 'none';
+  document.getElementById('paymentLoading').style.display = 'block';
+  document.getElementById('checkoutBtn').disabled = true;
+  try {
+    // PRODUCTION: replace with real backend call
+    // const {clientSecret} = await fetch('/api/create-payment-intent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({productId:currentProduct.id,amount:Math.round(currentProduct.price*1.23*100)})}).then(r=>r.json());
+    // const result = await stripe.confirmCardPayment(clientSecret,{payment_method:{card:cardElement,billing_details:{name:`${first} ${last}`,email}}});
+    await new Promise(r => setTimeout(r, 2000)); // Demo delay
+    document.getElementById('paymentLoading').style.display = 'none';
+    document.getElementById('paymentSuccess').style.display = 'block';
+  } catch(e) {
+    document.getElementById('paymentLoading').style.display = 'none';
+    document.getElementById('buyerForm').style.display = 'block';
+    document.getElementById('checkoutBtn').disabled = false;
+    err.textContent = 'Błąd płatności: ' + (e.message||'Spróbuj ponownie.'); err.classList.add('show');
+  }
+}
+async function submitContact() {
+  const name=document.getElementById('contactName').value.trim(), email=document.getElementById('contactEmail').value.trim();
+  if(!name||!email){alert('Podaj imię i email.');return;}
+  closeContactModal();
+  setTimeout(()=>alert('✅ Dziękujemy! Odezwiemy się na '+email+' w ciągu 24h.'),300);
+}
+
+// ---- KEYWORDS TABLE DATA ----
+const KEYWORDS = [
+  // AGENCI AI & AUTOMATYZACJA
+  {kw:"agent AI dla firmy", title:"Co to jest agent AI i jak działa w firmie MŚP? Definicja, przykłady, wdrożenie 2025", intent:"info", vol:5, prompt:"Napisz artykuł GEO-zoptymalizowany (2200 słów) dla polskiej firmy MŚP o agentach AI. Zacznij od bezpośredniej definicji w 2 zdaniach (dla AI snippetów). Struktura: H2: Definicja agenta AI (z datą 2025), H2: Różnica agent AI vs zwykła automatyzacja (tabela porównawcza), H2: 5 przykładów agentów AI dla MŚP (klinika, salon, agencja, sklep, kancelaria), H2: Ile kosztuje agent AI w Polsce?, H2: Jak wdrożyć w 21 dni?, FAQ z 5 pytaniami i odpowiedziami. Dodaj statystyki: '58% użytkowników szuka przez AI (Capgemini 2025)', '527% wzrost AI-referred sessions H1 2025'. Użyj schema FAQ markup. Pisz dla czytelnika i dla LLM (ChatGPT, Perplexity, Gemini)."},
+  {kw:"automatyzacja procesów biznesowych n8n", title:"Automatyzacja procesów biznesowych w n8n 2025: Kompletny przewodnik z przykładami dla firm", intent:"info", vol:4, prompt:"GEO-artykuł (2500 słów) o automatyzacji procesów w n8n dla polskich firm. Odpowiedź na pierwsze pytanie w 40-60 słowach (fact density dla LLM). H2: Co to jest n8n i dlaczego jest najlepszy (self-hosted, cena, integracje), H2: 10 procesów do automatyzacji w n8n (tabela: proces, czas ręczny, czas po automatyzacji, oszczędność), H2: n8n vs Make.com vs Zapier – porównanie, H2: Koszt wdrożenia n8n w Polsce, H2: Przykład: automatyzacja recepcji kliniki krok po kroku. Statystyki co 150-200 słów. Dodaj cytowalne definicje ('n8n to platforma no-code/low-code open-source'). Format pozwalający AI na ekstraktowanie odpowiedzi."},
+  {kw:"ile kosztuje automatyzacja AI firma", title:"Ile kosztuje wdrożenie automatyzacji AI w firmie MŚP? Cennik i ROI na 2025 rok", intent:"trans", vol:5, prompt:"Artykuł GEO (1800 słów) o kosztach automatyzacji AI. Zacznij od: 'Koszt automatyzacji AI dla MŚP w Polsce wynosi od 1490 zł do 15000 zł jednorazowo plus 199–999 zł miesięcznie.' Tabela: rodzaj agenta, koszt wdrożenia, abonament, czas zwrotu, ROI 12 mies. H2: Co wpływa na cenę, H2: Porównanie: pracownik vs agent AI (tabela kosztów), H2: Jak liczyć ROI z automatyzacji (wzór + przykład), H2: Kiedy AI się opłaca a kiedy nie. Konkretne liczby co 150 słów. Odpowiedź na pytanie 'czy AI się opłaca małej firmie' – bezpośrednio w tekście."},
+  {kw:"KSeF automatyzacja faktury 2025", title:"KSeF 2025: Automatyczna obsługa faktur kosztowych w n8n – integracja krok po kroku", intent:"info", vol:5, prompt:"Techniczny artykuł GEO (2800 słów) o KSeF i automatyzacji w n8n. H2: KSeF obowiązkowy – dla kogo i kiedy (tabela dat), H2: Jak działa KSeF API (schemat przepływu danych), H2: Budowa workflow n8n: KSeF→Biała Lista VAT→kategoryzacja PKPiR→Google Sheets (z kodem), H2: Weryfikacja Białej Listy VAT automatycznie – jak to zrobić, H2: Alerty o ryzykach: duplikaty, wysokie kwoty, nieaktywni podatnicy, H2: Koszt i czas wdrożenia. Dodaj specyficzne fakty: 'KSeF obowiązkowy dla dużych podatników od 1 lutego 2026'. Schemat JSON-LD dla how-to."},
+  {kw:"chatbot WhatsApp dla firmy Polska", title:"Jak stworzyć chatbota WhatsApp dla firmy w Polsce? Twilio + n8n + GPT-4o tutorial", intent:"trans", vol:4, prompt:"Praktyczny artykuł GEO (2200 słów) o chatbocie WhatsApp. Odpowiedź w 50 słowach na początku. H2: WhatsApp Business API vs Twilio Sandbox – różnice, H2: Koszty WhatsApp chatbota (Twilio pricing w PLN), H2: Tutorial krok po kroku: Twilio → n8n → GPT-4o (z pseudokodem workflow), H2: 5 scenariuszy chatbota WhatsApp (recepcja, rezerwacje, FAQ, sprzedaż, obsługa), H2: RODO i WhatsApp – jak być zgodnym, H2: Ile to kosztuje miesięcznie. Statystyki: 'WhatsApp 98% wskaźnik otwarcia wiadomości'. Cytowalne definicje."},
+  {kw:"RAG baza wiedzy firmowej", title:"RAG dla firm: Jak zbudować bazę wiedzy firmowej z chatbotem AI? pgvector + n8n + Telegram", intent:"info", vol:3, prompt:"Artykuł GEO (2400 słów) o RAG dla firm. Definicja RAG w 2 zdaniach na początku. H2: RAG vs fine-tuning – kiedy co wybrać (tabela), H2: Architektura RAG dla MŚP: dokumenty → embeddings → pgvector → chatbot, H2: Krok po kroku: od PDF do bota Telegram (schemat), H2: Hybrid search: semantyczny + full-text w PostgreSQL, H2: Koszty RAG dla małej firmy, H2: Przykłady: prawo, medycyna, HR, procedury. Statystyki co 200 słów. Schemat FAQ."},
+  {kw:"GEO generative engine optimization Polska", title:"GEO (Generative Engine Optimization) 2025: Jak sprawić, żeby ChatGPT cytował Twoją polską firmę?", intent:"info", vol:4, prompt:"Artykuł eksperci GEO (2600 słów) dla polskich firm. Definicja GEO w 1 zdaniu. H2: GEO vs SEO – kluczowe różnice (tabela), H2: Dlaczego ChatGPT ignoruje większość polskich stron, H2: 7 technik GEO-optymalizacji (schema markup, fact density, bezpośrednie odpowiedzi, cytowalność), H2: Jak mierzyć widoczność w AI (narzędzia), H2: Przypadek studyjny: firma X zwiększyła cytowania o 40%, H2: Checklista GEO dla strony. Statystyki: '58% użytkowników szuka przez AI Capgemini 2025', '527% wzrost AI-referred sessions'. Odpowiadaj na pytania w pierwszych 60 słowach sekcji."},
+  {kw:"n8n vs make.com porównanie", title:"n8n vs Make.com 2025: Które narzędzie wybrać do automatyzacji? Koszt, integracje, trudność", intent:"comp", vol:4, prompt:"Porównanie GEO (2000 słów). Na początku: '**Krótka odpowiedź**: n8n jest lepszy dla firm technicznych i większych przepływów; Make.com dla prostszych automatyzacji bez IT.' Tabela 15 kryteriów. H2: Cena n8n vs Make 2025 (tabele cenników w PLN), H2: Trudność wdrożenia, H2: Integracje – które ma więcej, H2: Self-hosting n8n – zalety dla polskich firm (RODO), H2: Make.com dla kogo, H2: Kiedy wziąć specjalistę. FAQ 5 pytań."},
+  {kw:"automatyzacja obsługi klienta AI", title:"Automatyzacja obsługi klienta AI 2025: Chatbot, agent 24/7, IVR – co wybrać dla swojej firmy?", intent:"info", vol:5, prompt:"Artykuł GEO (2300 słów) o automatyzacji obsługi klienta. H2: Rodzaje automatyzacji obsługi: chatbot vs agent AI vs IVR (tabela), H2: Ile kosztuje obsługa klienta manualnie vs AI (kalkulator), H2: Jak wdrożyć agenta 24/7 na WhatsApp i SMS, H2: Przykłady: klinika stomatologiczna, salon urody, sklep online, H2: Mierzenie jakości: CSAT, NPS, czas odpowiedzi, H2: RODO w chatbocie. Statystyki: '24h czas odpowiedzi = utrata 30% klientów'. Fakty co 150 słów."},
+  {kw:"bot telegram dla firmy", title:"Bot Telegram dla firmy 2025: Jak zbudować i ile to kosztuje? Weryfikacja NIP, RAG, alerty", intent:"trans", vol:3, prompt:"Artykuł GEO (1900 słów) o botach Telegram dla firm. Definicja w 50 słowach. H2: Kiedy Telegram bot zamiast WhatsApp, H2: 5 zastosowań bota Telegram (RAG, weryfikacja NIP, alerty KSeF, grafik, raporty), H2: Jak stworzyć bota Telegram w n8n (kroki), H2: Koszt i czas, H2: Przykład: agent weryfikacji NIP w 30 sekund. Cytowalne fragmenty dla AI."},
+  // BRANŻOWE
+  {kw:"automatyzacja AI klinika gabinet medyczny", title:"Automatyzacja AI w klinice i gabinecie medycznym: Rezerwacje, przypomnienia, obsługa 24/7", intent:"trans", vol:4, prompt:"Artykuł GEO (2100 słów) branżowy: medycyna. ROI w 50 słowach na starcie. H2: Które procesy w klinice zautomatyzować pierwsze (ranking), H2: Bot rezerwacji WhatsApp dla gabinetu – jak działa, H2: Automatyczne przypomnienia SMS – liczby (o 40% mniej nieobecności), H2: RODO w placówce medycznej i AI, H2: Koszt wdrożenia vs zatrudnienie recepcjonistki, H2: Case study: klinika stomatologiczna Warszawa – wyniki po 3 miesiącach. FAQ."},
+  {kw:"automatyzacja salon beauty fryzjer", title:"Automatyzacja w salonie fryzjerskim i beauty 2025: Bot rezerwacji, opinie Google, lojalizacja klientów", intent:"trans", vol:3, prompt:"GEO artykuł (1800 słów) dla salonów beauty. H2: 5 procesów do automatyzacji w salonie (rezerwacje, przypomnienia, opinie, lojalizacja, grafik), H2: Koszt agenta AI vs kosztów recepcji, H2: Bot WhatsApp dla salonu – przykład, H2: Jak zbierać opinie Google automatycznie (i blokować złe recenzje), H2: ROI: salon średni 2500 zł/mies. zysk. Konkretne liczby. FAQ branżowe."},
+  {kw:"automatyzacja agencja marketingowa", title:"Automatyzacja agencji marketingowej 2025: Social media, raporty, prospecting – AI tools", intent:"info", vol:3, prompt:"GEO artykuł (2200 słów) dla agencji. H2: 8 procesów agencji do automatyzacji AI (social, raporty GA, prospecting, oferty, SEO audyt, onboarding), H2: Auto-publikacja social media z AI – jak to działa, H2: Automatyczny audytor stron – narzędzie do pozyskiwania klientów, H2: Agent raportów GA co tydzień na Slack, H2: Koszty vs wartość dla klienta. Case study agencja 3 pracowników."},
+  {kw:"automatyzacja e-commerce sklep online", title:"Automatyzacja sklepu online 2025: Obsługa zamówień, zwroty, CRM, remarketing – AI workflow", intent:"trans", vol:4, prompt:"GEO artykuł (2300 słów) e-commerce. H2: Które procesy e-commerce pochłaniają czas (ranking), H2: Automatyczna obsługa zapytań klientów WhatsApp/email, H2: Workflow: zamówienie → realizacja → powiadomienie → recenzja, H2: Remarketing z AI: odzyskiwanie porzuconych koszyków, H2: Integracja n8n z WooCommerce/Shopify, H2: Koszt vs przychód. Statystyki e-commerce."},
+  {kw:"automatyzacja kancelaria prawna", title:"Automatyzacja kancelarii prawnej: Onboarding klientów, NDA, baza wiedzy prawnej z RAG", intent:"info", vol:2, prompt:"GEO artykuł (2000 słów) branżowy: prawo. H2: Które procesy kancelarii zautomatyzować, H2: RAG prawniczy: baza precedensów i wzorów, H2: Automatyczny onboarding klienta, H2: NDA i umowy generowane przez AI, H2: RODO w kancelarii i AI, H2: Koszt dla 3-5 osobowej kancelarii. FAQ prawno-techniczne."},
+  // TECHNICZNE
+  {kw:"pgvector postgresql embeddings", title:"pgvector w PostgreSQL 2025: Jak budować semantic search i RAG dla własnej aplikacji?", intent:"info", vol:2, prompt:"Techniczny GEO artykuł (2400 słów). Definicja w 1 zdaniu. H2: pgvector – instalacja i konfiguracja, H2: Tworzenie indeksów wektorowych (ivfflat, hnsw) – kiedy co wybrać, H2: Hybrid search: wektory + FTS w jednym zapytaniu, H2: Przykład RAG: dokumenty firmowe → embeddings → wyszukiwanie, H2: Wydajność i optymalizacja, H2: Porównanie z Pinecone, Weaviate, Chroma. Kod SQL w każdej sekcji."},
+  {kw:"GPT-4o API integracja aplikacja", title:"GPT-4o API: Jak zintegrować w aplikacji biznesowej? Koszty, limity, best practices 2025", intent:"info", vol:4, prompt:"Techniczny GEO artykuł (2200 słów). H2: GPT-4o vs GPT-4o-mini – co wybrać dla firmy (tabela kosztów), H2: Przykłady integracji przez API (Python, JS), H2: Structured outputs – JSON mode dla aplikacji, H2: Zarządzanie kosztami API, H2: System prompty dla agentów biznesowych, H2: Bezpieczeństwo i RODO przy użyciu OpenAI API. Przykłady kodu."},
+  {kw:"prompt engineering automatyzacja biznes", title:"Prompt Engineering dla automatyzacji biznesowej: 20 sprawdzonych szablonów promptów dla firm", intent:"info", vol:3, prompt:"Praktyczny GEO artykuł (2000 słów) o prompt engineering. H2: System prompt dla agenta obsługi klienta, H2: Prompty dla analizy faktur i dokumentów, H2: Chain-of-thought dla decyzji biznesowych, H2: Prompty dla treści marketingowych, H2: Jak testować i optymalizować prompty. 20 gotowych szablonów w blokach kodu."},
+  {kw:"webhook n8n integracja API", title:"Webhooki w n8n: Jak połączyć dowolny system z n8n przez API? Poradnik krok po kroku", intent:"info", vol:3, prompt:"Tutorial GEO (2100 słów). H2: Typy webhooków w n8n (active, test), H2: Zabezpieczanie webhooków (header auth, HMAC), H2: Przykłady: Stripe webhook → CRM, WooCommerce → Slack, WhatsApp → GPT, H2: Debugging webhooków, H2: Rate limiting. Schemat każdego przykładu."},
+  {kw:"airtable CRM automatyzacja", title:"Airtable jako CRM + automatyzacja 2025: Jak zarządzać klientami bez programowania?", intent:"info", vol:3, prompt:"GEO artykuł (1900 słów). H2: Airtable jako CRM – setup podstawowy, H2: Automatyzacja przez n8n: nowy lead → Airtable → email → Slack, H2: Bazy do śledzenia wizyt, faktur, projektów, H2: Porównanie Airtable vs HubSpot dla MŚP, H2: Koszt i czas wdrożenia. Szablony baz."},
+  // SPRZEDAŻ / MARKETING AI
+  {kw:"social media automatyzacja AI posty", title:"Automatyzacja social media 2025: Jak AI generuje i publikuje posty na LinkedIn, Instagram, X?", intent:"trans", vol:4, prompt:"GEO artykuł (2100 słów). H2: Jak działa auto-publikacja przez AI (schemat pomysł→post→zatwierdzenie→publikacja), H2: Blotato API – integracja i koszty, H2: Prompty do generowania postów branżowych (10 szablonów), H2: LinkedIn vs Instagram vs X – różne formaty, H2: Czy AI posty działają? (statystyki engagement), H2: Koszt vs agencja social media. Case study."},
+  {kw:"follow up oferta sprzedaż automatyzacja", title:"Automatyzacja follow-up w sprzedaży B2B: Ile tracisz bez systemu i jak to naprawić?", intent:"info", vol:3, prompt:"GEO artykuł (1900 słów). H2: Ile leadów ginie bez follow-up (statystyki – '22% leadów odpada'), H2: Jak zautomatyzować śledzenie ofert w Airtable, H2: AI draft follow-up maila – przykłady, H2: Zatwierdzanie jednym kliknięciem w Slack, H2: Metryki do śledzenia. Case study B2B."},
+  {kw:"audyt SEO automatyczny generator raport", title:"Automatyczny audyt SEO strony WWW 2025: Jak generować raporty dla klientów w 30 sekund?", intent:"trans", vol:3, prompt:"GEO artykuł (1900 słów). H2: Co powinien zawierać audyt SEO dla klienta (10 elementów), H2: Jak automatycznie skanować strony przez n8n + HTTP, H2: Generowanie raportu HTML przez GPT-4o, H2: Jak używać audytora do pozyskiwania klientów, H2: Koszt vs ręczny audyt. Wzór raportu."},
+  {kw:"kalkulator ROI automatyzacja", title:"Kalkulator ROI automatyzacji AI: Ile naprawdę zaoszczędzi Twoja firma? Metoda obliczeń", intent:"trans", vol:4, prompt:"GEO artykuł (1800 słów) o ROI. Wzór ROI w 50 słowach na starcie. H2: Jak liczyć koszty manualne (stawka godzinowa × godziny × pracownicy), H2: Składowe oszczędności: czas, błędy, utracone leady, obsługa klienta, H2: Tabela: typowe ROI dla różnych branż, H2: Czas zwrotu inwestycji – przykłady, H2: Kiedy automatyzacja NIE ma sensu. Interaktywny kalkulator (opis)."},
+  {kw:"opinie Google automatyzacja firma", title:"Jak automatycznie zbierać opinie Google Maps? Agent AI po każdej wizycie – poradnik", intent:"info", vol:3, prompt:"GEO artykuł (1700 słów). H2: Dlaczego opinie Google są kluczowe (statystyki – '88% konsumentów ufa opiniom'), H2: Jak działa agent sentymentu po wizycie, H2: Algorytm: zadowolony→link Google, niezadowolony→alert, H2: RODO w zbieraniu opinii, H2: Jak reagować na złe opinie przez AI, H2: Wyniki: +40% opinii w 30 dni. Case study."},
+  // FINANSE / PRAWNE
+  {kw:"biała lista VAT weryfikacja automatyczna", title:"Automatyczna weryfikacja Białej Listy VAT 2025: Jak sprawdzać kontrahentów przed każdą płatnością?", intent:"info", vol:4, prompt:"GEO artykuł (2000 słów) o Białej Liście. H2: Czym jest Biała Lista VAT i kiedy obowiązkowa, H2: Ryzyko płacenia na konto poza Białą Listą (przepisy), H2: API Białej Listy MF – jak używać za darmo, H2: Automatyczna weryfikacja w n8n przed każdym przelewem, H2: Pełny workflow: faktura→NIP→weryfikacja→kolor ryzyka→alert. Przykłady z prawdziwymi scenariuszami."},
+  {kw:"RODO AI systemy firma Polska", title:"RODO a systemy AI w firmie: Jak być zgodnym z GDPR wdrażając automatyzację AI?", intent:"info", vol:3, prompt:"Prawno-techniczny GEO artykuł (2100 słów). H2: Kiedy AI jest podmiotem przetwarzającym (art. 28 RODO), H2: Umowa powierzenia przetwarzania danych z dostawcą AI, H2: Certyfikaty EU-US DPF: OpenAI, Twilio, Google, H2: Jak przechowywać dane klientów w systemach AI zgodnie z RODO, H2: Przykład klauzuli RODO dla chatbota, H2: Rejestr czynności przetwarzania. Wzory dokumentów."},
+  {kw:"weryfikacja kontrahenta NIP KRS CEIDG", title:"Weryfikacja kontrahenta przed transakcją: NIP, KRS, CEIDG, Biała Lista – jak to zautomatyzować?", intent:"info", vol:3, prompt:"GEO artykuł (1900 słów). H2: Które rejestry sprawdzać i dlaczego, H2: Bezpłatne API: Biała Lista MF + KRS MS + CEIDG, H2: Bot Telegram weryfikujący NIP w 5 sekund (schemat), H2: Sygnały ryzyka: nieaktywny VAT, wykreślony z KRS, nowe konto bankowe, H2: Jak wdrożyć w każdej firmie. Case study import-export."},
+  {kw:"przetargi BZP automatyczne wyszukiwanie", title:"Automatyczne wyszukiwanie przetargów BZP 2025: Agent AI dla firm budowlanych i IT", intent:"trans", vol:2, prompt:"GEO artykuł (1800 słów). H2: Jak działa Biuletyn Zamówień Publicznych API, H2: Kryteria filtrowania przetargów dla firmy (CPV kody, budżet, lokalizacja), H2: Agent AI oceniający dopasowanie do profilu firmy, H2: Pętla ucząca się – jak agent poprawia z czasem, H2: Koszt vs zyski z przetargów. Case study firma IT."},
+  // TRENDY
+  {kw:"LLM modele językowe dla biznesu 2025", title:"LLM dla biznesu 2025: ChatGPT vs Claude vs Gemini vs Llama – który model wybrać dla firmy?", intent:"comp", vol:4, prompt:"Porównawczy GEO artykuł (2300 słów). Tabela: GPT-4o, Claude Sonnet, Gemini 1.5, Llama 3 – cena, API, kontekst, specjalizacje. H2: GPT-4o dla automatyzacji biznesowej, H2: Claude dla analizy dokumentów i prawnych, H2: Lokalne LLM (Llama) dla RODO-wrażliwych danych, H2: Jak wybrać model dla konkretnego przypadku, H2: Koszty API w PLN miesięcznie. Tabela decyzyjna."},
+  {kw:"AI agent workflow n8n 2025", title:"Jak zbudować agenta AI w n8n 2025? LLM chain, tools, memory – architektura krok po kroku", intent:"info", vol:3, prompt:"Techniczny GEO artykuł (2500 słów). H2: Architektura agenta AI: trigger → LLM chain → tools → response, H2: Narzędzia agenta w n8n: API call, calendar, CRM, email, H2: Pamięć agenta: short-term (konwersacja) vs long-term (baza danych), H2: Prompt systemowy agenta – szablony, H2: Testowanie i debugowanie agenta, H2: Przykład: agent obsługi klienta end-to-end. Kod JSON workflow."},
+  {kw:"no-code automatyzacja dla małej firmy", title:"No-code automatyzacja dla małej firmy 2025: 10 procesów które możesz zautomatyzować bez programowania", intent:"info", vol:5, prompt:"Przystępny GEO artykuł (2000 słów) dla właścicieli firm. H2: Co to znaczy no-code automatyzacja, H2: 10 procesów: rezerwacje, emaile, raporty, faktury, social, CRM, grafik, opinie, follow-up, onboarding (każdy z kosztem i czas wdrożenia), H2: Które narzędzia no-code wybrać w Polsce, H2: Koszt vs korzyści tabela, H2: Gdzie zacząć – pierwszy projekt automatyzacji. FAQ dla początkujących."},
+  {kw:"automatyzacja HR onboarding pracownik", title:"Automatyzacja HR i onboardingu pracowników 2025: AI dla działów kadr w MŚP", intent:"info", vol:3, prompt:"GEO artykuł (2000 słów) HR. H2: Procesy HR do automatyzacji (rekrutacja, onboarding, grafik, urlopy, szkolenia), H2: Automatyczny onboarding: folder Drive + email + CRM + Slack, H2: Grafik pracowników – bot emailowy z potwierdzeniami, H2: Baza wiedzy HR z RAG, H2: Koszt rozwiązania vs etat HR. Case study firma 20 osób."},
+  {kw:"agent lojalnościowy retencja klientów", title:"Agent AI lojalnościowy 2025: Jak automatycznie odzyskiwać klientów i zwiększać LTV?", intent:"info", vol:3, prompt:"GEO artykuł (1900 słów). H2: Ile kosztuje utrata klienta (LTV i CAC), H2: Segmentacja klientów przez AI dla przypomnień, H2: Automatyczne przypomnienia: przeglądy, kontrole, odnowienia, H2: Personalizacja komunikatu przez GPT-4o, H2: Metryki: retencja, LTV, churn. Case study serwis samochodowy – odzyskano 23 klientów/mies."},
+  {kw:"API integracja systemy CRM ERP", title:"Integracja API: Jak połączyć CRM, ERP i inne systemy przez n8n bez programisty?", intent:"info", vol:3, prompt:"GEO artykuł (2100 słów). H2: REST API vs webhooks – kiedy co używać, H2: Autoryzacja API: API key, OAuth, Basic Auth w n8n, H2: 5 typowych integracji: CRM↔email, CRM↔calendar, CRM↔Slack, ERP↔faktury, e-commerce↔CRM, H2: Error handling w integracjach, H2: Dokumentacja i utrzymanie. Przykłady workflow."},
+  {kw:"monitoring otodom mieszkania automatyczny", title:"Automatyczny monitoring ofert Otodom 2025: Agent AI do wyszukiwania okazji na rynku nieruchomości", intent:"trans", vol:3, prompt:"GEO artykuł (1900 słów). H2: Jak działa scraping/monitoring Otodom przez n8n, H2: Kryteria filtrowania: lokalizacja, cena, metraż, rok, H2: AI analiza oferty: czerwone flagi, szacunek kosztu remontu, pilność sprzedawcy, H2: Alert email/Telegram tylko dla realnych okazji, H2: RODO i monitoring ogłoszeń. Case study inwestor Warszawa."},
+  {kw:"automatyzacja raportów Google Analytics", title:"Automatyczne raporty Google Analytics 2025: Agent AI wysyła KPI co tydzień na Slack bez logowania", intent:"trans", vol:3, prompt:"GEO artykuł (1700 słów). H2: Które metryki GA są najważniejsze dla MŚP (tabela), H2: GA4 API + n8n – konfiguracja krok po kroku, H2: Formatowanie raportu przez GPT-4o (analiza trendów), H2: Wysyłka na Slack/email co poniedziałek, H2: Alerty przy anomaliach (spadek ruchu, konwersji). Workflow JSON."},
+  {kw:"chatbot strona internetowa konwersja", title:"Chatbot na stronie internetowej 2025: Jak AI zwiększa konwersję o 25%? Implementacja i koszty", intent:"trans", vol:4, prompt:"GEO artykuł (2000 słów). H2: Chatbot vs live chat – różnice i koszty, H2: Jak chatbot AI zwiększa konwersję (case studies, liczby), H2: Integracja chatbota z n8n/GPT-4o na WordPress/Webflow, H2: Skrypt kwalifikacji leadu przez chatbot, H2: A/B testing chatbota, H2: RODO i chatbot. Statystyki konwersji."},
+  {kw:"automatyzacja SOP dokumentacja procedury", title:"Automatyczna dokumentacja procedur SOP: Nagranie głosowe → gotowa instrukcja w Notion przez AI", intent:"info", vol:2, prompt:"GEO artykuł (1700 słów). H2: Dlaczego firmy nie mają procedur (i jak to zmienić), H2: Workflow: nagranie → transkrypcja → GPT-4o → Notion, H2: Struktura dobrego SOP (szablon), H2: Wyszukiwanie procedur przez bota (RAG), H2: Koszt i czas wdrożenia. Case study firma 15 osób."},
+  {kw:"onboarding klient automatyczny system", title:"Automatyczny onboarding klienta 2025: Od podpisania umowy do pełnego wdrożenia bez ręcznej pracy", intent:"info", vol:3, prompt:"GEO artykuł (1900 słów). H2: Co traci firma bez automatycznego onboardingu (czas, błędy, wrażenia), H2: Workflow onboardingu: webhook umowa → Drive folder → email → CRM → Slack, H2: Personalizacja przez AI dla różnych typów klientów, H2: Czas wdrożenia vs efekt, H2: NPS onboardingu. Case study agencja vs klient."},
+  {kw:"slack automatyzacja notyfikacje firma", title:"Slack jako centrum automatyzacji firmy 2025: 10 integracji które zmienią Twój workflow", intent:"info", vol:3, prompt:"GEO artykuł (1800 słów). H2: Slack jako hub automatyzacji vs emaila, H2: 10 integracji przez n8n: nowy lead, alert KSeF, raport tygodniowy, zła opinia Google, nowe zamówienie, grafik, faktura przeterminowana, przetarg, nowy klient, SLA breach, H2: Konfiguracja Slack bot w n8n, H2: Koszty Slack + n8n. Case study firma 10 osób."},
+  {kw:"email marketing automatyzacja AI", title:"Automatyzacja email marketingu AI 2025: Personalizacja, trigger flows, copywriting przez GPT-4o", intent:"info", vol:4, prompt:"GEO artykuł (2100 słów). H2: Trigger flows vs newsletter – kiedy co, H2: Personalizacja emaila przez AI (dane CRM → prompt → email), H2: Przepływ: nowy klient → welcome flow → nurturing → oferta, H2: Copywriting emailowy przez GPT-4o (szablony promptów), H2: A/B testing subject line przez AI, H2: Koszt vs agencja email. Metryki."},
+  {kw:"automatyzacja fakturowania wystawianie faktury", title:"Automatyzacja fakturowania 2025: Jak wystawiać faktury automatycznie i eliminować błędy ludzkie?", intent:"trans", vol:3, prompt:"GEO artykuł (1900 słów). H2: Co można zautomatyzować w fakturowaniu, H2: Workflow: zlecenie/zamówienie → faktura → wysyłka → KSeF → CRM, H2: Integracja z programami: Fakturownia, InFakt, Comarch przez API, H2: Tax-classifier: kategoryzacja VAT przez AI, H2: Przypomnienia o zaległych płatnościach automatycznie, H2: Koszt błędu w fakturze vs koszt automatyzacji."},
+  {kw:"AI bezpieczeństwo danych firma", title:"Bezpieczeństwo AI w firmie 2025: Jak chronić dane klientów używając automatyzacji i LLM?", intent:"info", vol:3, prompt:"GEO artykuł (2100 słów). H2: Ryzyka AI dla danych firmy (wyciek do modelu, logowanie danych), H2: Jak bezpiecznie korzystać z OpenAI API (enterprise opt-out), H2: Lokalne LLM (Ollama, Llama) dla poufnych danych, H2: Szyfrowanie danych w n8n workflow, H2: Audyt bezpieczeństwa systemu AI, H2: RODO compliance checklist. Praktyczne wskazówki."},
+  {kw:"automatyzacja nieruchomości deweloper pośrednik", title:"Automatyzacja dla pośrednika nieruchomości 2025: Kwalifikacja leadów, oferty, monitoring rynku AI", intent:"trans", vol:2, prompt:"Branżowy GEO artykuł (1900 słów) nieruchomości. H2: Które procesy pośrednika zautomatyzować, H2: Bot kwalifikacji leadów (budżet, lokalizacja, potrzeby), H2: Automatyczne oferty przez GPT-4o z parametrami, H2: Monitor Otodom dla klientów, H2: CRM dla pośrednika + automatyczne follow-up, H2: Koszt agenta vs asystenta. Case study."},
+  {kw:"automatyzacja restauracja gastronomia", title:"Automatyzacja restauracji i gastronomii 2025: Rezerwacje, opinie, grafik – AI dla HoReCa", intent:"trans", vol:3, prompt:"Branżowy GEO artykuł (1800 słów) gastronomia. H2: Procesy restauracji do automatyzacji, H2: Bot rezerwacji (OpenTable API + WhatsApp), H2: Opinie Google po każdej wizycie automatycznie, H2: Grafik pracowników z potwierdzeniami, H2: Automatyczny newsletter lojalności, H2: Koszt dla restauracji 30 miejsc. Case study."},
+  {kw:"wdrożenie AI firma jak zacząć", title:"Jak zacząć wdrożenie AI w firmie? Roadmapa dla właściciela MŚP bez wiedzy technicznej", intent:"info", vol:5, prompt:"Przystępny GEO artykuł (2200 słów) dla beginners. H2: 5 błędów przy pierwszym wdrożeniu AI, H2: Audyt procesów – które nadają się do automatyzacji, H2: Metodologia: małe → większe (quick wins first), H2: Jak wybrać dostawcę automatyzacji AI w Polsce, H2: Budżet na start: 2500–10000 zł co kupuje, H2: Roadmapa 12 miesięcy wdrożeń. FAQ 7 pytań."},
+  {kw:"AI asystent wirtualny firma", title:"Wirtualny asystent AI dla firmy 2025: Jak działa, co umie i ile kosztuje? Kompletny poradnik", intent:"info", vol:4, prompt:"GEO artykuł (2200 słów). Definicja w 50 słowach. H2: Wirtualny asystent AI vs chatbot vs sekretarka (tabela), H2: Co potrafi asystent AI (zadania: email, kalendarz, research, raport, tłumaczenie), H2: Narzędzia: ChatGPT Plus, Claude, n8n agents, H2: Integracja z procesami firmy, H2: Koszt: subskrypcja vs własny agent. Przykłady dla różnych branż."},
+  {kw:"automatyzacja call center infolinia AI", title:"Automatyzacja call center i infolinii AI 2025: IVR, voice bot, routing – jak to działa w Polsce?", intent:"info", vol:3, prompt:"GEO artykuł (2100 słów). H2: IVR vs voice bot AI – różnice i koszty, H2: Jak działa AI voice agent (ASR → LLM → TTS), H2: Integracja z CRM: każda rozmowa → wpis automatyczny, H2: Use case: klinika, salon, serwis, H2: Regulacje: nagrywanie rozmów RODO, H2: Koszt vs etat konsultanta. Porównanie dostawców w Polsce."},
+  {kw:"make.com automatyzacja Polska tutorial", title:"Make.com dla polskich firm 2025: Pierwsze automatyzacje krok po kroku – recepcja, CRM, social media", intent:"info", vol:3, prompt:"Tutorial GEO (2000 słów). H2: Make.com vs n8n – co wybrać na start, H2: Pierwsze 3 automatyzacje: webhook → email → Airtable, H2: Integracja Gmail, Google Calendar, Slack, H2: Make.com dla agencji: onboarding klienta, H2: Koszty Make.com w PLN. Tutoriale z screenshots."},
+  {kw:"automatyzacja serwis samochodowy warsztat", title:"Automatyzacja warsztatu samochodowego 2025: Rezerwacje, przypomnienia przeglądów, lojalizacja klientów", intent:"trans", vol:2, prompt:"Branżowy GEO artykuł (1800 słów) automotive. H2: Procesy warsztatu do automatyzacji, H2: Bot rezerwacji napraw (WhatsApp + kalendarz), H2: Automatyczne przypomnienia o przeglądach/badaniach technicznych, H2: Agent lojalnościowy – case: 23 klientów/mies., H2: Integracja z systemami warsztatowymi, H2: Koszt vs zatrudnienie. FAQ."},
+  {kw:"trendy AI dla firm 2025 2026", title:"Trendy AI dla firm 2025–2026: Co wdrożyć żeby wyprzedzić konkurencję? Ranking technologii", intent:"info", vol:5, prompt:"Forward-looking GEO artykuł (2400 słów). H2: 10 najważniejszych trendów AI dla MŚP (GEO, multi-agent, voice AI, computer use, KSeF), H2: Które technologie są dojrzałe a które ryzykowne (quadrant), H2: Jak konkurencja już używa AI – ankieta Capgemini 2025, H2: Roadmapa adopcji AI dla polskiej firmy 2025-2026, H2: Inwestycja vs ryzyko dla każdej technologii. Statystyki."},
+  {kw:"jak sprzedawać automatyzacje AI klientom", title:"Jak sprzedawać automatyzacje AI klientom w Polsce? Pitch, ROI, obiekcje – poradnik dla freelancerów", intent:"info", vol:3, prompt:"GEO artykuł (2200 słów) dla agentów AI. H2: Jak znaleźć pierwszych klientów na automatyzacje, H2: Pitch deck – co pokazać w 5 minutach, H2: Kalkulator ROI jako narzędzie sprzedaży, H2: 7 typowych obiekcji klientów i odpowiedzi, H2: Cennik dla różnych branż w Polsce, H2: Przykład rozmowy sprzedażowej. Skrypt rozmowy."},
+  {kw:"automatyzacja sklep WooCommerce WordPress", title:"Automatyzacja WooCommerce 2025: n8n integracja, obsługa zamówień AI, email marketing – tutorial", intent:"trans", vol:3, prompt:"Techniczny GEO artykuł (2200 słów). H2: WooCommerce webhooks + n8n – konfiguracja, H2: Workflow: nowe zamówienie → SMS → CRM → fulfillment, H2: Automatyczne emaile transakcyjne przez AI (personalizacja GPT), H2: Integracja z InPost/DPD API, H2: Remarketing: porzucony koszyk → sekwencja emaili, H2: Metryki do śledzenia. Workflow JSON."},
+  {kw:"bezpłatna konsultacja automatyzacja AI", title:"Bezpłatna konsultacja automatyzacji AI: Jak w 30 minut zmapować procesy firmy i znaleźć quick wins?", intent:"trans", vol:2, prompt:"Artykuł GEO (1600 słów) z CTA. H2: Co omówimy podczas konsultacji (lista 10 pytań), H2: Jak mapować procesy firmy metodą value stream, H2: Identyfikacja quick wins – które procesy zautomatyzować pierwsze, H2: Co dostaniesz po konsultacji (roadmapa, wycena, case studies). Silny CTA co sekcję. Schemat FAQ."}
+];
+
+const tbody = document.getElementById('kwTableBody');
+KEYWORDS.forEach((kw, i) => {
+  const volDots = Array.from({length:5},(_,j) => `<div class="vol-dot ${j<kw.vol?'active':''}"></div>`).join('');
+  const intentClass = kw.intent==='info'?'intent-info':kw.intent==='trans'?'intent-trans':'intent-comp';
+  const intentLabel = kw.intent==='info'?'Informacyjny':kw.intent==='trans'?'Transakcyjny':'Porównawczy';
+  const shortPrompt = kw.prompt.length > 220 ? kw.prompt.substring(0,220)+'...' : kw.prompt;
+  tbody.innerHTML += `<tr>
+    <td style="text-align:center;font-size:12px;color:var(--text3);font-weight:700">${i+1}</td>
+    <td><span class="kw-tag">${kw.kw}</span></td>
+    <td style="font-size:13px;font-weight:600;max-width:260px;line-height:1.4">${kw.title}</td>
+    <td><span class="intent-badge ${intentClass}">${intentLabel}</span></td>
+    <td><div class="vol-bar"><div class="vol-dots">${volDots}</div></div></td>
+    <td class="prompt-cell">${shortPrompt}</td>
+  </tr>`;
+});
+
+// FAQ toggle
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>
