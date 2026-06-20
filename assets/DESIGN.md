@@ -118,6 +118,50 @@ Integracje Biznesowe operates in a clean-light, professional visual register: a 
 - **Steps grid:** 4 columns, 20px gap (2 columns ≤900px, 1 column ≤560px)
 - **Post card grid:** 160px thumbnail + 1fr content, 28px gap (1 column ≤600px)
 
+## Blog & Article Pages
+
+Blog pages use the same design tokens as the main site but with `--bg2` (`#f4f6fb`) as body background — creating a "light gray page, white content" editorial look. The main site uses `--bg` (white) as body background.
+
+### Blog Index Layout
+- Body: `--bg2` (#f4f6fb)
+- Header section (`.page-header`): `--bg` (white), full-width white band
+- Posts section: inherits `--bg2` gray
+- Post cards: `--bg` (white) background, `--border` (1px) — no box-shadows
+- Post thumbnail: `linear-gradient(135deg,#dde3f5,#c8d5f0)` — cool blue-gray, never dark or colorful
+
+### Article Layout
+- Body: `--bg2` (#f4f6fb)
+- Article header (`.article-header`): `--bg` (white), full-width white band
+- Article body (`article.article-body`): `--bg` (white), full-width white reading band
+- Footer: `--bg` (white)
+- Reading column: `max-width: 760px` (narrower than main site's 1000px for comfortable reading)
+
+### Article-specific Components
+
+**Back Link** — `color: --text2`, 13px Inter weight 600, `← ` prefix. Hover: `--lime-text`.
+
+**Article Tag** — same structure as `.sec-tag`: `--lime-dim` bg, `rgba(200,241,53,0.2)` border, `--lime-text` text, 11px Inter weight 700 uppercase, 100px radius.
+
+**Article Title** — Plus Jakarta Sans, `clamp(28px,5vw,46px)`, weight 700, `--text`, letter-spacing -0.02em, line-height 1.15.
+
+**Article Meta** — Inter 13px, `--text3`. Format: `DD miesiąca RRRR · X min czytania`.
+
+**Article Body** — Inter 16px, `--text2` color, line-height 1.85. Headings in Plus Jakarta Sans. `strong` in `--text`. Links: `--lime-text` color + `rgba(77,106,0,0.3)` bottom border.
+
+**Callout Box** — `--surface` bg, `--border` border (1px), left accent `3px solid --lime`, `--radius` (14px), 20px × 24px padding. `strong` inside: `--lime-text`.
+
+**Divider** — `border-top: 1px solid var(--border)`, 40px margin top and bottom.
+
+**Article CTA Box** — `--surface` bg, `--border` border, `--radius-lg` (20px), 36px padding, centered. Title Plus Jakarta Sans 22px weight 600. Description Inter 14px `--text2`. Primary lime button.
+
+### Anti-AI-Slop Rules for Blog
+- Post thumbnail: always `linear-gradient(135deg,#dde3f5,#c8d5f0)` — never dark, never colorful gradients
+- No `box-shadow` on post cards — border only (`--border`)
+- No gradient or colored hero/header backgrounds — white canvas only
+- Links in articles: always `--lime-text` (#4d6a00), never raw `--lime` (#c8f135) as text
+- Don't use Clash Display/Satoshi on blog — stay consistent with Plus Jakarta Sans + Inter from the main site
+- Depth through surface color steps, not shadows
+
 ## Components
 
 ### Fixed Glass Navigation
