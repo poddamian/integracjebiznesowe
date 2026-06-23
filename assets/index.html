@@ -147,6 +147,7 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .sec-header{margin-bottom:52px}
 .sec-header.center{text-align:center;max-width:640px;margin-left:auto;margin-right:auto}
 .sec-title{font-family:var(--fd);font-size:clamp(26px,3.4vw,44px);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin-bottom:14px;overflow-wrap:break-word;word-break:break-word;hyphens:auto}
+.sec-title.slim{font-weight:500;letter-spacing:-.008em}
 .sec-title em{font-style:normal;color:var(--lime-text)}
 .sec-sub{font-size:16px;color:var(--text2);line-height:1.72}
 
@@ -474,7 +475,7 @@ footer{background:#111827;padding:60px 0 32px}
   <div class="container">
     <div class="sec-header center reveal">
       <div class="sec-tag" data-i18n="sec_tag_process">Proces</div>
-      <h2 class="sec-title" id="proces-heading" data-i18n-html="sec_title_process">Jak <em>wygląda współpraca</em></h2>
+      <h2 class="sec-title slim" id="proces-heading" data-i18n-html="sec_title_process">Jak <em>wygląda współpraca</em></h2>
     </div>
     <div class="steps-grid">
       <div class="steps-connector" aria-hidden="true"></div>
@@ -511,7 +512,7 @@ footer{background:#111827;padding:60px 0 32px}
   <div class="container">
     <div class="sec-header center reveal">
       <div class="sec-tag" data-i18n="sec_tag_pricing">Cennik</div>
-      <h2 class="sec-title" id="cennik-heading" data-i18n-html="sec_title_pricing">Wybierz <em>odpowiedni pakiet</em></h2>
+      <h2 class="sec-title slim" id="cennik-heading" data-i18n-html="sec_title_pricing">Wybierz <em>odpowiedni pakiet</em></h2>
       <p class="sec-sub" data-i18n="sec_sub_pricing">Każde wdrożenie jest inne — pakiety to punkt startowy. Możemy je dostosować do Twoich potrzeb.</p>
     </div>
     <div class="pricing-grid">
@@ -665,6 +666,7 @@ footer{background:#111827;padding:60px 0 32px}
         <div class="footer-col-title" data-i18n="footer_col_tools">Narzędzia</div>
         <div class="footer-links">
           <a href="audyt-potencjalu-ai.html" data-i18n="footer_audit">Audyt Potencjału AI</a>
+          <a href="kalkulator-roi.html" data-i18n="footer_roi">Kalkulator ROI</a>
         </div>
       </div>
     </div>
@@ -716,7 +718,7 @@ var T = {
     sec_sub_contact:"Napisz, co robisz ręcznie i powtarzalnie w swojej firmie — sprawdzimy razem, czy da się to zautomatyzować.",
     remote_notice:"Całość komunikacji przez e-mail — bez konieczności spotkania.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Automatyzacja procesów biznesowych dla małych firm. Wdrożenia n8n i Make.com w całości zdalnie.",
-    footer_col_nav:"Nawigacja",footer_col_legal:"Prawne",footer_terms:"Regulamin",footer_privacy:"Polityka Prywatności",footer_col_tools:"Narzędzia",footer_audit:"Audyt Potencjału AI",
+    footer_col_nav:"Nawigacja",footer_col_legal:"Prawne",footer_terms:"Regulamin",footer_privacy:"Polityka Prywatności",footer_col_tools:"Narzędzia",footer_audit:"Audyt Potencjału AI",footer_roi:"Kalkulator ROI",
     fc1_label:"Workflow",fc1_value:"Oferta PDF",fc1_sub:"Gotowa w 30 sekund",fc1_status:"Działa automatycznie",
     fc2_label:"Oszczędność",fc2_value:"8h / tydzień",fc2_sub:"Czas odzyskany",
     fc3_label:"Integracje",fc3_value:"n8n + Make.com",fc3_sub:"+ AI, CRM, e-mail"
@@ -758,7 +760,7 @@ var T = {
     sec_sub_contact:"Write and describe what you do manually and repeatedly in your business — we'll check together if it can be automated.",
     remote_notice:"All communication by email — no in-person meeting required.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Business process automation for small businesses. n8n and Make.com implementations, fully remote.",
-    footer_col_nav:"Navigation",footer_col_legal:"Legal",footer_terms:"Terms of Service",footer_privacy:"Privacy Policy",footer_col_tools:"Tools",footer_audit:"AI Potential Audit",
+    footer_col_nav:"Navigation",footer_col_legal:"Legal",footer_terms:"Terms of Service",footer_privacy:"Privacy Policy",footer_col_tools:"Tools",footer_audit:"AI Potential Audit",footer_roi:"ROI Calculator",
     fc1_label:"Workflow",fc1_value:"PDF Proposal",fc1_sub:"Ready in 30 seconds",fc1_status:"Running automatically",
     fc2_label:"Savings",fc2_value:"8h / week",fc2_sub:"Time reclaimed",
     fc3_label:"Integrations",fc3_value:"n8n + Make.com",fc3_sub:"+ AI, CRM, e-mail"
@@ -800,7 +802,7 @@ var T = {
     sec_sub_contact:"Schreiben Sie, was Sie manuell tun — wir prüfen gemeinsam, ob es automatisiert werden kann.",
     remote_notice:"Gesamte Kommunikation per E-Mail — kein persönliches Treffen erforderlich.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Geschäftsprozessautomatisierung für kleine Unternehmen. n8n und Make.com, vollständig remote.",
-    footer_col_nav:"Navigation",footer_col_legal:"Rechtliches",footer_terms:"AGB",footer_privacy:"Datenschutz",footer_col_tools:"Tools",footer_audit:"KI-Potenzial-Audit",
+    footer_col_nav:"Navigation",footer_col_legal:"Rechtliches",footer_terms:"AGB",footer_privacy:"Datenschutz",footer_col_tools:"Tools",footer_audit:"KI-Potenzial-Audit",footer_roi:"ROI-Rechner",
     fc1_label:"Workflow",fc1_value:"PDF-Angebot",fc1_sub:"Fertig in 30 Sekunden",fc1_status:"Läuft automatisch",
     fc2_label:"Ersparnis",fc2_value:"8h / Woche",fc2_sub:"Zeit zurückgewonnen",
     fc3_label:"Integrationen",fc3_value:"n8n + Make.com",fc3_sub:"+ KI, CRM, E-Mail"
@@ -842,7 +844,7 @@ var T = {
     sec_sub_contact:"Scrivi cosa fai manualmente nella tua azienda — verificheremo insieme se può essere automatizzato.",
     remote_notice:"Tutta la comunicazione via email — nessun incontro di persona richiesto.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Automazione dei processi aziendali per le piccole imprese. Implementazioni n8n e Make.com, completamente da remoto.",
-    footer_col_nav:"Navigazione",footer_col_legal:"Legale",footer_terms:"Termini di servizio",footer_privacy:"Privacy Policy",footer_col_tools:"Strumenti",footer_audit:"Audit Potenziale AI",
+    footer_col_nav:"Navigazione",footer_col_legal:"Legale",footer_terms:"Termini di servizio",footer_privacy:"Privacy Policy",footer_col_tools:"Strumenti",footer_audit:"Audit Potenziale AI",footer_roi:"Calcolatore ROI",
     fc1_label:"Workflow",fc1_value:"Offerta PDF",fc1_sub:"Pronta in 30 secondi",fc1_status:"Funziona automaticamente",
     fc2_label:"Risparmio",fc2_value:"8h / settimana",fc2_sub:"Tempo recuperato",
     fc3_label:"Integrazioni",fc3_value:"n8n + Make.com",fc3_sub:"+ AI, CRM, e-mail"
@@ -884,7 +886,7 @@ var T = {
     sec_sub_contact:"Escribe qué haces manualmente en tu empresa — verificaremos juntos si se puede automatizar.",
     remote_notice:"Toda la comunicación por email — sin reunión presencial requerida.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Automatización de procesos empresariales para pequeñas empresas. Implementaciones n8n y Make.com, completamente remotas.",
-    footer_col_nav:"Navegación",footer_col_legal:"Legal",footer_terms:"Términos de servicio",footer_privacy:"Política de privacidad",footer_col_tools:"Herramientas",footer_audit:"Auditoría de Potencial IA",
+    footer_col_nav:"Navegación",footer_col_legal:"Legal",footer_terms:"Términos de servicio",footer_privacy:"Política de privacidad",footer_col_tools:"Herramientas",footer_audit:"Auditoría de Potencial IA",footer_roi:"Calculadora ROI",
     fc1_label:"Flujo de trabajo",fc1_value:"Oferta PDF",fc1_sub:"Lista en 30 segundos",fc1_status:"Funciona automáticamente",
     fc2_label:"Ahorro",fc2_value:"8h / semana",fc2_sub:"Tiempo recuperado",
     fc3_label:"Integraciones",fc3_value:"n8n + Make.com",fc3_sub:"+ IA, CRM, e-mail"
@@ -926,7 +928,7 @@ var T = {
     sec_sub_contact:"Écrivez ce que vous faites manuellement dans votre entreprise — nous vérifierons ensemble.",
     remote_notice:"Toute communication par email — aucune réunion en personne requise.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Automatisation des processus métier pour les petites entreprises. Implémentations n8n et Make.com, entièrement à distance.",
-    footer_col_nav:"Navigation",footer_col_legal:"Mentions légales",footer_terms:"CGU",footer_privacy:"Politique de confidentialité",footer_col_tools:"Outils",footer_audit:"Audit Potentiel IA",
+    footer_col_nav:"Navigation",footer_col_legal:"Mentions légales",footer_terms:"CGU",footer_privacy:"Politique de confidentialité",footer_col_tools:"Outils",footer_audit:"Audit Potentiel IA",footer_roi:"Calculateur ROI",
     fc1_label:"Workflow",fc1_value:"Devis PDF",fc1_sub:"Prêt en 30 secondes",fc1_status:"Fonctionne automatiquement",
     fc2_label:"Économies",fc2_value:"8h / semaine",fc2_sub:"Temps récupéré",
     fc3_label:"Intégrations",fc3_value:"n8n + Make.com",fc3_sub:"+ IA, CRM, e-mail"
@@ -968,7 +970,7 @@ var T = {
     sec_sub_contact:"اكتب ما تفعله يدوياً في شركتك — سنتحقق معاً إذا كان يمكن أتمتته.",
     remote_notice:"جميع التواصل عبر البريد الإلكتروني — لا حاجة لاجتماع شخصي.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"أتمتة العمليات التجارية للشركات الصغيرة. تنفيذات n8n وMake.com بالكامل عن بُعد.",
-    footer_col_nav:"التنقل",footer_col_legal:"قانوني",footer_terms:"شروط الخدمة",footer_privacy:"سياسة الخصوصية",footer_col_tools:"أدوات",footer_audit:"تدقيق إمكانات الذكاء الاصطناعي",
+    footer_col_nav:"التنقل",footer_col_legal:"قانوني",footer_terms:"شروط الخدمة",footer_privacy:"سياسة الخصوصية",footer_col_tools:"أدوات",footer_audit:"تدقيق إمكانات الذكاء الاصطناعي",footer_roi:"حاسبة العائد على الاستثمار",
     fc1_label:"سير العمل",fc1_value:"عرض PDF",fc1_sub:"جاهز في 30 ثانية",fc1_status:"يعمل تلقائياً",
     fc2_label:"التوفير",fc2_value:"8 ساعات / أسبوع",fc2_sub:"الوقت المستعاد",
     fc3_label:"التكاملات",fc3_value:"n8n + Make.com",fc3_sub:"+ الذكاء الاصطناعي، CRM، البريد"
