@@ -255,7 +255,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_employees">Liczba pracowników na stanowiskach administracyjnych</label>
           <div class="slider-row">
-            <div class="slider-unit">os.</div>
+            <div class="slider-unit" data-i18n="unit_person">os.</div>
             <input type="range" id="employees" min="1" max="20" value="3" oninput="update()">
             <div class="slider-val" id="employees-val">3</div>
           </div>
@@ -264,7 +264,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_salary">Średnia miesięczna pensja (brutto)</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="salary" min="3000" max="15000" step="500" value="6000" oninput="update()">
             <div class="slider-val" id="salary-val">6 000</div>
           </div>
@@ -282,7 +282,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_support">Koszty obsługi klienta (infolinia, recepcja) / mies.</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="support" min="0" max="30000" step="500" value="5000" oninput="update()">
             <div class="slider-val" id="support-val">5 000</div>
           </div>
@@ -291,7 +291,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_errors">Błędy ludzkie — szacowana miesięczna strata</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="errors" min="0" max="20000" step="200" value="2000" oninput="update()">
             <div class="slider-val" id="errors-val">2 000</div>
           </div>
@@ -300,7 +300,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_missed">Utracone przychody — klienci bez odpowiedzi w czasie (mies.)</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="missed" min="0" max="50000" step="500" value="8000" oninput="update()">
             <div class="slider-val" id="missed-val">8 000</div>
           </div>
@@ -350,7 +350,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_leads">Miesięczna wartość nowych leadów (obecna)</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="leads" min="0" max="100000" step="1000" value="20000" oninput="update()">
             <div class="slider-val" id="leads-val">20 000</div>
           </div>
@@ -362,7 +362,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_setupCost">Jednorazowy koszt wdrożenia (setup fee)</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="setupCost" min="1000" max="30000" step="500" value="5000" oninput="update()">
             <div class="slider-val" id="setupCost-val">5 000</div>
           </div>
@@ -371,7 +371,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         <div class="field">
           <label data-i18n="l_monthlyCost">Miesięczny abonament / utrzymanie</label>
           <div class="slider-row">
-            <div class="slider-unit">PLN</div>
+            <div class="slider-unit" data-i18n="currency_code">PLN</div>
             <input type="range" id="monthlyCost" min="200" max="5000" step="100" value="800" oninput="update()">
             <div class="slider-val" id="monthlyCost-val">800</div>
           </div>
@@ -520,6 +520,7 @@ var T = {
     btn_print:"🖨️ Drukuj / PDF",btn_copy:"📋 Kopiuj wyniki",btn_contact:"Bezpłatna konsultacja",
     bar_time:"Czas pracy",bar_support:"Obsługa klienta",bar_errors:"Błędy",bar_leads:"Utracone lead.",bar_revenue:"Wzrost przychodów",
     pb_less1:"< 1 mies.",pb_over:"> 36 mies.",pb_sfx:" mies.",
+    fmt_pre:"",fmt_suf:" zł",currency_code:"PLN",unit_person:"os.",
     opts:["— Własne wartości —","🏥 Klinika / Gabinet medyczny","💇 Salon beauty / Spa","🏢 Agencja marketingowa","🛒 E-commerce / Sklep online","⚖️ Kancelaria prawna","🔧 Serwis samochodowy","🏠 Nieruchomości","🍽️ Restauracja / Gastronomia"],
     copy_hdr:"📊 RAPORT ROI – AUTOMATYZACJA AI",copy_h:"Horyzont analizy",copy_m:"Miesięczna oszczędność netto",copy_r:"ROI za",copy_mos:"miesięcy",copy_pb:"Zwrot inwestycji",copy_op:"Koszt NIE-wdrożenia"
   },
@@ -557,6 +558,7 @@ var T = {
     btn_print:"🖨️ Print / PDF",btn_copy:"📋 Copy results",btn_contact:"Free consultation",
     bar_time:"Labour costs",bar_support:"Customer service",bar_errors:"Errors",bar_leads:"Lost leads",bar_revenue:"Revenue growth",
     pb_less1:"< 1 mo.",pb_over:"> 36 mo.",pb_sfx:" mo.",
+    fmt_pre:"£",fmt_suf:"",currency_code:"GBP",unit_person:"pers.",
     opts:["— Custom values —","🏥 Clinic / Medical practice","💇 Beauty salon / Spa","🏢 Marketing agency","🛒 E-commerce / Online store","⚖️ Law firm","🔧 Car repair shop","🏠 Real estate","🍽️ Restaurant / Food service"],
     copy_hdr:"📊 ROI REPORT – AI AUTOMATION",copy_h:"Analysis horizon",copy_m:"Net monthly savings",copy_r:"ROI over",copy_mos:"months",copy_pb:"Payback period",copy_op:"Cost of NOT automating"
   },
@@ -594,6 +596,7 @@ var T = {
     btn_print:"🖨️ Drucken / PDF",btn_copy:"📋 Ergebnisse kopieren",btn_contact:"Kostenlose Beratung",
     bar_time:"Arbeitskosten",bar_support:"Kundenservice",bar_errors:"Fehler",bar_leads:"Verlorene Leads",bar_revenue:"Umsatzwachstum",
     pb_less1:"< 1 Mon.",pb_over:"> 36 Mon.",pb_sfx:" Mon.",
+    fmt_pre:"€",fmt_suf:"",currency_code:"EUR",unit_person:"Pers.",
     opts:["— Eigene Werte —","🏥 Klinik / Arztpraxis","💇 Beauty-Salon / Spa","🏢 Marketingagentur","🛒 E-Commerce / Online-Shop","⚖️ Kanzlei","🔧 Autowerkstatt","🏠 Immobilien","🍽️ Restaurant / Gastronomie"],
     copy_hdr:"📊 ROI-BERICHT – KI-AUTOMATISIERUNG",copy_h:"Analysehorizont",copy_m:"Monatliche Nettoeinsparung",copy_r:"ROI über",copy_mos:"Monate",copy_pb:"Amortisation",copy_op:"Kosten der NICHT-Automatisierung"
   },
@@ -631,6 +634,7 @@ var T = {
     btn_print:"🖨️ Stampa / PDF",btn_copy:"📋 Copia risultati",btn_contact:"Consulenza gratuita",
     bar_time:"Costi del lavoro",bar_support:"Servizio clienti",bar_errors:"Errori",bar_leads:"Lead persi",bar_revenue:"Crescita ricavi",
     pb_less1:"< 1 mese",pb_over:"> 36 mesi",pb_sfx:" mesi",
+    fmt_pre:"€",fmt_suf:"",currency_code:"EUR",unit_person:"pers.",
     opts:["— Valori personalizzati —","🏥 Clinica / Studio medico","💇 Salone beauty / Spa","🏢 Agenzia marketing","🛒 E-commerce / Negozio online","⚖️ Studio legale","🔧 Officina auto","🏠 Immobiliare","🍽️ Ristorante / Ristorazione"],
     copy_hdr:"📊 REPORT ROI – AUTOMAZIONE AI",copy_h:"Orizzonte di analisi",copy_m:"Risparmio mensile netto",copy_r:"ROI su",copy_mos:"mesi",copy_pb:"Recupero investimento",copy_op:"Costo del NON automatizzare"
   },
@@ -668,6 +672,7 @@ var T = {
     btn_print:"🖨️ Imprimir / PDF",btn_copy:"📋 Copiar resultados",btn_contact:"Consulta gratuita",
     bar_time:"Costes laborales",bar_support:"Atención al cliente",bar_errors:"Errores",bar_leads:"Leads perdidos",bar_revenue:"Crecimiento de ingresos",
     pb_less1:"< 1 mes",pb_over:"> 36 mes.",pb_sfx:" mes.",
+    fmt_pre:"€",fmt_suf:"",currency_code:"EUR",unit_person:"pers.",
     opts:["— Valores personalizados —","🏥 Clínica / Consultorio médico","💇 Salón de belleza / Spa","🏢 Agencia de marketing","🛒 E-commerce / Tienda online","⚖️ Despacho jurídico","🔧 Taller mecánico","🏠 Inmobiliaria","🍽️ Restaurante / Gastronomía"],
     copy_hdr:"📊 INFORME ROI – AUTOMATIZACIÓN IA",copy_h:"Horizonte de análisis",copy_m:"Ahorro mensual neto",copy_r:"ROI en",copy_mos:"meses",copy_pb:"Recuperación de la inversión",copy_op:"Coste de NO automatizar"
   },
@@ -705,6 +710,7 @@ var T = {
     btn_print:"🖨️ Imprimer / PDF",btn_copy:"📋 Copier les résultats",btn_contact:"Consultation gratuite",
     bar_time:"Coûts de main-d'œuvre",bar_support:"Service client",bar_errors:"Erreurs",bar_leads:"Leads perdus",bar_revenue:"Croissance des revenus",
     pb_less1:"< 1 mois",pb_over:"> 36 mois",pb_sfx:" mois",
+    fmt_pre:"€",fmt_suf:"",currency_code:"EUR",unit_person:"pers.",
     opts:["— Valeurs personnalisées —","🏥 Clinique / Cabinet médical","💇 Salon de beauté / Spa","🏢 Agence marketing","🛒 E-commerce / Boutique en ligne","⚖️ Cabinet juridique","🔧 Garage automobile","🏠 Immobilier","🍽️ Restaurant / Restauration"],
     copy_hdr:"📊 RAPPORT ROI – AUTOMATISATION IA",copy_h:"Horizon d'analyse",copy_m:"Économie mensuelle nette",copy_r:"ROI sur",copy_mos:"mois",copy_pb:"Retour sur investissement",copy_op:"Coût du NON-automatisation"
   },
@@ -742,6 +748,7 @@ var T = {
     btn_print:"🖨️ طباعة / PDF",btn_copy:"📋 نسخ النتائج",btn_contact:"استشارة مجانية",
     bar_time:"تكاليف العمالة",bar_support:"خدمة العملاء",bar_errors:"الأخطاء",bar_leads:"عملاء محتملون مفقودون",bar_revenue:"نمو الإيرادات",
     pb_less1:"< شهر",pb_over:"> 36 شهر",pb_sfx:" شهر",
+    fmt_pre:"$",fmt_suf:"",currency_code:"USD",unit_person:"شخ.",
     opts:["— قيم مخصصة —","🏥 عيادة / مركز طبي","💇 صالون تجميل / سبا","🏢 وكالة تسويق","🛒 تجارة إلكترونية / متجر أونلاين","⚖️ مكتب قانوني","🔧 ورشة سيارات","🏠 عقارات","🍽️ مطعم / خدمات غذائية"],
     copy_hdr:"📊 تقرير العائد على الاستثمار – أتمتة الذكاء الاصطناعي",copy_h:"أفق التحليل",copy_m:"الوفورات الشهرية الصافية",copy_r:"العائد على الاستثمار خلال",copy_mos:"أشهر",copy_pb:"استرداد الاستثمار",copy_op:"تكلفة عدم الأتمتة"
   }
@@ -816,7 +823,7 @@ function applyPreset(){
   update();
 }
 
-function fmt(n){return Math.round(n).toLocaleString('pl-PL')+' zł'}
+function fmt(n){return t('fmt_pre')+Math.round(n).toLocaleString('pl-PL')+t('fmt_suf')}
 function fmtN(n){return Math.round(n).toLocaleString('pl-PL')}
 
 function track(el){
