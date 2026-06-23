@@ -1,281 +1,404 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Polityka Prywatności i RODO – Integracje Biznesowe</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Satoshi:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polityka Prywatności – Integracje Biznesowe</title>
+<meta name="description" content="Polityka prywatności i zasady przetwarzania danych osobowych przez Integracje Biznesowe.">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@600,700&f[]=satoshi@400,500,700&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#06070d;--bg2:#0c0e1a;--surface:#111526;--surface2:#171c30;--border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.12);--lime:#c8f135;--lime-dim:rgba(200,241,53,0.1);--text:#e8ecf7;--text2:#8896b8;--text3:#4a5577;--radius:14px;--font-display:'Clash Display',sans-serif;--font-body:'Satoshi',sans-serif}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-body);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;background:rgba(6,7,13,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1200px)/2));gap:24px}
-.nav-logo{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px}
-.nav-logo-dot{width:26px;height:26px;border-radius:7px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:14px}
-.nav-logo span{color:var(--lime)}
-.nav-back{color:var(--text2);text-decoration:none;font-size:13px;transition:color .2s;margin-left:auto}
-.nav-back:hover{color:var(--lime)}
-.page{max-width:860px;margin:0 auto;padding:104px max(24px,calc((100vw - 860px)/2 + 24px)) 80px}
-.page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:18px}
-h1{font-family:var(--font-display);font-size:clamp(30px,4vw,50px);font-weight:700;letter-spacing:-.02em;margin-bottom:8px;line-height:1.1}
-.date{font-size:12px;color:var(--text3);margin-bottom:48px}
-.toc{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:40px}
-.toc-title{font-size:13px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
-.toc-list{list-style:none;columns:2;column-gap:20px}
-.toc-list li{margin-bottom:8px}
-.toc-list a{color:var(--lime);text-decoration:none;font-size:13px}
-.toc-list a:hover{text-decoration:underline}
-@media(max-width:600px){.toc-list{columns:1}}
-h2{font-size:17px;font-weight:700;margin:40px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--border);color:var(--lime)}
-h3{font-size:14px;font-weight:700;margin:20px 0 8px;color:var(--text)}
+:root{
+  --bg:#ffffff;--bg2:#f7f8fc;--surface:#f3f5fb;--surface2:#eaeff8;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
+  --lime:#CFE046;--lime-dim:rgba(207,224,70,0.13);--lime-border:rgba(207,224,70,0.35);--lime-text:#496300;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --r:12px;--fd:'Clash Display',sans-serif;--fb:'Satoshi',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:88px}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);-webkit-font-smoothing:antialiased}
+:focus-visible{outline:2px solid var(--lime-text);outline-offset:3px;border-radius:3px}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;background:rgba(255,255,255,0.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 28px;gap:16px}
+.nav-logo{font-family:var(--fb);font-size:16px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-logo-dot{width:26px;height:26px;border-radius:7px;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo span{color:var(--lime-text)}
+.nav-back{color:var(--text3);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.18s;margin-left:auto;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.nav-back:hover{color:var(--lime-text)}
+.nav-back svg{width:14px;height:14px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* LAYOUT */
+.page-outer{max-width:1100px;margin:0 auto;padding:96px 28px 80px;display:grid;grid-template-columns:240px 1fr;gap:56px;align-items:start}
+@media(max-width:860px){.page-outer{grid-template-columns:1fr;gap:0;padding:88px 20px 64px}}
+
+/* SIDEBAR TOC */
+.toc{position:sticky;top:88px}
+.toc-title{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:14px}
+.toc-list{list-style:none;display:flex;flex-direction:column;gap:2px}
+.toc-list a{display:block;font-size:13px;color:var(--text3);text-decoration:none;padding:6px 10px;border-radius:7px;transition:background 0.15s,color 0.15s;line-height:1.45}
+.toc-list a:hover{background:var(--surface);color:var(--lime-text)}
+.toc-list a.active{background:var(--lime-dim);color:var(--lime-text);font-weight:600}
+@media(max-width:860px){.toc{position:static;border:1px solid var(--border2);border-radius:var(--r);padding:18px;margin-bottom:36px;background:var(--bg2)}
+.toc-list{flex-direction:row;flex-wrap:wrap;gap:4px}
+.toc-list a{padding:4px 10px;background:var(--surface);border-radius:100px;font-size:12px}}
+
+/* PAGE HEADER */
+.page-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid var(--lime-border);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 13px;border-radius:100px;margin-bottom:20px}
+h1{font-family:var(--fd);font-size:clamp(28px,3.5vw,44px);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px;color:var(--text)}
+.page-meta{font-size:13px;color:var(--text3);margin-bottom:40px;line-height:1.6}
+.page-meta strong{color:var(--text2)}
+
+/* INTRO BOX */
+.intro-box{background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:var(--r);padding:18px 22px;margin-bottom:48px}
+.intro-box p{font-size:14px;color:var(--text2);line-height:1.75;margin:0}
+
+/* HEADINGS */
+h2{font-family:var(--fd);font-size:18px;font-weight:700;color:var(--text);margin:44px 0 14px;padding-bottom:10px;border-bottom:2px solid var(--lime);letter-spacing:-.01em}
+h3{font-size:14px;font-weight:700;color:var(--text);margin:20px 0 8px}
+
+/* BODY */
 p{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:12px}
-ul,ol{padding-left:22px;margin-bottom:14px}
+ul,ol{padding-left:20px;margin-bottom:14px}
 li{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:5px}
-strong{color:var(--text)}
-a{color:var(--lime)}
-table{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0}
-th{background:var(--surface2);padding:10px 14px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);border-bottom:1px solid var(--border)}
-td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top;line-height:1.6}
-tr:last-child td{border-bottom:none}
-.box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin:16px 0}
-.box p{margin-bottom:0}
-.box.green{border-color:rgba(6,214,160,.25);background:rgba(6,214,160,.05)}
-.box.yellow{border-color:rgba(200,241,53,.25);background:rgba(200,241,53,.05)}
-footer{background:var(--bg2);border-top:1px solid var(--border);padding:32px max(24px,calc((100vw - 1200px)/2));text-align:center;font-size:12px;color:var(--text3)}
-footer a{color:var(--text3);text-decoration:none;margin:0 10px}
-footer a:hover{color:var(--text2)}
+li::marker{color:var(--lime-text)}
+strong{color:var(--text);font-weight:700}
+a{color:var(--lime-text);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* CALLOUT BOXES */
+.box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:16px 20px;margin:16px 0}
+.box p{margin:0;font-size:13px;line-height:1.75}
+.box.green{background:rgba(207,224,70,0.08);border-color:var(--lime-border)}
+.box.green p{color:var(--lime-text)}
+.box.yellow{background:rgba(251,191,36,0.08);border-color:rgba(251,191,36,0.35)}
+.box.yellow p{color:#92400e}
+
+/* TABLES */
+.table-wrap{overflow-x:auto;margin:16px 0;border-radius:var(--r);border:1px solid var(--border2)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
+thead tr{background:var(--surface2)}
+th{text-align:left;padding:10px 14px;color:var(--text);font-weight:700;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid var(--border2)}
+td{padding:10px 14px;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top;line-height:1.6}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:var(--bg2)}
+
+/* CONTACT BOX */
+.contact-box{background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:var(--r);padding:22px 26px;margin-top:48px}
+.contact-box p{margin:0 0 6px;font-size:14px;color:var(--text2);line-height:1.75}
+.contact-box p:last-child{margin-bottom:0}
+
+/* FOOTER */
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:28px;text-align:center}
+.footer-links{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.footer-links a{color:var(--text3);text-decoration:none;font-size:13px;padding:4px 8px;border-radius:6px;transition:color 0.18s}
+.footer-links a:hover{color:var(--lime-text)}
+.footer-links span{color:var(--border2);font-size:12px}
+.footer-cr{font-size:12px;color:var(--text3)}
 </style>
 </head>
 <body>
+
 <nav>
-  <a href="index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
-  <a href="index.html" class="nav-back">← Powrót do strony głównej</a>
+  <a href="index.html" class="nav-logo" aria-label="Integracje Biznesowe — strona główna">
+    <div class="nav-logo-dot" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5" fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5" fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    Integracje <span>Biznesowe</span>
+  </a>
+  <a href="index.html" class="nav-back">
+    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    Powrót do strony głównej
+  </a>
 </nav>
-<div class="page">
-<div class="page-tag">🔒 RODO / GDPR</div>
-<h1>Polityka Prywatności<br>i Ochrony Danych</h1>
-<div class="date">Obowiązuje od: 1 stycznia 2025 r. | Wersja: 2.1 | Zgodna z RODO / GDPR (Rozporządzenie 2016/679)</div>
 
-<div class="box green">
-  <p><strong>Najważniejsze w skrócie:</strong> Zbieramy tylko dane niezbędne do realizacji usług. Nie sprzedajemy danych. Przechowujemy je w UE lub u dostawców z certyfikatem EU-US DPF. Masz pełne prawa do swoich danych — możesz je w każdej chwili sprawdzić, zmienić lub usunąć. Kontakt: <a href="mailto:privacy@automatyzujai.pl">privacy@automatyzujai.pl</a></p>
-</div>
+<div class="page-outer">
 
-<div class="toc">
-  <div class="toc-title">Spis treści</div>
-  <ul class="toc-list">
-    <li><a href="#administrator">1. Administrator danych</a></li>
-    <li><a href="#zakres">2. Jakie dane zbieramy</a></li>
-    <li><a href="#podstawy">3. Podstawy prawne i cele</a></li>
-    <li><a href="#cookies">4. Cookies i technologie śledzące</a></li>
-    <li><a href="#udostepnianie">5. Komu udostępniamy dane</a></li>
-    <li><a href="#przekazywanie">6. Przekazywanie do krajów trzecich</a></li>
-    <li><a href="#przechowywanie">7. Okres przechowywania</a></li>
-    <li><a href="#prawa">8. Twoje prawa</a></li>
-    <li><a href="#rodo">9. Powierzenie przetwarzania (art. 28)</a></li>
-    <li><a href="#bezpieczenstwo">10. Bezpieczeństwo danych</a></li>
-    <li><a href="#dzieci">11. Ochrona dzieci</a></li>
-    <li><a href="#zmiany">12. Zmiany polityki</a></li>
-    <li><a href="#kontakt">13. Kontakt</a></li>
-  </ul>
-</div>
+  <!-- SIDEBAR TOC -->
+  <aside class="toc" aria-label="Spis treści">
+    <div class="toc-title">Spis treści</div>
+    <ul class="toc-list" id="toc-list">
+      <li><a href="#administrator">§1. Administrator</a></li>
+      <li><a href="#zakres">§2. Zakres danych</a></li>
+      <li><a href="#cele">§3. Cele i podstawy</a></li>
+      <li><a href="#prawa">§4. Twoje prawa</a></li>
+      <li><a href="#odbiorcy">§5. Odbiorcy danych</a></li>
+      <li><a href="#retencja">§6. Retencja danych</a></li>
+      <li><a href="#cookies">§7. Pliki Cookies</a></li>
+      <li><a href="#bezpieczenstwo">§8. Bezpieczeństwo</a></li>
+      <li><a href="#transfer">§9. Transfer danych</a></li>
+      <li><a href="#dzieci">§10. Ochrona dzieci</a></li>
+      <li><a href="#ai">§11. Dane i AI</a></li>
+      <li><a href="#zmiany">§12. Zmiany polityki</a></li>
+      <li><a href="#kontakt">§13. Kontakt</a></li>
+    </ul>
+  </aside>
 
-<h2 id="administrator">§ 1. Administrator danych osobowych</h2>
-<p>Administratorem Twoich danych osobowych jest:</p>
-<div class="box">
-  <p><strong>Integracje Biznesowe Sp. z o.o.</strong><br>
-  ul. Technologiczna 1, 00-001 Warszawa<br>
-  NIP: 000-000-00-00 | REGON: 000000000<br>
-  KRS: 0000000000<br>
-  Email: <a href="mailto:privacy@automatyzujai.pl">privacy@automatyzujai.pl</a><br>
-  Tel: +48 800 000 000</p>
-</div>
-<p>Inspektor Ochrony Danych (IOD): iod@automatyzujai.pl (wyznaczony dobrowolnie).</p>
+  <!-- CONTENT -->
+  <main>
+    <div class="page-tag">Dokument prawny</div>
+    <h1>Polityka<br>Prywatności</h1>
+    <div class="page-meta">
+      <strong>Obowiązuje od:</strong> 1 stycznia 2025 r. &nbsp;·&nbsp;
+      <strong>Wersja:</strong> 2.1 &nbsp;·&nbsp;
+      Zgodna z RODO / GDPR
+    </div>
 
-<h2 id="zakres">§ 2. Jakie dane zbieramy i w jaki sposób</h2>
+    <div class="intro-box">
+      <p>Niniejsza Polityka Prywatności opisuje, jak Integracje Biznesowe zbiera, przetwarza i chroni Twoje dane osobowe. Przetwarzamy dane w granicach niezbędnych do świadczenia usług i w oparciu o przejrzyste podstawy prawne.</p>
+    </div>
 
-<h3>2.1 Dane podawane dobrowolnie (formularz zakupu, kontaktowy)</h3>
-<ul>
-  <li>Imię i nazwisko, adres email, numer telefonu</li>
-  <li>Nazwa firmy, NIP (dla faktur VAT)</li>
-  <li>Adres siedziby firmy</li>
-  <li>Treść wiadomości i opis potrzeb</li>
-</ul>
+    <h2 id="administrator">§ 1. Administrator danych osobowych</h2>
+    <p>Administratorem Twoich danych osobowych jest firma <strong>Integracje Biznesowe</strong>, prowadząca działalność w Polsce.</p>
+    <p><strong>Kontakt z Administratorem:</strong><br>
+    Email: <a href="mailto:biuro@integracjebiznesowe.pl">biuro@integracjebiznesowe.pl</a><br>
+    W sprawach dotyczących ochrony danych prosimy o kontakt z oznaczeniem tematu: „RODO".</p>
 
-<h3>2.2 Dane transakcyjne (płatności Stripe)</h3>
-<ul>
-  <li>Informacje o zakupionym produkcie i kwocie</li>
-  <li>Status płatności</li>
-  <li>Dane karty płatniczej są przetwarzane <strong>wyłącznie przez Stripe</strong> — my nie mamy do nich dostępu</li>
-</ul>
+    <div class="box green">
+      <p>Dokładamy wszelkich starań, by odpowiadać na wszystkie zapytania dotyczące danych osobowych w terminie do 72 godzin w dni robocze.</p>
+    </div>
 
-<h3>2.3 Dane techniczne (automatycznie)</h3>
-<ul>
-  <li>Adres IP, typ przeglądarki, system operacyjny</li>
-  <li>Strony odwiedzone w Serwisie, czas wizyty</li>
-  <li>Dane plików cookie (patrz §4)</li>
-</ul>
+    <h2 id="zakres">§ 2. Zakres zbieranych danych</h2>
+    <p>W zależności od kontekstu interakcji z naszym serwisem przetwarzamy następujące kategorie danych:</p>
 
-<h3>2.4 Dane w ramach świadczenia usług (Brief onboardingowy)</h3>
-<ul>
-  <li>Informacje o firmie, branży i procesach do automatyzacji</li>
-  <li>Dane dostępowe do systemów (API keys, tokeny) — przechowywane zaszyfrowane</li>
-  <li>Dane klientów Zamawiającego — przetwarzane wyłącznie na podstawie umowy powierzenia (§9)</li>
-</ul>
+    <h3>2.1. Dane podawane przez Ciebie</h3>
+    <ul>
+      <li>Imię i nazwisko lub nazwa firmy</li>
+      <li>Adres email i numer telefonu</li>
+      <li>Adres do fakturowania i NIP (jeśli wymagana faktura)</li>
+      <li>Informacje o działalności i procesach biznesowych (zawarte w Briefie)</li>
+      <li>Treść wiadomości w korespondencji email i formularzach</li>
+    </ul>
 
-<h2 id="podstawy">§ 3. Podstawy prawne i cele przetwarzania</h2>
+    <h3>2.2. Dane zbierane automatycznie</h3>
+    <ul>
+      <li>Adres IP i przybliżona lokalizacja (kraj, miasto)</li>
+      <li>Typ przeglądarki i systemu operacyjnego</li>
+      <li>Czas i czas trwania wizyty, odwiedzone podstrony</li>
+      <li>Źródło ruchu (utm_source, utm_medium itp.)</li>
+    </ul>
 
-<table>
-  <thead><tr><th>Cel przetwarzania</th><th>Podstawa prawna (RODO)</th><th>Okres przechowywania</th></tr></thead>
-  <tbody>
-    <tr><td>Realizacja zamówienia i umowy</td><td>Art. 6 ust. 1 lit. b — wykonanie umowy</td><td>Do zakończenia umowy + 5 lat (terminy przedawnienia)</td></tr>
-    <tr><td>Wystawianie faktur VAT</td><td>Art. 6 ust. 1 lit. c — obowiązek prawny (ustawa VAT)</td><td>5 lat od końca roku podatkowego</td></tr>
-    <tr><td>Wsparcie techniczne i komunikacja</td><td>Art. 6 ust. 1 lit. b — wykonanie umowy</td><td>Czas trwania umowy + 2 lata</td></tr>
-    <tr><td>Marketing własnych usług (newsletter)</td><td>Art. 6 ust. 1 lit. a — zgoda</td><td>Do cofnięcia zgody lub 3 lata od ostatniego kontaktu</td></tr>
-    <tr><td>Analityka i optymalizacja Serwisu</td><td>Art. 6 ust. 1 lit. f — uzasadniony interes</td><td>13 miesięcy (Google Analytics)</td></tr>
-    <tr><td>Obrona przed roszczeniami prawnymi</td><td>Art. 6 ust. 1 lit. f — uzasadniony interes</td><td>3 lata od zakończenia umowy</td></tr>
-  </tbody>
-</table>
+    <h3>2.3. Dane z zewnętrznych integracji</h3>
+    <p>W ramach świadczenia usług możemy mieć dostęp do danych z Twoich systemów (Airtable, HubSpot, Google Sheets), jednak wyłącznie w zakresie niezbędnym do konfiguracji automatyzacji i na podstawie udzielonego przez Ciebie dostępu. Nie przechowujemy tych danych poza środowiskiem workflow.</p>
 
-<h2 id="cookies">§ 4. Pliki Cookie i technologie śledzące</h2>
+    <h2 id="cele">§ 3. Cele i podstawy prawne przetwarzania</h2>
 
-<h3>4.1 Co to są cookies?</h3>
-<p>Pliki cookie to małe pliki tekstowe zapisywane na Twoim urządzeniu. Możesz zarządzać nimi w ustawieniach przeglądarki.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Cel</th><th>Podstawa prawna (RODO)</th><th>Okres</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Realizacja zamówienia i świadczenie usług</td>
+            <td>Art. 6 ust. 1 lit. b — umowa</td>
+            <td>Czas trwania umowy + 3 lata</td>
+          </tr>
+          <tr>
+            <td>Wystawianie faktur VAT i obowiązki podatkowe</td>
+            <td>Art. 6 ust. 1 lit. c — obowiązek prawny</td>
+            <td>5 lat od końca roku podatkowego</td>
+          </tr>
+          <tr>
+            <td>Kontakt w sprawach wsparcia technicznego</td>
+            <td>Art. 6 ust. 1 lit. b — umowa</td>
+            <td>Czas umowy + 1 rok</td>
+          </tr>
+          <tr>
+            <td>Wysyłka newslettera i ofert handlowych</td>
+            <td>Art. 6 ust. 1 lit. a — zgoda</td>
+            <td>Do cofnięcia zgody</td>
+          </tr>
+          <tr>
+            <td>Analiza ruchu na stronie (Google Analytics)</td>
+            <td>Art. 6 ust. 1 lit. a — zgoda (cookie)</td>
+            <td>26 miesięcy</td>
+          </tr>
+          <tr>
+            <td>Dochodzenie i obrona roszczeń</td>
+            <td>Art. 6 ust. 1 lit. f — prawnie uzasadniony interes</td>
+            <td>3 lata od zakończenia umowy</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<h3>4.2 Rodzaje cookies używanych w Serwisie</h3>
-<table>
-  <thead><tr><th>Kategoria</th><th>Nazwa / Dostawca</th><th>Cel</th><th>Czas życia</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Niezbędne</strong></td><td>session_id, csrf_token</td><td>Działanie formularzy i bezpieczeństwo</td><td>Sesja</td></tr>
-    <tr><td><strong>Analityczne</strong></td><td>_ga, _gid (Google Analytics 4)</td><td>Statystyki odwiedzin (anonimizowane IP)</td><td>13 miesięcy / 24h</td></tr>
-    <tr><td><strong>Funkcjonalne</strong></td><td>stripe_mid (Stripe)</td><td>Zapobieganie fraudom przy płatności</td><td>1 rok</td></tr>
-    <tr><td><strong>Marketingowe</strong></td><td>_fbp (Meta), li_fat_id (LinkedIn)</td><td>Remarketing — <strong>tylko za Twoją zgodą</strong></td><td>90 dni</td></tr>
-  </tbody>
-</table>
+    <h2 id="prawa">§ 4. Twoje prawa</h2>
+    <p>Na podstawie RODO przysługują Ci następujące prawa w zakresie przetwarzanych danych osobowych:</p>
+    <ul>
+      <li><strong>Prawo dostępu</strong> — możesz uzyskać kopię przetwarzanych danych osobowych (art. 15 RODO).</li>
+      <li><strong>Prawo do sprostowania</strong> — możesz żądać poprawienia nieprawidłowych lub uzupełnienia niekompletnych danych (art. 16).</li>
+      <li><strong>Prawo do usunięcia</strong> — możesz żądać usunięcia danych („prawo do bycia zapomnianym"), o ile nie istnieją podstawy do ich dalszego przetwarzania (art. 17).</li>
+      <li><strong>Prawo do ograniczenia przetwarzania</strong> — możesz żądać czasowego wstrzymania przetwarzania (art. 18).</li>
+      <li><strong>Prawo do przenoszenia danych</strong> — możesz otrzymać dane w formacie nadającym się do odczytu maszynowego (art. 20).</li>
+      <li><strong>Prawo do sprzeciwu</strong> — możesz wnieść sprzeciw wobec przetwarzania opartego na prawnie uzasadnionym interesie (art. 21).</li>
+      <li><strong>Prawo cofnięcia zgody</strong> — w dowolnym momencie, bez wpływu na zgodność wcześniejszego przetwarzania z prawem (art. 7 ust. 3).</li>
+    </ul>
+    <p>Aby skorzystać z praw, skontaktuj się pod adresem <a href="mailto:biuro@integracjebiznesowe.pl">biuro@integracjebiznesowe.pl</a>. Odpowiadamy w terminie 30 dni (możliwe przedłużenie o 60 dni w skomplikowanych sprawach — z informacją).</p>
 
-<h3>4.3 Zarządzanie cookies</h3>
-<p>Przy pierwszej wizycie wyświetlamy baner cookie z możliwością wyboru. Możesz w każdej chwili zmienić preferencje klikając „Ustawienia cookies" w stopce lub poprzez ustawienia przeglądarki. Wyłączenie cookies analitycznych i marketingowych nie wpływa na działanie Serwisu.</p>
+    <div class="box yellow">
+      <p>Masz prawo wnieść skargę do organu nadzorczego — Prezesa Urzędu Ochrony Danych Osobowych (PUODO), ul. Stawki 2, 00-193 Warszawa; <a href="mailto:kancelaria@uodo.gov.pl">kancelaria@uodo.gov.pl</a>.</p>
+    </div>
 
-<h2 id="udostepnianie">§ 5. Komu udostępniamy dane</h2>
+    <h2 id="odbiorcy">§ 5. Odbiorcy i podprocesory danych</h2>
+    <p>Dane mogą być przekazywane wyłącznie podmiotom, które zapewniają odpowiedni poziom ochrony danych. Stosujemy standardowe klauzule umowne lub inne mechanizmy ochronne tam, gdzie wymagane.</p>
 
-<h3>5.1 Podmioty przetwarzające (procesory) — umowy powierzenia</h3>
-<table>
-  <thead><tr><th>Dostawca</th><th>Lokalizacja</th><th>Cel</th><th>Certyfikat</th></tr></thead>
-  <tbody>
-    <tr><td><strong>Stripe Payments Europe</strong></td><td>Irlandia (UE)</td><td>Obsługa płatności</td><td>PCI DSS Level 1</td></tr>
-    <tr><td><strong>Google LLC</strong> (Analytics, Drive, Sheets)</td><td>UE (serwery)</td><td>Analityka, przechowywanie plików</td><td>EU-US DPF ✓</td></tr>
-    <tr><td><strong>OpenAI, L.L.C.</strong></td><td>USA</td><td>Przetwarzanie języka naturalnego (LLM)</td><td>EU-US DPF ✓, GDPR DPA</td></tr>
-    <tr><td><strong>Twilio Inc.</strong></td><td>USA</td><td>Wysyłka SMS i WhatsApp</td><td>EU-US DPF ✓</td></tr>
-    <tr><td><strong>Airtable Inc.</strong></td><td>USA (serwery EU dostępne)</td><td>Baza CRM</td><td>EU-US DPF ✓</td></tr>
-    <tr><td><strong>n8n GmbH</strong></td><td>Niemcy (UE)</td><td>Platforma automatyzacji</td><td>UE — brak transferu</td></tr>
-    <tr><td><strong>Slack Technologies</strong></td><td>USA</td><td>Komunikacja wewnętrzna</td><td>EU-US DPF ✓</td></tr>
-  </tbody>
-</table>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Podmiot</th><th>Cel</th><th>Siedziba</th></tr></thead>
+        <tbody>
+          <tr><td>Stripe Inc.</td><td>Przetwarzanie płatności</td><td>USA (SCC)</td></tr>
+          <tr><td>Google LLC</td><td>Analytics, Docs, Drive, Gmail</td><td>USA (SCC)</td></tr>
+          <tr><td>OpenAI OpCo LLC</td><td>Przetwarzanie AI (GPT-4/4o)</td><td>USA (SCC)</td></tr>
+          <tr><td>Airtable Inc.</td><td>CRM i baza danych klientów</td><td>USA (SCC)</td></tr>
+          <tr><td>Twilio Inc.</td><td>Wysyłka SMS i WhatsApp</td><td>USA (SCC)</td></tr>
+          <tr><td>n8n GmbH</td><td>Platforma automatyzacji (self-hosted)</td><td>Niemcy (UE)</td></tr>
+          <tr><td>Cloudflare Inc.</td><td>Hosting i CDN</td><td>USA (SCC)</td></tr>
+          <tr><td>Dostawca hostingu VPS</td><td>Infrastruktura techniczna</td><td>UE</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Nie sprzedajemy, nie wypożyczamy ani nie udostępniamy danych osobowych podmiotom trzecim w celach marketingowych bez Twojej zgody. Dane możemy ujawnić wyłącznie na podstawie obowiązku prawnego (np. na żądanie sądu lub prokuratury).</p>
 
-<h3>5.2 Inne przypadki udostępnienia</h3>
-<p>Dane mogą być udostępnione: organom państwowym na podstawie przepisów prawa (sądy, US, PUODO), kancelariom prawnym w celu obrony przed roszczeniami. <strong>Nie sprzedajemy danych osobowych.</strong></p>
+    <h2 id="retencja">§ 6. Okresy retencji danych</h2>
+    <ul>
+      <li><strong>Dane klientów / umowy:</strong> 5 lat od zakończenia stosunku umownego (wymóg podatkowy)</li>
+      <li><strong>Faktury VAT:</strong> 5 lat od końca roku podatkowego</li>
+      <li><strong>Dane z Briefów / konfiguracji:</strong> do 12 miesięcy po zakończeniu współpracy</li>
+      <li><strong>Korespondencja email:</strong> 3 lata od ostatniego kontaktu</li>
+      <li><strong>Logi serwera:</strong> 12 miesięcy</li>
+      <li><strong>Dane marketingowe / newsletter:</strong> do cofnięcia zgody</li>
+    </ul>
+    <p>Po upływie okresu retencji dane są usuwane w sposób bezpieczny lub trwale anonimizowane.</p>
 
-<h2 id="przekazywanie">§ 6. Przekazywanie danych do krajów trzecich (poza EOG)</h2>
-<p>Niektórzy z naszych dostawców (OpenAI, Twilio, Airtable) mają siedziby w USA. Transfer danych jest zabezpieczony poprzez:</p>
-<ul>
-  <li><strong>EU-US Data Privacy Framework</strong> (następca Privacy Shield) — certyfikaty widoczne w tabeli powyżej</li>
-  <li><strong>Standardowe Klauzule Umowne (SCC)</strong> zatwierdzone przez Komisję Europejską — jako dodatkowe zabezpieczenie</li>
-  <li><strong>Transfer Impact Assessment</strong> — przeprowadzony dla każdego dostawcy spoza EOG</li>
-</ul>
-<p>Możesz zażądać kopii stosowanych zabezpieczeń transferu pisząc na privacy@automatyzujai.pl.</p>
+    <h2 id="cookies">§ 7. Pliki Cookies</h2>
+    <p>Serwis używa plików cookies. Przy pierwszej wizycie wyświetlamy baner z prośbą o wyrażenie zgody na poszczególne kategorie cookies.</p>
 
-<h2 id="przechowywanie">§ 7. Okres przechowywania danych</h2>
-<p>Dane przechowujemy wyłącznie przez czas niezbędny do realizacji celu, dla którego zostały zebrane, a następnie przez wymagany przepisami prawa okres lub do czasu wygaśnięcia roszczeń:</p>
-<ul>
-  <li><strong>Dane kontraktowe i fakturowe:</strong> 5 lat od końca roku podatkowego (wymóg ustawy o rachunkowości)</li>
-  <li><strong>Korespondencja email:</strong> 2 lata od ostatniego kontaktu</li>
-  <li><strong>Dane analityczne (cookies):</strong> 13 miesięcy (Google Analytics)</li>
-  <li><strong>Dane zgody marketingowej:</strong> do wycofania zgody + 1 rok (dowód zgody)</li>
-  <li><strong>Dane API i konfiguracja systemu:</strong> czas trwania umowy + 30 dni po jej zakończeniu</li>
-</ul>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Kategoria</th><th>Przykłady</th><th>Cel</th><th>Okres</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Niezbędne</strong></td>
+            <td>session_id, csrf_token</td>
+            <td>Działanie strony, bezpieczeństwo</td>
+            <td>Sesja / 1 rok</td>
+          </tr>
+          <tr>
+            <td><strong>Analityczne</strong></td>
+            <td>_ga, _gid (Google Analytics)</td>
+            <td>Anonimowe statystyki ruchu</td>
+            <td>26 miesięcy</td>
+          </tr>
+          <tr>
+            <td><strong>Marketingowe</strong></td>
+            <td>fbp, _gcl_au</td>
+            <td>Retargeting i personalizacja reklam</td>
+            <td>90 dni – 2 lata</td>
+          </tr>
+          <tr>
+            <td><strong>Funkcjonalne</strong></td>
+            <td>lang, theme_pref</td>
+            <td>Zapamiętanie preferencji użytkownika</td>
+            <td>1 rok</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-<h2 id="prawa">§ 8. Twoje prawa jako osoby, której dane dotyczą</h2>
+    <p>Możesz zmienić ustawienia cookies w każdej chwili w ustawieniach przeglądarki lub za pomocą ikony ustawień prywatności dostępnej w stopce strony. Wycofanie zgody nie wpływa na wcześniejsze przetwarzanie.</p>
 
-<div class="box yellow">
-  <p><strong>Masz prawo do:</strong> dostępu do danych (art. 15), sprostowania (art. 16), usunięcia „prawo do bycia zapomnianym" (art. 17), ograniczenia przetwarzania (art. 18), przenoszenia danych (art. 20), sprzeciwu wobec przetwarzania (art. 21), cofnięcia zgody w dowolnym momencie (art. 7 ust. 3), wniesienia skargi do PUODO.</p>
-</div>
+    <div class="box">
+      <p><strong>Jak wyłączyć cookies:</strong> Chrome: Ustawienia → Prywatność i bezpieczeństwo → Pliki cookie. Firefox: Opcje → Prywatność i bezpieczeństwo. Safari: Preferencje → Prywatność.</p>
+    </div>
 
-<h3>8.1 Jak skorzystać z praw?</h3>
-<p>Wyślij wiadomość email na <a href="mailto:privacy@automatyzujai.pl">privacy@automatyzujai.pl</a> z następującymi informacjami:</p>
-<ul>
-  <li>Imię, nazwisko i adres email (w celu identyfikacji)</li>
-  <li>Jakie prawo chcesz wykonać i czego konkretnie dotyczy wniosek</li>
-</ul>
-<p>Odpowiemy w ciągu <strong>30 dni</strong> (termin ustawowy). Moglibyśmy poprosić o dodatkową weryfikację tożsamości jeśli wniosek budzi wątpliwości.</p>
+    <h2 id="bezpieczenstwo">§ 8. Bezpieczeństwo danych</h2>
+    <p>Stosujemy wielowarstwowe zabezpieczenia techniczne i organizacyjne, w tym:</p>
+    <ul>
+      <li>Szyfrowanie połączeń SSL/TLS (HTTPS) na całej stronie</li>
+      <li>Szyfrowanie danych w spoczynku (at rest) na serwerach</li>
+      <li>Uwierzytelnianie dwuskładnikowe (2FA) dla administratorów systemów</li>
+      <li>Regularne aktualizacje oprogramowania i audyty bezpieczeństwa</li>
+      <li>Ograniczenie dostępu do danych na zasadzie minimalnych uprawnień (least privilege)</li>
+      <li>Automatyczne kopie zapasowe przechowywane w oddzielnej lokalizacji</li>
+    </ul>
+    <p>W przypadku naruszenia ochrony danych osobowych powiadomimy PUODO w ciągu 72 godzin (jeśli wymagane), a poszkodowane osoby — bez zbędnej zwłoki, jeśli naruszenie może powodować wysokie ryzyko. Zgłoszenia incydentów: <a href="mailto:biuro@integracjebiznesowe.pl">biuro@integracjebiznesowe.pl</a></p>
 
-<h3>8.2 Prawo do skargi</h3>
-<p>Jeżeli uważasz, że przetwarzamy Twoje dane niezgodnie z prawem, masz prawo wnieść skargę do:</p>
-<div class="box">
-  <p><strong>Prezes Urzędu Ochrony Danych Osobowych (PUODO)</strong><br>
-  ul. Stawki 2, 00-193 Warszawa<br>
-  Tel.: +48 22 531 03 00 | Email: kancelaria@uodo.gov.pl<br>
-  www.uodo.gov.pl</p>
-</div>
+    <h2 id="transfer">§ 9. Transfer danych poza EOG</h2>
+    <p>Dane mogą być przetwarzane poza Europejskim Obszarem Gospodarczym (EOG) przez podmioty wymienione w §5. W każdym przypadku stosujemy co najmniej jeden z następujących mechanizmów ochronnych:</p>
+    <ul>
+      <li><strong>Standardowe klauzule umowne (SCC)</strong> zatwierdzone przez Komisję Europejską</li>
+      <li>Certyfikacja DPF (Data Privacy Framework) dla podmiotów w USA</li>
+      <li>Decyzja Komisji Europejskiej o adekwatnym stopniu ochrony</li>
+    </ul>
+    <p>Na żądanie przekażemy kopię stosowanych mechanizmów transferowych.</p>
 
-<h2 id="rodo">§ 9. Powierzenie przetwarzania danych — art. 28 RODO</h2>
-<p>W ramach świadczenia usług Agenta AI, Integracje Biznesowe przetwarza dane osobowe klientów Zamawiającego jako <strong>Podmiot Przetwarzający</strong> na podstawie Umowy Powierzenia Przetwarzania Danych (UPPD), stanowiącej integralną część umowy o świadczenie usług.</p>
+    <h2 id="dzieci">§ 10. Ochrona danych dzieci</h2>
+    <p>Nasze usługi skierowane są wyłącznie do przedsiębiorców (B2B). Nie zbieramy świadomie danych osobowych osób poniżej 18. roku życia. Jeśli uważasz, że przez pomyłkę zebraliśmy dane dziecka — skontaktuj się z nami niezwłocznie, usuniemy je bez zbędnej zwłoki.</p>
 
-<h3>9.1 Zakres powierzenia</h3>
-<ul>
-  <li><strong>Cel:</strong> Automatyczna obsługa zapytań klientów przez Agenta AI, zarządzanie rezerwacjami, wysyłka komunikatów</li>
-  <li><strong>Rodzaj danych:</strong> Dane identyfikacyjne (imię, nazwisko), kontaktowe (email, telefon), historia komunikacji</li>
-  <li><strong>Kategorie osób:</strong> Klienci i potencjalni klienci Zamawiającego</li>
-  <li><strong>Czas trwania:</strong> Czas obowiązywania umowy głównej</li>
-</ul>
+    <h2 id="ai">§ 11. Dane a systemy AI</h2>
+    <p>W ramach świadczonych usług możemy korzystać z modeli językowych AI (np. OpenAI GPT-4o) do automatyzacji procesów biznesowych. W takim przypadku:</p>
+    <ul>
+      <li>Dane przekazywane do API OpenAI nie są używane do trenowania modeli (zgodnie z polityką enterprise OpenAI)</li>
+      <li>Stosujemy minimalizację danych — do modeli AI trafiają tylko dane niezbędne do wykonania konkretnego zadania</li>
+      <li>Wyniki generowane przez AI podlegają weryfikacji przed dostarczeniem Klientowi</li>
+      <li>Klient jest informowany, w których elementach usługi stosujemy systemy AI</li>
+    </ul>
+    <div class="box green">
+      <p>Na wyraźne żądanie Klienta możemy wdrożyć automatyzacje bez użycia zewnętrznych API AI, korzystając wyłącznie z modeli self-hosted lub bez AI.</p>
+    </div>
 
-<h3>9.2 Obowiązki Podmiotu Przetwarzającego (Integracje Biznesowe)</h3>
-<ul>
-  <li>Przetwarzanie danych wyłącznie zgodnie z udokumentowanymi poleceniami Administratora</li>
-  <li>Zapewnienie poufności osób mających dostęp do danych</li>
-  <li>Stosowanie środków bezpieczeństwa zgodnie z art. 32 RODO</li>
-  <li>Powiadamianie o naruszeniach w ciągu 24 godzin</li>
-  <li>Usunięcie lub zwrot danych po zakończeniu umowy (w ciągu 30 dni)</li>
-</ul>
+    <h2 id="zmiany">§ 12. Zmiany Polityki Prywatności</h2>
+    <p>Zastrzegamy sobie prawo do aktualizacji niniejszej Polityki Prywatności w celu odzwierciedlenia zmian prawnych, technologicznych lub operacyjnych.</p>
+    <p>O istotnych zmianach powiadomimy Cię przez: (a) email na adres powiązany z kontem / zamówieniem, (b) baner informacyjny na stronie głównej przez min. 14 dni. Data obowiązywania nowej wersji zostanie opublikowana na tej stronie. Korzystanie z usług po tej dacie oznacza akceptację zmian.</p>
 
-<h3>9.3 Podprocesory zatwierdzone przez Administratora</h3>
-<p>Korzystamy z podprocesorów wymienionych w §5. Zamawiający, zawierając umowę, udziela ogólnej zgody na korzystanie z tych podprocesorów. O zmianach informujemy z 30-dniowym wyprzedzeniem.</p>
+    <h2 id="kontakt">§ 13. Kontakt w sprawach prywatności</h2>
+    <div class="contact-box">
+      <p><strong>Zapytania dotyczące ochrony danych osobowych:</strong><br>
+      Email: <a href="mailto:biuro@integracjebiznesowe.pl">biuro@integracjebiznesowe.pl</a><br>
+      Temat: „RODO – [treść zapytania]"</p>
+      <p>Czas odpowiedzi: do 72 godzin w dni robocze.<br>
+      Złożone wnioski (dostęp, usunięcie, przeniesienie): realizowane w terminie 30 dni od weryfikacji tożsamości.</p>
+    </div>
 
-<h2 id="bezpieczenstwo">§ 10. Bezpieczeństwo danych</h2>
-<p>Stosujemy następujące środki techniczne i organizacyjne ochrony danych:</p>
-<ul>
-  <li><strong>Szyfrowanie w tranzycie:</strong> TLS 1.2+ dla wszystkich połączeń</li>
-  <li><strong>Szyfrowanie w spoczynku:</strong> AES-256 dla danych przechowywanych w bazach danych</li>
-  <li><strong>Kontrola dostępu:</strong> Zasada minimalnych uprawnień (principle of least privilege), MFA dla wszystkich pracowników</li>
-  <li><strong>Kopie zapasowe:</strong> Automatyczne, szyfrowane, testowane regularnie</li>
-  <li><strong>Monitoring:</strong> Logi dostępu, wykrywanie anomalii</li>
-  <li><strong>Procedura naruszenia:</strong> Powiadamiamy PUODO w 72h i osoby, których dane dotyczą, gdy ryzyko wysokie</li>
-  <li><strong>Szkolenia pracowników:</strong> Regularne szkolenia z ochrony danych i bezpieczeństwa IT</li>
-</ul>
+  </main>
 
-<h2 id="dzieci">§ 11. Ochrona danych dzieci</h2>
-<p>Nasze usługi skierowane są wyłącznie do podmiotów prowadzących działalność gospodarczą. Nie zbieramy świadomie danych osób poniżej 18. roku życia. Jeśli dowiesz się, że dziecko podało nam swoje dane, skontaktuj się niezwłocznie: privacy@automatyzujai.pl — usuniemy je natychmiast.</p>
-
-<h2 id="zmiany">§ 12. Zmiany Polityki Prywatności</h2>
-<p>Polityka Prywatności może być aktualizowana w związku ze zmianami prawa lub naszej działalności. O istotnych zmianach informujemy emailem (jeśli mamy Twój adres) oraz przez aktualizację tej strony z nową datą wersji. Zalecamy regularne przeglądanie dokumentu.</p>
-
-<h2 id="kontakt">§ 13. Kontakt w sprawach danych osobowych</h2>
-<div class="box">
-  <p><strong>W sprawach dotyczących ochrony danych osobowych:</strong><br>
-  Email: <a href="mailto:privacy@automatyzujai.pl">privacy@automatyzujai.pl</a><br>
-  Poczta: Integracje Biznesowe Sp. z o.o., ul. Technologiczna 1, 00-001 Warszawa (z dopiskiem „Ochrona Danych")<br>
-  Czas odpowiedzi: do 30 dni kalendarzowych<br><br>
-  <strong>W pilnych sprawach naruszenia danych:</strong><br>
-  Email: security@automatyzujai.pl (monitorowane 24/7)</p>
-</div>
-
-<p style="margin-top:40px;font-size:12px;color:var(--text3)">Dokument ostatnio aktualizowany: 1 stycznia 2025 r. | Wersja 2.1 | Zgodny z: RODO (UE) 2016/679, ustawą z dnia 10 maja 2018 r. o ochronie danych osobowych, ustawą z dnia 18 lipca 2002 r. o świadczeniu usług drogą elektroniczną.</p>
 </div>
 
 <footer>
-  © 2025 Integracje Biznesowe Sp. z o.o. ·
-  <a href="index.html">Strona główna</a>
-  <a href="regulamin.html">Regulamin</a>
-  <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
-  <a href="index.html#faq">FAQ</a>
+  <div class="footer-links">
+    <a href="index.html">Strona główna</a>
+    <span>·</span>
+    <a href="regulamin.html">Regulamin</a>
+    <span>·</span>
+    <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
+  </div>
+  <div class="footer-cr">© 2026 Integracje Biznesowe</div>
 </footer>
+
+<script>
+/* Active TOC link on scroll */
+const headings=[...document.querySelectorAll('main h2[id]')];
+const links=document.querySelectorAll('.toc-list a');
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector('.toc-list a[href="#'+e.target.id+'"]');
+      if(a)a.classList.add('active');
+    }
+  });
+},{rootMargin:'-80px 0px -60% 0px'});
+headings.forEach(h=>io.observe(h));
+</script>
 </body>
 </html>
