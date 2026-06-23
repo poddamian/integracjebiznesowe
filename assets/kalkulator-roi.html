@@ -49,6 +49,17 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .nav-back:hover{color:var(--text);background:var(--surface2)}
 .btn-nav{background:var(--lime);color:#111827;border:none;border-radius:var(--rsm);padding:9px 20px;font-family:var(--fb);font-size:13px;font-weight:700;cursor:pointer;transition:transform 0.18s var(--ease),box-shadow 0.18s var(--ease);text-decoration:none;white-space:nowrap;display:inline-block}
 .btn-nav:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(207,224,70,0.42)}
+.lang-picker{position:relative;flex-shrink:0}
+.lang-btn{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rsm);padding:7px 10px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;color:var(--text);transition:all 0.18s;white-space:nowrap;line-height:1}
+.lang-btn:hover{border-color:var(--lime-border)}
+.lang-btn .arr{font-size:9px;opacity:.6;transition:transform 0.18s;display:inline-block}
+.lang-btn.open .arr{transform:rotate(180deg)}
+.lang-dropdown{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--border2);border-radius:var(--r);box-shadow:var(--sh-md);padding:6px;min-width:155px;z-index:2000;opacity:0;pointer-events:none;transform:translateY(-6px);transition:opacity 0.18s,transform 0.18s}
+.lang-dropdown.open{opacity:1;pointer-events:auto;transform:none}
+.lang-dropdown button{display:block;width:100%;text-align:left;background:none;border:none;padding:9px 12px;font-size:13px;font-family:var(--fb);cursor:pointer;border-radius:var(--rsm);color:var(--text);transition:background 0.15s;white-space:nowrap}
+.lang-dropdown button:hover{background:var(--surface2)}
+.lang-dropdown button.active{background:var(--lime-dim);color:var(--lime-text);font-weight:700}
+@media(max-width:600px){.btn-nav{display:none}.nav-back span{display:none}}
 
 /* ── HERO ── */
 .page-hero{padding:116px 0 52px}
@@ -183,9 +194,24 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   <div class="nav-spacer"></div>
   <a href="index.html" class="nav-back">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-    Strona główna
+    <span data-i18n="nav_back">Strona główna</span>
   </a>
-  <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-nav">Bezpłatna konsultacja</a>
+  <div class="lang-picker" id="langPicker">
+    <button class="lang-btn" id="langBtn" aria-haspopup="listbox" aria-expanded="false">
+      <span id="langLabel">🇵🇱 PL</span>
+      <span class="arr" aria-hidden="true">▾</span>
+    </button>
+    <div class="lang-dropdown" id="langDropdown" role="listbox">
+      <button data-lang="pl" role="option">🇵🇱 Polski</button>
+      <button data-lang="en" role="option">🇬🇧 English</button>
+      <button data-lang="de" role="option">🇩🇪 Deutsch</button>
+      <button data-lang="it" role="option">🇮🇹 Italiano</button>
+      <button data-lang="es" role="option">🇪🇸 Español</button>
+      <button data-lang="fr" role="option">🇫🇷 Français</button>
+      <button data-lang="ar" role="option">🇸🇦 العربية</button>
+    </div>
+  </div>
+  <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-nav" data-i18n="nav_cta">Bezpłatna konsultacja</a>
 </nav>
 
 <!-- HERO -->
@@ -193,10 +219,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
   <div class="container">
     <div class="hero-eyebrow">
       <span class="eyebrow-dot" aria-hidden="true"></span>
-      Kalkulator ROI
+      <span data-i18n="eyebrow">Kalkulator ROI</span>
     </div>
-    <h1 class="page-title">Ile <em>realnie zaoszczędzisz</em><br>z automatyzacją AI?</h1>
-    <p class="page-sub">Precyzyjny kalkulator zwrotu z inwestycji. Pokaż klientowi czarno na białym — w 60 sekund.</p>
+    <h1 class="page-title" data-i18n-html="title">Ile <em>realnie zaoszczędzisz</em><br>z automatyzacją AI?</h1>
+    <p class="page-sub" data-i18n="page_sub">Precyzyjny kalkulator zwrotu z inwestycji w automatyzację AI.</p>
   </div>
 </section>
 
@@ -207,10 +233,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
       <!-- KOLUMNA 1: Koszty obecne -->
       <div class="card">
-        <div class="card-label">01 · Obecne koszty operacyjne</div>
+        <div class="card-label" data-i18n="card1">01 · Obecne koszty operacyjne</div>
 
         <div class="field">
-          <label>Branża / typ działalności</label>
+          <label data-i18n="l_industry">Branża / typ działalności</label>
           <div class="select-wrap">
             <select id="branza" onchange="applyPreset()">
               <option value="custom">— Własne wartości —</option>
@@ -227,7 +253,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Liczba pracowników na stanowiskach administracyjnych</label>
+          <label data-i18n="l_employees">Liczba pracowników na stanowiskach administracyjnych</label>
           <div class="slider-row">
             <div class="slider-unit">os.</div>
             <input type="range" id="employees" min="1" max="20" value="3" oninput="update()">
@@ -236,7 +262,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Średnia miesięczna pensja (brutto)</label>
+          <label data-i18n="l_salary">Średnia miesięczna pensja (brutto)</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="salary" min="3000" max="15000" step="500" value="6000" oninput="update()">
@@ -245,7 +271,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Godziny/mies. na zadania powtarzalne (mail, raporty, dane)</label>
+          <label data-i18n="l_hours">Godziny/mies. na zadania powtarzalne (mail, raporty, dane)</label>
           <div class="slider-row">
             <div class="slider-unit">h</div>
             <input type="range" id="hours" min="5" max="160" step="5" value="60" oninput="update()">
@@ -254,7 +280,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Koszty obsługi klienta (infolinia, recepcja) / mies.</label>
+          <label data-i18n="l_support">Koszty obsługi klienta (infolinia, recepcja) / mies.</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="support" min="0" max="30000" step="500" value="5000" oninput="update()">
@@ -263,7 +289,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Błędy ludzkie — szacowana miesięczna strata</label>
+          <label data-i18n="l_errors">Błędy ludzkie — szacowana miesięczna strata</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="errors" min="0" max="20000" step="200" value="2000" oninput="update()">
@@ -272,7 +298,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Utracone przychody — klienci bez odpowiedzi w czasie (mies.)</label>
+          <label data-i18n="l_missed">Utracone przychody — klienci bez odpowiedzi w czasie (mies.)</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="missed" min="0" max="50000" step="500" value="8000" oninput="update()">
@@ -283,10 +309,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
       <!-- KOLUMNA 2: Automatyzacja + Inwestycja -->
       <div class="card">
-        <div class="card-label">02 · Parametry automatyzacji</div>
+        <div class="card-label" data-i18n="card2">02 · Parametry automatyzacji</div>
 
         <div class="field">
-          <label>Zakres automatyzacji — ile procesów obejmuje</label>
+          <label data-i18n="l_coverage">Zakres automatyzacji — ile procesów obejmuje</label>
           <div class="slider-row">
             <div class="slider-unit">%</div>
             <input type="range" id="coverage" min="20" max="95" step="5" value="70" oninput="update()">
@@ -295,7 +321,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Redukcja czasu na zadania powtarzalne</label>
+          <label data-i18n="l_timeReduce">Redukcja czasu na zadania powtarzalne</label>
           <div class="slider-row">
             <div class="slider-unit">%</div>
             <input type="range" id="timeReduce" min="30" max="95" step="5" value="80" oninput="update()">
@@ -304,7 +330,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Poprawa szybkości obsługi klienta</label>
+          <label data-i18n="l_serviceImprove">Poprawa szybkości obsługi klienta</label>
           <div class="slider-row">
             <div class="slider-unit">%</div>
             <input type="range" id="serviceImprove" min="20" max="90" step="5" value="65" oninput="update()">
@@ -313,7 +339,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Przewidywany wzrost konwersji dzięki szybszej obsłudze</label>
+          <label data-i18n="l_conversionBoost">Przewidywany wzrost konwersji dzięki szybszej obsłudze</label>
           <div class="slider-row">
             <div class="slider-unit">%</div>
             <input type="range" id="conversionBoost" min="5" max="40" step="1" value="15" oninput="update()">
@@ -322,7 +348,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Miesięczna wartość nowych leadów (obecna)</label>
+          <label data-i18n="l_leads">Miesięczna wartość nowych leadów (obecna)</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="leads" min="0" max="100000" step="1000" value="20000" oninput="update()">
@@ -331,10 +357,10 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <hr class="divider">
-        <div class="card-label" style="margin-top:14px">03 · Inwestycja w automatyzację</div>
+        <div class="card-label" style="margin-top:14px" data-i18n="card3">03 · Inwestycja w automatyzację</div>
 
         <div class="field">
-          <label>Jednorazowy koszt wdrożenia (setup fee)</label>
+          <label data-i18n="l_setupCost">Jednorazowy koszt wdrożenia (setup fee)</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="setupCost" min="1000" max="30000" step="500" value="5000" oninput="update()">
@@ -343,7 +369,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Miesięczny abonament / utrzymanie</label>
+          <label data-i18n="l_monthlyCost">Miesięczny abonament / utrzymanie</label>
           <div class="slider-row">
             <div class="slider-unit">PLN</div>
             <input type="range" id="monthlyCost" min="200" max="5000" step="100" value="800" oninput="update()">
@@ -352,9 +378,9 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         </div>
 
         <div class="field">
-          <label>Horyzont analizy</label>
+          <label data-i18n="l_horizon">Horyzont analizy</label>
           <div class="slider-row">
-            <div class="slider-unit">mies.</div>
+            <div class="slider-unit" data-i18n="unit_mo">mies.</div>
             <input type="range" id="horizon" min="3" max="36" step="3" value="12" oninput="update()">
             <div class="slider-val" id="horizon-val">12</div>
           </div>
@@ -364,62 +390,61 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
     <!-- WYNIKI -->
     <div class="results-card">
-      <div class="card-label">Wynik kalkulacji</div>
+      <div class="card-label" data-i18n="results">Wynik kalkulacji</div>
 
       <div class="metrics-grid">
         <div class="metric good">
-          <div class="metric-label">Miesięczna oszczędność</div>
+          <div class="metric-label" data-i18n="m_monthly_lbl">Miesięczna oszczędność</div>
           <div class="metric-val green" id="m-monthly">0 zł</div>
-          <div class="metric-sub">netto po kosztach subskrypcji</div>
+          <div class="metric-sub" data-i18n="m_monthly_sub">netto po kosztach subskrypcji</div>
         </div>
         <div class="metric good">
-          <div class="metric-label">ROI za <span id="roi-horizon-label">12</span> mies.</div>
+          <div class="metric-label"><span data-i18n="m_roi_lbl">ROI za</span> <span id="roi-horizon-label">12</span> <span data-i18n="m_roi_sfx">mies.</span></div>
           <div class="metric-val green" id="m-roi">0%</div>
-          <div class="metric-sub">zwrot z inwestycji</div>
+          <div class="metric-sub" data-i18n="m_roi_sub">zwrot z inwestycji</div>
         </div>
         <div class="metric">
-          <div class="metric-label">Zwrot inwestycji w</div>
+          <div class="metric-label" data-i18n="m_payback_lbl">Zwrot inwestycji w</div>
           <div class="metric-val blue" id="m-payback">0 mies.</div>
-          <div class="metric-sub">od uruchomienia</div>
+          <div class="metric-sub" data-i18n="m_payback_sub">od uruchomienia</div>
         </div>
         <div class="metric bad">
-          <div class="metric-label">Koszt NIE-wdrożenia</div>
+          <div class="metric-label" data-i18n="m_opp_lbl">Koszt NIE-wdrożenia</div>
           <div class="metric-val orange" id="m-opportunity">0 zł</div>
-          <div class="metric-sub">utracone przez <span id="opp-horizon">12</span> mies.</div>
+          <div class="metric-sub"><span data-i18n="m_opp_pre">utracone przez</span> <span id="opp-horizon">12</span> <span data-i18n="m_opp_sfx">mies.</span></div>
         </div>
       </div>
 
       <div class="chart-section">
-        <div class="chart-title">Porównanie miesięczne — koszty vs oszczędności</div>
+        <div class="chart-title" data-i18n="chart_title">Porównanie miesięczne — koszty vs oszczędności</div>
         <div class="chart-bars" id="chartBars"></div>
         <div class="legend">
-          <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div> Obecne koszty</div>
-          <div class="legend-item"><div class="legend-dot" style="background:var(--lime-text)"></div> Po automatyzacji (oszczędność)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--warn)"></div> <span data-i18n="legend_cost">Obecne koszty</span></div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--lime-text)"></div> <span data-i18n="legend_save">Po automatyzacji (oszczędność)</span></div>
         </div>
       </div>
 
       <div class="timeline">
-        <div class="chart-title">Czas zwrotu z inwestycji</div>
+        <div class="chart-title" data-i18n="tl_title">Czas zwrotu z inwestycji</div>
         <div class="timeline-bar-wrap">
           <div class="timeline-fill" id="timeline-fill" style="width:0%"></div>
         </div>
         <div class="timeline-labels">
-          <span>Start</span>
-          <span id="payback-point">Zwrot: —</span>
+          <span data-i18n="tl_start">Start</span>
+          <span id="payback-point">—</span>
           <span id="horizon-end">12 mies.</span>
         </div>
       </div>
 
       <div class="cta-bar">
         <div>
-          <h3>Gotowy na wdrożenie?</h3>
-          <p>Wydrukuj raport lub skontaktuj się — zautomatyzuję te procesy dla Ciebie.</p>
+          <h3 data-i18n="cta_title">Gotowy na wdrożenie?</h3>
+          <p data-i18n="cta_desc">Wydrukuj raport lub skontaktuj się — zautomatyzuję te procesy dla Ciebie.</p>
         </div>
         <div class="cta-btns">
-          <button class="btn-outline" onclick="window.print()">🖨️ Drukuj / PDF</button>
-          <button class="btn-primary" onclick="copyROIText(event)">📋 Kopiuj wyniki</button>
-          <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-primary">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <button class="btn-outline" onclick="window.print()" data-i18n="btn_print">🖨️ Drukuj / PDF</button>
+          <button class="btn-primary" onclick="copyROIText(event)" data-i18n="btn_copy">📋 Kopiuj wyniki</button>
+          <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-primary" data-i18n="btn_contact">
             Bezpłatna konsultacja
           </a>
         </div>
@@ -459,6 +484,320 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 </footer>
 
 <script>
+/* ── TRANSLATIONS ── */
+var T = {
+  pl:{
+    nav_back:"Strona główna",nav_cta:"Bezpłatna konsultacja",
+    eyebrow:"Kalkulator ROI",
+    title:"Ile <em>realnie zaoszczędzisz</em><br>z automatyzacją AI?",
+    page_sub:"Precyzyjny kalkulator zwrotu z inwestycji w automatyzację AI.",
+    card1:"01 · Obecne koszty operacyjne",card2:"02 · Parametry automatyzacji",card3:"03 · Inwestycja w automatyzację",
+    l_industry:"Branża / typ działalności",
+    l_employees:"Liczba pracowników na stanowiskach administracyjnych",
+    l_salary:"Średnia miesięczna pensja (brutto)",
+    l_hours:"Godziny/mies. na zadania powtarzalne (mail, raporty, dane)",
+    l_support:"Koszty obsługi klienta (infolinia, recepcja) / mies.",
+    l_errors:"Błędy ludzkie — szacowana miesięczna strata",
+    l_missed:"Utracone przychody — klienci bez odpowiedzi w czasie (mies.)",
+    l_coverage:"Zakres automatyzacji — ile procesów obejmuje",
+    l_timeReduce:"Redukcja czasu na zadania powtarzalne",
+    l_serviceImprove:"Poprawa szybkości obsługi klienta",
+    l_conversionBoost:"Przewidywany wzrost konwersji dzięki szybszej obsłudze",
+    l_leads:"Miesięczna wartość nowych leadów (obecna)",
+    l_setupCost:"Jednorazowy koszt wdrożenia (setup fee)",
+    l_monthlyCost:"Miesięczny abonament / utrzymanie",
+    l_horizon:"Horyzont analizy",unit_mo:"mies.",
+    results:"Wynik kalkulacji",
+    m_monthly_lbl:"Miesięczna oszczędność",m_monthly_sub:"netto po kosztach subskrypcji",
+    m_roi_lbl:"ROI za",m_roi_sfx:"mies.",m_roi_sub:"zwrot z inwestycji",
+    m_payback_lbl:"Zwrot inwestycji w",m_payback_sub:"od uruchomienia",
+    m_opp_lbl:"Koszt NIE-wdrożenia",m_opp_pre:"utracone przez",m_opp_sfx:"mies.",
+    chart_title:"Porównanie miesięczne — koszty vs oszczędności",
+    legend_cost:"Obecne koszty",legend_save:"Po automatyzacji (oszczędność)",
+    tl_title:"Czas zwrotu z inwestycji",tl_start:"Start",tl_after:"Po horyzoncie",tl_payback:"Zwrot:",
+    cta_title:"Gotowy na wdrożenie?",
+    cta_desc:"Wydrukuj raport lub skontaktuj się — zautomatyzuję te procesy dla Ciebie.",
+    btn_print:"🖨️ Drukuj / PDF",btn_copy:"📋 Kopiuj wyniki",btn_contact:"Bezpłatna konsultacja",
+    bar_time:"Czas pracy",bar_support:"Obsługa klienta",bar_errors:"Błędy",bar_leads:"Utracone lead.",bar_revenue:"Wzrost przychodów",
+    pb_less1:"< 1 mies.",pb_over:"> 36 mies.",pb_sfx:" mies.",
+    opts:["— Własne wartości —","🏥 Klinika / Gabinet medyczny","💇 Salon beauty / Spa","🏢 Agencja marketingowa","🛒 E-commerce / Sklep online","⚖️ Kancelaria prawna","🔧 Serwis samochodowy","🏠 Nieruchomości","🍽️ Restauracja / Gastronomia"],
+    copy_hdr:"📊 RAPORT ROI – AUTOMATYZACJA AI",copy_h:"Horyzont analizy",copy_m:"Miesięczna oszczędność netto",copy_r:"ROI za",copy_mos:"miesięcy",copy_pb:"Zwrot inwestycji",copy_op:"Koszt NIE-wdrożenia"
+  },
+  en:{
+    nav_back:"Home",nav_cta:"Free consultation",
+    eyebrow:"ROI Calculator",
+    title:"How much will you <em>really save</em><br>with AI automation?",
+    page_sub:"Precise return-on-investment calculator for AI automation.",
+    card1:"01 · Current operating costs",card2:"02 · Automation parameters",card3:"03 · Automation investment",
+    l_industry:"Industry / business type",
+    l_employees:"Number of employees in administrative roles",
+    l_salary:"Average monthly salary (gross)",
+    l_hours:"Hours/month on repetitive tasks (email, reports, data)",
+    l_support:"Customer service costs (helpline, reception) / month",
+    l_errors:"Human errors — estimated monthly loss",
+    l_missed:"Lost revenue — clients without timely response (month)",
+    l_coverage:"Automation scope — how many processes covered",
+    l_timeReduce:"Reduction of time on repetitive tasks",
+    l_serviceImprove:"Improvement in customer service speed",
+    l_conversionBoost:"Projected conversion increase from faster service",
+    l_leads:"Monthly value of new leads (current)",
+    l_setupCost:"One-time implementation cost (setup fee)",
+    l_monthlyCost:"Monthly subscription / maintenance",
+    l_horizon:"Analysis horizon",unit_mo:"mo.",
+    results:"Calculation results",
+    m_monthly_lbl:"Monthly savings",m_monthly_sub:"net after subscription costs",
+    m_roi_lbl:"ROI over",m_roi_sfx:"mo.",m_roi_sub:"return on investment",
+    m_payback_lbl:"Payback period",m_payback_sub:"from launch",
+    m_opp_lbl:"Cost of NOT automating",m_opp_pre:"lost over",m_opp_sfx:"mo.",
+    chart_title:"Monthly comparison — costs vs savings",
+    legend_cost:"Current costs",legend_save:"After automation (savings)",
+    tl_title:"Return on investment timeline",tl_start:"Start",tl_after:"Beyond horizon",tl_payback:"Payback:",
+    cta_title:"Ready to implement?",
+    cta_desc:"Print the report or get in touch — I'll automate these processes for you.",
+    btn_print:"🖨️ Print / PDF",btn_copy:"📋 Copy results",btn_contact:"Free consultation",
+    bar_time:"Labour costs",bar_support:"Customer service",bar_errors:"Errors",bar_leads:"Lost leads",bar_revenue:"Revenue growth",
+    pb_less1:"< 1 mo.",pb_over:"> 36 mo.",pb_sfx:" mo.",
+    opts:["— Custom values —","🏥 Clinic / Medical practice","💇 Beauty salon / Spa","🏢 Marketing agency","🛒 E-commerce / Online store","⚖️ Law firm","🔧 Car repair shop","🏠 Real estate","🍽️ Restaurant / Food service"],
+    copy_hdr:"📊 ROI REPORT – AI AUTOMATION",copy_h:"Analysis horizon",copy_m:"Net monthly savings",copy_r:"ROI over",copy_mos:"months",copy_pb:"Payback period",copy_op:"Cost of NOT automating"
+  },
+  de:{
+    nav_back:"Startseite",nav_cta:"Kostenlose Beratung",
+    eyebrow:"ROI-Rechner",
+    title:"Wie viel sparen Sie <em>wirklich</em><br>mit KI-Automatisierung?",
+    page_sub:"Präziser ROI-Rechner für KI-Automatisierungsinvestitionen.",
+    card1:"01 · Aktuelle Betriebskosten",card2:"02 · Automatisierungsparameter",card3:"03 · Automatisierungsinvestition",
+    l_industry:"Branche / Unternehmenstyp",
+    l_employees:"Anzahl der Mitarbeiter in Verwaltungsstellen",
+    l_salary:"Durchschnittliches Monatsgehalt (brutto)",
+    l_hours:"Stunden/Monat für Routineaufgaben (E-Mail, Berichte, Daten)",
+    l_support:"Kundenservice-Kosten (Hotline, Empfang) / Monat",
+    l_errors:"Menschliche Fehler — geschätzter monatlicher Verlust",
+    l_missed:"Entgangene Einnahmen — Kunden ohne rechtzeitige Antwort (Monat)",
+    l_coverage:"Automatisierungsumfang — wie viele Prozesse abgedeckt",
+    l_timeReduce:"Reduzierung der Zeit für Routineaufgaben",
+    l_serviceImprove:"Verbesserung der Kundenservice-Geschwindigkeit",
+    l_conversionBoost:"Prognostizierter Konversionszuwachs durch schnelleren Service",
+    l_leads:"Monatlicher Wert neuer Leads (aktuell)",
+    l_setupCost:"Einmalige Implementierungskosten (Setup-Gebühr)",
+    l_monthlyCost:"Monatliches Abonnement / Wartung",
+    l_horizon:"Analysehorizont",unit_mo:"Mon.",
+    results:"Berechnungsergebnis",
+    m_monthly_lbl:"Monatliche Einsparung",m_monthly_sub:"netto nach Abonnementkosten",
+    m_roi_lbl:"ROI über",m_roi_sfx:"Mon.",m_roi_sub:"Return on Investment",
+    m_payback_lbl:"Amortisation in",m_payback_sub:"ab Inbetriebnahme",
+    m_opp_lbl:"Kosten der NICHT-Automatisierung",m_opp_pre:"verloren über",m_opp_sfx:"Mon.",
+    chart_title:"Monatlicher Vergleich — Kosten vs. Einsparungen",
+    legend_cost:"Aktuelle Kosten",legend_save:"Nach Automatisierung (Einsparung)",
+    tl_title:"Amortisationszeitraum",tl_start:"Start",tl_after:"Jenseits des Horizonts",tl_payback:"Amortisation:",
+    cta_title:"Bereit für die Umsetzung?",
+    cta_desc:"Drucken Sie den Bericht oder nehmen Sie Kontakt auf — ich automatisiere diese Prozesse für Sie.",
+    btn_print:"🖨️ Drucken / PDF",btn_copy:"📋 Ergebnisse kopieren",btn_contact:"Kostenlose Beratung",
+    bar_time:"Arbeitskosten",bar_support:"Kundenservice",bar_errors:"Fehler",bar_leads:"Verlorene Leads",bar_revenue:"Umsatzwachstum",
+    pb_less1:"< 1 Mon.",pb_over:"> 36 Mon.",pb_sfx:" Mon.",
+    opts:["— Eigene Werte —","🏥 Klinik / Arztpraxis","💇 Beauty-Salon / Spa","🏢 Marketingagentur","🛒 E-Commerce / Online-Shop","⚖️ Kanzlei","🔧 Autowerkstatt","🏠 Immobilien","🍽️ Restaurant / Gastronomie"],
+    copy_hdr:"📊 ROI-BERICHT – KI-AUTOMATISIERUNG",copy_h:"Analysehorizont",copy_m:"Monatliche Nettoeinsparung",copy_r:"ROI über",copy_mos:"Monate",copy_pb:"Amortisation",copy_op:"Kosten der NICHT-Automatisierung"
+  },
+  it:{
+    nav_back:"Home",nav_cta:"Consulenza gratuita",
+    eyebrow:"Calcolatore ROI",
+    title:"Quanto risparmierai <em>davvero</em><br>con l'automazione AI?",
+    page_sub:"Calcolatore preciso del ritorno sull'investimento per l'automazione AI.",
+    card1:"01 · Costi operativi attuali",card2:"02 · Parametri di automazione",card3:"03 · Investimento nell'automazione",
+    l_industry:"Settore / tipo di attività",
+    l_employees:"Numero di dipendenti in ruoli amministrativi",
+    l_salary:"Stipendio mensile medio (lordo)",
+    l_hours:"Ore/mese su attività ripetitive (email, report, dati)",
+    l_support:"Costi del servizio clienti (helpline, reception) / mese",
+    l_errors:"Errori umani — perdita mensile stimata",
+    l_missed:"Ricavi persi — clienti senza risposta tempestiva (mese)",
+    l_coverage:"Portata dell'automazione — quanti processi coperti",
+    l_timeReduce:"Riduzione del tempo su attività ripetitive",
+    l_serviceImprove:"Miglioramento della velocità del servizio clienti",
+    l_conversionBoost:"Aumento previsto delle conversioni grazie al servizio più rapido",
+    l_leads:"Valore mensile dei nuovi lead (attuale)",
+    l_setupCost:"Costo una tantum di implementazione (setup fee)",
+    l_monthlyCost:"Abbonamento mensile / manutenzione",
+    l_horizon:"Orizzonte di analisi",unit_mo:"mesi",
+    results:"Risultati del calcolo",
+    m_monthly_lbl:"Risparmio mensile",m_monthly_sub:"netto dopo i costi dell'abbonamento",
+    m_roi_lbl:"ROI su",m_roi_sfx:"mesi",m_roi_sub:"ritorno sull'investimento",
+    m_payback_lbl:"Recupero investimento in",m_payback_sub:"dall'avvio",
+    m_opp_lbl:"Costo del NON automatizzare",m_opp_pre:"perso in",m_opp_sfx:"mesi",
+    chart_title:"Confronto mensile — costi vs risparmi",
+    legend_cost:"Costi attuali",legend_save:"Dopo l'automazione (risparmio)",
+    tl_title:"Cronologia del ritorno sull'investimento",tl_start:"Inizio",tl_after:"Oltre l'orizzonte",tl_payback:"Recupero:",
+    cta_title:"Pronto per l'implementazione?",
+    cta_desc:"Stampa il report o contattami — automatizzerò questi processi per te.",
+    btn_print:"🖨️ Stampa / PDF",btn_copy:"📋 Copia risultati",btn_contact:"Consulenza gratuita",
+    bar_time:"Costi del lavoro",bar_support:"Servizio clienti",bar_errors:"Errori",bar_leads:"Lead persi",bar_revenue:"Crescita ricavi",
+    pb_less1:"< 1 mese",pb_over:"> 36 mesi",pb_sfx:" mesi",
+    opts:["— Valori personalizzati —","🏥 Clinica / Studio medico","💇 Salone beauty / Spa","🏢 Agenzia marketing","🛒 E-commerce / Negozio online","⚖️ Studio legale","🔧 Officina auto","🏠 Immobiliare","🍽️ Ristorante / Ristorazione"],
+    copy_hdr:"📊 REPORT ROI – AUTOMAZIONE AI",copy_h:"Orizzonte di analisi",copy_m:"Risparmio mensile netto",copy_r:"ROI su",copy_mos:"mesi",copy_pb:"Recupero investimento",copy_op:"Costo del NON automatizzare"
+  },
+  es:{
+    nav_back:"Inicio",nav_cta:"Consulta gratuita",
+    eyebrow:"Calculadora ROI",
+    title:"¿Cuánto ahorrarás <em>realmente</em><br>con la automatización IA?",
+    page_sub:"Calculadora precisa del retorno de inversión en automatización IA.",
+    card1:"01 · Costes operativos actuales",card2:"02 · Parámetros de automatización",card3:"03 · Inversión en automatización",
+    l_industry:"Sector / tipo de negocio",
+    l_employees:"Número de empleados en puestos administrativos",
+    l_salary:"Salario mensual medio (bruto)",
+    l_hours:"Horas/mes en tareas repetitivas (email, informes, datos)",
+    l_support:"Costes de atención al cliente (helpline, recepción) / mes",
+    l_errors:"Errores humanos — pérdida mensual estimada",
+    l_missed:"Ingresos perdidos — clientes sin respuesta a tiempo (mes)",
+    l_coverage:"Alcance de la automatización — cuántos procesos cubiertos",
+    l_timeReduce:"Reducción de tiempo en tareas repetitivas",
+    l_serviceImprove:"Mejora en la velocidad de atención al cliente",
+    l_conversionBoost:"Aumento previsto de conversión por servicio más rápido",
+    l_leads:"Valor mensual de nuevos leads (actual)",
+    l_setupCost:"Coste único de implementación (setup fee)",
+    l_monthlyCost:"Suscripción mensual / mantenimiento",
+    l_horizon:"Horizonte de análisis",unit_mo:"mes.",
+    results:"Resultados del cálculo",
+    m_monthly_lbl:"Ahorro mensual",m_monthly_sub:"neto después de costes de suscripción",
+    m_roi_lbl:"ROI en",m_roi_sfx:"mes.",m_roi_sub:"retorno de la inversión",
+    m_payback_lbl:"Recuperación en",m_payback_sub:"desde el lanzamiento",
+    m_opp_lbl:"Coste de NO automatizar",m_opp_pre:"perdido en",m_opp_sfx:"mes.",
+    chart_title:"Comparativa mensual — costes vs ahorros",
+    legend_cost:"Costes actuales",legend_save:"Tras automatización (ahorro)",
+    tl_title:"Línea de tiempo de recuperación",tl_start:"Inicio",tl_after:"Más allá del horizonte",tl_payback:"Recuperación:",
+    cta_title:"¿Listo para implementar?",
+    cta_desc:"Imprime el informe o contáctame — automatizaré estos procesos para ti.",
+    btn_print:"🖨️ Imprimir / PDF",btn_copy:"📋 Copiar resultados",btn_contact:"Consulta gratuita",
+    bar_time:"Costes laborales",bar_support:"Atención al cliente",bar_errors:"Errores",bar_leads:"Leads perdidos",bar_revenue:"Crecimiento de ingresos",
+    pb_less1:"< 1 mes",pb_over:"> 36 mes.",pb_sfx:" mes.",
+    opts:["— Valores personalizados —","🏥 Clínica / Consultorio médico","💇 Salón de belleza / Spa","🏢 Agencia de marketing","🛒 E-commerce / Tienda online","⚖️ Despacho jurídico","🔧 Taller mecánico","🏠 Inmobiliaria","🍽️ Restaurante / Gastronomía"],
+    copy_hdr:"📊 INFORME ROI – AUTOMATIZACIÓN IA",copy_h:"Horizonte de análisis",copy_m:"Ahorro mensual neto",copy_r:"ROI en",copy_mos:"meses",copy_pb:"Recuperación de la inversión",copy_op:"Coste de NO automatizar"
+  },
+  fr:{
+    nav_back:"Accueil",nav_cta:"Consultation gratuite",
+    eyebrow:"Calculateur ROI",
+    title:"Combien économiserez-vous <em>vraiment</em><br>avec l'automatisation IA ?",
+    page_sub:"Calculateur précis du retour sur investissement pour l'automatisation IA.",
+    card1:"01 · Coûts opérationnels actuels",card2:"02 · Paramètres d'automatisation",card3:"03 · Investissement dans l'automatisation",
+    l_industry:"Secteur / type d'activité",
+    l_employees:"Nombre d'employés en postes administratifs",
+    l_salary:"Salaire mensuel moyen (brut)",
+    l_hours:"Heures/mois sur tâches répétitives (email, rapports, données)",
+    l_support:"Coûts du service client (hotline, réception) / mois",
+    l_errors:"Erreurs humaines — perte mensuelle estimée",
+    l_missed:"Revenus perdus — clients sans réponse à temps (mois)",
+    l_coverage:"Portée de l'automatisation — combien de processus couverts",
+    l_timeReduce:"Réduction du temps sur les tâches répétitives",
+    l_serviceImprove:"Amélioration de la vitesse du service client",
+    l_conversionBoost:"Augmentation prévue des conversions grâce au service plus rapide",
+    l_leads:"Valeur mensuelle des nouveaux leads (actuelle)",
+    l_setupCost:"Coût unique d'implémentation (frais de mise en place)",
+    l_monthlyCost:"Abonnement mensuel / maintenance",
+    l_horizon:"Horizon d'analyse",unit_mo:"mois",
+    results:"Résultats du calcul",
+    m_monthly_lbl:"Économie mensuelle",m_monthly_sub:"net après coûts d'abonnement",
+    m_roi_lbl:"ROI sur",m_roi_sfx:"mois",m_roi_sub:"retour sur investissement",
+    m_payback_lbl:"Retour sur investissement en",m_payback_sub:"depuis le lancement",
+    m_opp_lbl:"Coût du NON-automatisation",m_opp_pre:"perdu sur",m_opp_sfx:"mois",
+    chart_title:"Comparaison mensuelle — coûts vs économies",
+    legend_cost:"Coûts actuels",legend_save:"Après automatisation (économie)",
+    tl_title:"Chronologie du retour sur investissement",tl_start:"Début",tl_after:"Au-delà de l'horizon",tl_payback:"Retour :",
+    cta_title:"Prêt à implémenter ?",
+    cta_desc:"Imprimez le rapport ou contactez-moi — j'automatiserai ces processus pour vous.",
+    btn_print:"🖨️ Imprimer / PDF",btn_copy:"📋 Copier les résultats",btn_contact:"Consultation gratuite",
+    bar_time:"Coûts de main-d'œuvre",bar_support:"Service client",bar_errors:"Erreurs",bar_leads:"Leads perdus",bar_revenue:"Croissance des revenus",
+    pb_less1:"< 1 mois",pb_over:"> 36 mois",pb_sfx:" mois",
+    opts:["— Valeurs personnalisées —","🏥 Clinique / Cabinet médical","💇 Salon de beauté / Spa","🏢 Agence marketing","🛒 E-commerce / Boutique en ligne","⚖️ Cabinet juridique","🔧 Garage automobile","🏠 Immobilier","🍽️ Restaurant / Restauration"],
+    copy_hdr:"📊 RAPPORT ROI – AUTOMATISATION IA",copy_h:"Horizon d'analyse",copy_m:"Économie mensuelle nette",copy_r:"ROI sur",copy_mos:"mois",copy_pb:"Retour sur investissement",copy_op:"Coût du NON-automatisation"
+  },
+  ar:{
+    nav_back:"الرئيسية",nav_cta:"استشارة مجانية",
+    eyebrow:"حاسبة العائد على الاستثمار",
+    title:"كم ستوفر <em>فعلاً</em><br>مع أتمتة الذكاء الاصطناعي؟",
+    page_sub:"حاسبة دقيقة للعائد على الاستثمار في أتمتة الذكاء الاصطناعي.",
+    card1:"01 · التكاليف التشغيلية الحالية",card2:"02 · معلمات الأتمتة",card3:"03 · الاستثمار في الأتمتة",
+    l_industry:"القطاع / نوع النشاط",
+    l_employees:"عدد الموظفين في المناصب الإدارية",
+    l_salary:"متوسط الراتب الشهري (إجمالي)",
+    l_hours:"ساعات/شهر على المهام المتكررة (بريد، تقارير، بيانات)",
+    l_support:"تكاليف خدمة العملاء (خط مساعدة، استقبال) / شهر",
+    l_errors:"الأخطاء البشرية — الخسارة الشهرية التقديرية",
+    l_missed:"الإيرادات المفقودة — عملاء بدون استجابة في الوقت (شهر)",
+    l_coverage:"نطاق الأتمتة — كم عدد العمليات المشمولة",
+    l_timeReduce:"تقليل الوقت المستغرق في المهام المتكررة",
+    l_serviceImprove:"تحسين سرعة خدمة العملاء",
+    l_conversionBoost:"الزيادة المتوقعة في التحويلات بفضل الخدمة الأسرع",
+    l_leads:"القيمة الشهرية للعملاء المحتملين الجدد (الحالية)",
+    l_setupCost:"تكلفة التنفيذ لمرة واحدة (رسوم الإعداد)",
+    l_monthlyCost:"الاشتراك الشهري / الصيانة",
+    l_horizon:"أفق التحليل",unit_mo:"شهر",
+    results:"نتائج الحساب",
+    m_monthly_lbl:"الوفورات الشهرية",m_monthly_sub:"صافي بعد تكاليف الاشتراك",
+    m_roi_lbl:"العائد على الاستثمار خلال",m_roi_sfx:"شهر",m_roi_sub:"العائد على الاستثمار",
+    m_payback_lbl:"استرداد الاستثمار في",m_payback_sub:"من الإطلاق",
+    m_opp_lbl:"تكلفة عدم الأتمتة",m_opp_pre:"خسارة خلال",m_opp_sfx:"شهر",
+    chart_title:"مقارنة شهرية — التكاليف مقابل الوفورات",
+    legend_cost:"التكاليف الحالية",legend_save:"بعد الأتمتة (الوفورات)",
+    tl_title:"الجدول الزمني للعائد على الاستثمار",tl_start:"البداية",tl_after:"ما بعد الأفق",tl_payback:"الاسترداد:",
+    cta_title:"جاهز للتنفيذ؟",
+    cta_desc:"اطبع التقرير أو تواصل معي — سأؤتمت هذه العمليات لك.",
+    btn_print:"🖨️ طباعة / PDF",btn_copy:"📋 نسخ النتائج",btn_contact:"استشارة مجانية",
+    bar_time:"تكاليف العمالة",bar_support:"خدمة العملاء",bar_errors:"الأخطاء",bar_leads:"عملاء محتملون مفقودون",bar_revenue:"نمو الإيرادات",
+    pb_less1:"< شهر",pb_over:"> 36 شهر",pb_sfx:" شهر",
+    opts:["— قيم مخصصة —","🏥 عيادة / مركز طبي","💇 صالون تجميل / سبا","🏢 وكالة تسويق","🛒 تجارة إلكترونية / متجر أونلاين","⚖️ مكتب قانوني","🔧 ورشة سيارات","🏠 عقارات","🍽️ مطعم / خدمات غذائية"],
+    copy_hdr:"📊 تقرير العائد على الاستثمار – أتمتة الذكاء الاصطناعي",copy_h:"أفق التحليل",copy_m:"الوفورات الشهرية الصافية",copy_r:"العائد على الاستثمار خلال",copy_mos:"أشهر",copy_pb:"استرداد الاستثمار",copy_op:"تكلفة عدم الأتمتة"
+  }
+};
+
+var LANG_FLAGS={pl:"🇵🇱 PL",en:"🇬🇧 EN",de:"🇩🇪 DE",it:"🇮🇹 IT",es:"🇪🇸 ES",fr:"🇫🇷 FR",ar:"🇸🇦 AR"};
+var PRESET_KEYS=["custom","clinic","salon","agency","ecom","law","auto","realestate","restaurant"];
+var currentLang=localStorage.getItem('ib_lang')||'pl';
+
+function t(k){return(T[currentLang]||T.pl)[k]||(T.pl)[k]||'';}
+
+function applyLang(lang){
+  currentLang=lang;
+  localStorage.setItem('ib_lang',lang);
+  document.documentElement.lang=lang;
+  document.documentElement.dir=lang==='ar'?'rtl':'ltr';
+  var sel=document.getElementById('branza');
+  var prev=sel.value;
+  var opts=t('opts');
+  sel.innerHTML=PRESET_KEYS.map(function(k,i){
+    return '<option value="'+k+'">'+(opts[i]||k)+'</option>';
+  }).join('');
+  sel.value=PRESET_KEYS.includes(prev)?prev:'custom';
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var k=el.getAttribute('data-i18n');var v=t(k);if(v)el.textContent=v;
+  });
+  document.querySelectorAll('[data-i18n-html]').forEach(function(el){
+    var k=el.getAttribute('data-i18n-html');var v=t(k);if(v)el.innerHTML=v;
+  });
+  var lb=document.getElementById('langLabel');
+  if(lb)lb.textContent=LANG_FLAGS[lang]||lang.toUpperCase();
+  document.querySelectorAll('[data-lang]').forEach(function(btn){
+    btn.classList.toggle('active',btn.getAttribute('data-lang')===lang);
+  });
+  update();
+}
+
+function initLangPicker(){
+  var btn=document.getElementById('langBtn'),dd=document.getElementById('langDropdown');
+  if(!btn||!dd)return;
+  btn.addEventListener('click',function(e){
+    e.stopPropagation();
+    var open=dd.classList.toggle('open');
+    btn.classList.toggle('open',open);
+    btn.setAttribute('aria-expanded',open);
+  });
+  document.addEventListener('click',function(){
+    dd.classList.remove('open');btn.classList.remove('open');btn.setAttribute('aria-expanded','false');
+  });
+  dd.addEventListener('click',function(e){
+    var lang=e.target.getAttribute('data-lang');
+    if(lang){applyLang(lang);dd.classList.remove('open');btn.classList.remove('open');}
+  });
+}
+
+/* ── CALCULATOR ── */
 const presets = {
   clinic:     {employees:4,salary:7000,hours:80,support:8000,errors:3000,missed:12000,coverage:75,timeReduce:85},
   salon:      {employees:2,salary:4500,hours:40,support:3000,errors:800, missed:5000, coverage:70,timeReduce:80},
@@ -530,18 +869,18 @@ function update(){
 
   animVal('m-monthly',fmt(netSaving));
   animVal('m-roi',Math.round(roi)+'%');
-  animVal('m-payback',payback<100?(payback<1?'< 1 mies.':Math.ceil(payback)+' mies.'):'> 36 mies.');
+  animVal('m-payback',payback<100?(payback<1?t('pb_less1'):Math.ceil(payback)+t('pb_sfx')):t('pb_over'));
   animVal('m-opportunity',fmt(oppCost));
   document.getElementById('roi-horizon-label').textContent=horizon;
   document.getElementById('opp-horizon').textContent=horizon;
-  document.getElementById('horizon-end').textContent=horizon+' mies.';
+  document.getElementById('horizon-end').textContent=horizon+' '+t('unit_mo');
 
   document.getElementById('m-monthly').className='metric-val '+(netSaving>0?'green':'orange');
   document.getElementById('m-roi').className='metric-val '+(roi>0?'green':'orange');
 
   const paybackPct=Math.min((payback/horizon)*100,100);
   document.getElementById('timeline-fill').style.width=(100-paybackPct)+'%';
-  document.getElementById('payback-point').textContent=payback<horizon?`Zwrot: ${Math.ceil(payback)} mies.`:'Po horyzoncie';
+  document.getElementById('payback-point').textContent=payback<horizon?t('tl_payback')+' '+Math.ceil(payback)+t('pb_sfx'):t('tl_after');
 
   renderChart(employees,salary,support,errors,missed,sTime,sSupport,sErrors,sMissed,sRevenue);
   window._roi={employees,salary,hours,support,errors,missed,netSaving,roi,payback,oppCost,horizon};
@@ -554,18 +893,18 @@ function animVal(id,val){
 
 function renderChart(employees,salary,support,errors,missed,sTime,sSupport,sErrors,sMissed,sRevenue){
   const cats=[
-    {label:'Czas pracy',     cost:salary*employees, save:sTime},
-    {label:'Obsługa klienta',cost:support,           save:sSupport},
-    {label:'Błędy',          cost:errors,            save:sErrors},
-    {label:'Utracone lead.',  cost:missed,            save:sMissed},
-    {label:'Wzrost przychodów',cost:0,               save:sRevenue},
+    {label:t('bar_time'),    cost:salary*employees, save:sTime},
+    {label:t('bar_support'), cost:support,           save:sSupport},
+    {label:t('bar_errors'),  cost:errors,            save:sErrors},
+    {label:t('bar_leads'),   cost:missed,            save:sMissed},
+    {label:t('bar_revenue'), cost:0,                 save:sRevenue},
   ];
   const maxVal=Math.max(...cats.flatMap(c=>[c.cost,c.save]),1);
   document.getElementById('chartBars').innerHTML=cats.map(c=>`
     <div class="bar-group">
       <div class="bar-wrap">
-        <div class="bar cost" title="Koszt: ${fmtN(c.cost)} zł" style="height:${Math.max((c.cost/maxVal)*100,2)}%"></div>
-        <div class="bar save" title="Oszczędność: ${fmtN(c.save)} zł" style="height:${Math.max((c.save/maxVal)*100,2)}%"></div>
+        <div class="bar cost" title="${fmtN(c.cost)}" style="height:${Math.max((c.cost/maxVal)*100,2)}%"></div>
+        <div class="bar save" title="${fmtN(c.save)}" style="height:${Math.max((c.save/maxVal)*100,2)}%"></div>
       </div>
       <div class="bar-label">${c.label}</div>
     </div>
@@ -574,16 +913,17 @@ function renderChart(employees,salary,support,errors,missed,sTime,sSupport,sErro
 
 function copyROIText(e){
   const d=window._roi||{};
-  const text=`📊 RAPORT ROI – AUTOMATYZACJA AI
+  const pb=d.payback<1?t('pb_less1'):Math.ceil(d.payback)+t('pb_sfx');
+  const text=`${t('copy_hdr')}
 ================================
-Horyzont analizy: ${d.horizon} miesięcy
+${t('copy_h')}: ${d.horizon} ${t('copy_mos')}
 
-💰 Miesięczna oszczędność netto: ${d.netSaving?.toLocaleString('pl-PL')} zł
-📈 ROI za ${d.horizon} miesięcy: ${Math.round(d.roi)}%
-⏱️  Zwrot inwestycji: ${d.payback<1?'< 1 mies.':Math.ceil(d.payback)+' mies.'}
-⚠️  Koszt NIE-wdrożenia: ${d.oppCost?.toLocaleString('pl-PL')} zł
+💰 ${t('copy_m')}: ${d.netSaving?.toLocaleString('pl-PL')} zł
+📈 ${t('copy_r')} ${d.horizon} ${t('copy_mos')}: ${Math.round(d.roi)}%
+⏱️  ${t('copy_pb')}: ${pb}
+⚠️  ${t('copy_op')}: ${d.oppCost?.toLocaleString('pl-PL')} zł
 
-Wygenerowano: ${new Date().toLocaleDateString('pl-PL')}
+${new Date().toLocaleDateString('pl-PL')}
 integracjebiznesowe.pl/kalkulator-roi.html`;
 
   navigator.clipboard.writeText(text).then(()=>{
@@ -594,11 +934,12 @@ integracjebiznesowe.pl/kalkulator-roi.html`;
   });
 }
 
-window.addEventListener('scroll',()=>{
+window.addEventListener('scroll',function(){
   document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>24);
 },{passive:true});
 
-update();
+initLangPicker();
+applyLang(currentLang);
 </script>
 </body>
 </html>
