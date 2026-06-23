@@ -758,7 +758,7 @@ var LANG_FLAGS={pl:"🇵🇱 PL",en:"🇬🇧 EN",de:"🇩🇪 DE",it:"🇮🇹 
 var PRESET_KEYS=["custom","clinic","salon","agency","ecom","law","auto","realestate","restaurant"];
 var currentLang=localStorage.getItem('ib_lang')||'pl';
 
-function t(k){return(T[currentLang]||T.pl)[k]||(T.pl)[k]||'';}
+function t(k){var L=T[currentLang]||T.pl;var v=L[k];return v!==undefined?v:(T.pl[k]!==undefined?T.pl[k]:'');}
 
 function applyLang(lang){
   currentLang=lang;
