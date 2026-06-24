@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Szczegóły wdrożenia | Integracje Biznesowe</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@400,500,600,700&f[]=satoshi@300,400,500,700&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f7f8fc;
+  --surface:#f3f5fb;--surface2:#eaeff8;
+  --border:rgba(0,0,0,0.07);--border2:rgba(0,0,0,0.12);
+  --lime:#CFE046;--lime-dim:rgba(207,224,70,0.13);--lime-border:rgba(207,224,70,0.32);--lime-text:#496300;
+  --text:#111827;--text2:#4b5563;--text3:#9ca3af;
+  --r:16px;--rsm:10px;--rlg:24px;
+  --sh-sm:0 1px 4px rgba(0,0,0,0.06);
+  --sh-md:0 4px 20px rgba(0,0,0,0.08),0 2px 8px rgba(0,0,0,0.04);
+  --sh-lg:0 16px 48px rgba(0,0,0,0.1);
+  --fd:'Clash Display',sans-serif;
+  --fb:'Satoshi',sans-serif;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.026) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.026) 1px,transparent 1px);background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 50% at 50% 0%,black,transparent);-webkit-mask-image:radial-gradient(ellipse 80% 50% at 50% 0%,black,transparent)}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,0.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1080px)/2));gap:20px}
+.nav-logo{font-family:var(--fb);font-size:16px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:8px;flex-shrink:0}
+.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.nav-logo span{color:var(--lime-text)}
+.nav-back{color:var(--text2);text-decoration:none;font-size:13px;font-weight:500;display:flex;align-items:center;gap:5px;padding:6px 10px;border-radius:var(--rsm);transition:all 0.18s;margin-left:auto}
+.nav-back:hover{color:var(--text);background:var(--surface2)}
+.nav-back svg{width:14px;height:14px}
+
+.page{max-width:900px;margin:0 auto;padding:56px 28px 96px;position:relative;z-index:1}
+
+/* BREADCRUMB */
+.breadcrumb{font-size:12px;color:var(--text3);margin-bottom:40px;display:flex;align-items:center;gap:6px}
+.breadcrumb a{color:var(--text3);text-decoration:none;transition:color 0.18s}
+.breadcrumb a:hover{color:var(--lime-text)}
+.breadcrumb svg{width:12px;height:12px}
+
+/* HEADER */
+.offer-header{margin-bottom:48px}
+.offer-badge{display:inline-flex;align-items:center;gap:7px;background:var(--lime-dim);border:1px solid var(--lime-border);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;padding:5px 13px;border-radius:100px;margin-bottom:18px}
+.offer-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--lime-text);animation:blink 2s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.offer-emoji{font-size:42px;margin-bottom:14px;display:block;line-height:1}
+.offer-title{font-family:var(--fd);font-size:clamp(26px,3.5vw,42px);font-weight:700;letter-spacing:-.01em;line-height:1.15;margin-bottom:14px}
+.offer-title em{font-style:normal;color:var(--lime-text)}
+.offer-desc{font-size:16px;color:var(--text2);line-height:1.78;max-width:680px}
+
+/* GRID */
+.offer-grid{display:grid;grid-template-columns:1fr 360px;gap:40px;align-items:start}
+@media(max-width:780px){.offer-grid{grid-template-columns:1fr}}
+
+/* WHAT'S INCLUDED */
+.section-title{font-family:var(--fd);font-size:18px;font-weight:700;margin-bottom:20px}
+.include-list{list-style:none;display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.include-list li{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--text2);line-height:1.55}
+.include-list li svg{width:16px;height:16px;flex-shrink:0;margin-top:2px;stroke:var(--lime-text);stroke-width:2.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.include-list .note{font-size:12px;color:var(--text3);margin-top:2px;display:block}
+
+/* TIMELINE */
+.timeline{margin-bottom:36px}
+.tl-item{display:flex;gap:16px;padding-bottom:24px;position:relative}
+.tl-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border2)}
+.tl-num{width:32px;height:32px;border-radius:50%;background:var(--lime-dim);border:2px solid var(--lime-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--fd);font-size:12px;font-weight:700;color:var(--lime-text)}
+.tl-content{padding-top:6px}
+.tl-title{font-family:var(--fd);font-size:14px;font-weight:700;margin-bottom:3px}
+.tl-desc{font-size:13px;color:var(--text2);line-height:1.55}
+.tl-time{display:inline-block;font-size:11px;font-weight:700;color:var(--lime-text);background:var(--lime-dim);border:1px solid var(--lime-border);padding:2px 8px;border-radius:100px;margin-top:6px}
+
+/* TECH STACK */
+.tech-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px}
+.tech-tag{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--rsm);padding:5px 12px;font-size:12px;font-weight:600;color:var(--text2)}
+
+/* PAYMENT CARD */
+.payment-card{background:#fff;border:2px solid var(--lime-border);border-radius:var(--rlg);padding:32px;box-shadow:var(--sh-md);position:sticky;top:84px}
+.payment-card-title{font-family:var(--fd);font-size:17px;font-weight:700;margin-bottom:20px}
+.price-row{background:var(--surface);border-radius:var(--r);padding:20px;margin-bottom:20px}
+.price-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.price-total{font-family:var(--fd);font-size:clamp(28px,4vw,38px);font-weight:700;letter-spacing:-.02em;color:var(--text);line-height:1}
+.price-range-hint{font-size:12px;color:var(--text3);margin-top:4px}
+.deposit-row{display:flex;align-items:center;justify-content:space-between;background:var(--lime-dim);border:1px solid var(--lime-border);border-radius:var(--rsm);padding:14px 16px;margin-bottom:20px}
+.deposit-label{font-size:13px;font-weight:600;color:var(--lime-text)}
+.deposit-amount{font-family:var(--fd);font-size:20px;font-weight:700;color:var(--lime-text)}
+.deposit-note{font-size:12px;color:var(--text3);margin-bottom:20px;line-height:1.55}
+.pay-btn{display:block;width:100%;text-align:center;background:var(--lime);color:#111827;border:none;border-radius:var(--r);padding:16px 20px;font-family:var(--fb);font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s var(--ease);display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(207,224,70,0.44)}
+.pay-btn svg{width:16px;height:16px;flex-shrink:0}
+.security-note{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);margin-top:12px;justify-content:center}
+.security-note svg{width:12px;height:12px;stroke:var(--text3);stroke-width:2;fill:none}
+.pay-divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.pay-btn-email{display:flex;width:100%;align-items:center;justify-content:center;gap:8px;background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:var(--r);padding:13px 16px;font-family:var(--fb);font-size:14px;font-weight:600;text-decoration:none;transition:all 0.2s var(--ease)}
+.pay-btn-email:hover{border-color:var(--lime-border);color:var(--text);background:var(--surface)}
+.pay-btn-email svg{width:15px;height:15px;flex-shrink:0}
+.pay-footer-note{text-align:center;font-size:11px;color:var(--text3);margin-top:10px;line-height:1.5}
+
+/* NOT FOUND */
+.not-found{text-align:center;padding:80px 24px}
+.not-found h2{font-family:var(--fd);font-size:24px;font-weight:700;margin-bottom:12px}
+.not-found p{font-size:15px;color:var(--text2);margin-bottom:24px}
+
+@media(max-width:600px){.payment-card{position:static}}
+</style>
+</head>
+<body>
+<div class="bg-grid" aria-hidden="true"></div>
+
+<nav>
+  <a href="index.html" class="nav-logo" aria-label="Integracje Biznesowe — strona główna">
+    <div class="nav-logo-dot">
+      <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5" fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5" fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    Integracje <span>Biznesowe</span>
+  </a>
+  <a href="index.html#oferta" class="nav-back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Wróć do oferty
+  </a>
+</nav>
+
+<div class="page" id="pageContent">
+  <div class="not-found" id="notFound" style="display:none">
+    <h2>Nie znaleziono usługi</h2>
+    <p>Podany adres jest nieprawidłowy. Wróć do oferty i wybierz usługę.</p>
+    <a href="index.html#oferta" style="display:inline-flex;align-items:center;gap:6px;background:var(--lime);color:#111827;padding:12px 24px;border-radius:var(--r);font-weight:700;text-decoration:none">← Wróć do oferty</a>
+  </div>
+  <div id="serviceContent" style="display:none">
+    <div class="breadcrumb">
+      <a href="index.html">Strona główna</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <a href="index.html#oferta">Oferta</a>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      <span id="breadName"></span>
+    </div>
+
+    <div class="offer-header">
+      <div class="offer-badge"><span class="offer-badge-dot"></span> Gotowe do wdrożenia</div>
+      <span class="offer-emoji" id="svcEmoji"></span>
+      <h1 class="offer-title" id="svcTitle"></h1>
+      <p class="offer-desc" id="svcDesc"></p>
+    </div>
+
+    <div class="offer-grid">
+      <!-- LEFT -->
+      <div>
+        <h2 class="section-title">Co zawiera wdrożenie</h2>
+        <ul class="include-list" id="svcIncludes"></ul>
+
+        <h2 class="section-title">Harmonogram prac</h2>
+        <div class="timeline" id="svcTimeline"></div>
+
+        <h2 class="section-title">Stack techniczny</h2>
+        <div class="tech-row" id="svcStack"></div>
+
+        <p style="font-size:13px;color:var(--text3);line-height:1.6;padding:16px;background:var(--surface);border-radius:var(--rsm);border:1px solid var(--border)">
+          <strong style="color:var(--text2)">Zadatek 30%</strong> uruchamia prace. Pozostałe <strong style="color:var(--text2)">70%</strong> płacisz po odbiorze i zatwierdzeniu wdrożenia. Brak ukrytych kosztów.
+        </p>
+      </div>
+
+      <!-- RIGHT — PAYMENT -->
+      <div>
+        <div class="payment-card">
+          <div class="payment-card-title">Zamów wdrożenie</div>
+          <div class="price-row">
+            <div class="price-label">Wartość rynkowa</div>
+            <div class="price-total" id="svcPriceDisplay"></div>
+            <div class="price-range-hint" id="svcPriceHint"></div>
+          </div>
+          <div class="deposit-row">
+            <div class="deposit-label">Zadatek (30%) na start</div>
+            <div class="deposit-amount" id="depositDisplay">—</div>
+          </div>
+          <p class="deposit-note">Wpłacasz zadatek, startuję z pracami. Resztę (70%) opłacasz po odbiorze — bez ryzyka.</p>
+          <a id="payBtnStripe" href="#" class="pay-btn" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+            Zapłać zadatek — <span id="depositBtnAmount"></span>
+          </a>
+          <div class="security-note">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            Bezpieczna płatność · Stripe SSL
+          </div>
+          <hr class="pay-divider">
+          <a id="payBtnEmail" href="mailto:biuro@integracjebiznesowe.pl" class="pay-btn-email">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Zamów e-mailem
+          </a>
+          <p class="pay-footer-note">Po e-mailu wyślę indywidualny link do płatności zadatku.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── SERVICES DATA ── */
+var SERVICES = {
+  'agent-24-7': {
+    emoji: '💬',
+    name: 'System Agentów 24/7',
+    flagowy: true,
+    desc: 'Twój wirtualny pracownik, który nigdy nie śpi. Odpowiada klientom na WhatsApp i SMS, umawia wizyty, sprzedaje usługi i zapisuje wszystko w CRM. Adaptowalny do każdej branży usługowej.',
+    priceMin: 3000, priceMax: 5000,
+    includes: [
+      { text: 'Workflow n8n obsługujący WhatsApp + SMS przez Twilio', note: 'gotowy do importu i konfiguracji' },
+      { text: 'Automatyczne umawianie wizyt z weryfikacją kalendarza (Airtable / Google Calendar)' },
+      { text: 'Logika konwersacyjna GPT-4o — naturalny dialog z klientem' },
+      { text: 'Zapis każdego kontaktu w CRM (Airtable) z historią rozmowy' },
+      { text: 'Panel statusów: Nowy / W trakcie / Umówiony / Zamknięty' },
+      { text: 'Dokumentacja konfiguracji + instrukcja obsługi dla klienta końcowego' },
+      { text: '30 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Konfiguracja środowiska', desc: 'Twilio, OpenAI, Airtable — dane dostępowe i setup kont', time: 'dzień 1–2' },
+      { num: '02', title: 'Import i konfiguracja workflow', desc: 'Podmiana placeholderów, testy na środowisku testowym Twilio', time: 'dzień 3–5' },
+      { num: '03', title: 'Testy end-to-end', desc: 'Scenariusze: nowy klient, istniejący klient, odwołanie wizyty', time: 'dzień 6–8' },
+      { num: '04', title: 'Odbiór i dokumentacja', desc: 'Protokół odbioru, instrukcja, 30-dniowy support start', time: 'dzień 9–14' },
+    ],
+    stack: ['n8n (self-hosted)', 'OpenAI GPT-4o', 'Twilio WhatsApp', 'Twilio SMS', 'Airtable CRM', 'Google Calendar'],
+    stripeLink: 'STRIPE_LINK_AGENT_24_7',
+  },
+  'audytor-stron': {
+    emoji: '🔍',
+    name: 'Agent Audytor Stron WWW',
+    desc: 'Twoja tajna broń do zdobywania klientów. Skanuje stronę potencjalnego klienta, generuje profesjonalny raport z rekomendacjami SEO, UX i szybkości — i daje Ci gotowy powód do kontaktu z realną wartością.',
+    priceMin: 2000, priceMax: 3500,
+    includes: [
+      { text: 'Webhook przyjmujący URL + dane klienta (formularz / e-mail)' },
+      { text: 'Skanowanie strony: meta tagi, H1-H3, szybkość, mobile-friendly, Core Web Vitals' },
+      { text: 'GPT-4o generuje spersonalizowany raport z 5–8 rekomendacjami' },
+      { text: 'Automatyczna wysyłka raportu PDF na e-mail (Google Docs → PDF)' },
+      { text: 'Opcjonalnie: Telegram / Slack alert z podsumowaniem każdego audytu' },
+      { text: 'Dokumentacja + instrukcja użycia jako narzędzie sprzedażowe' },
+      { text: '14 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Setup webhooków i konfiguracja', desc: 'n8n, OpenAI, SMTP lub Gmail OAuth', time: 'dzień 1–2' },
+      { num: '02', title: 'Budowa logiki skanowania', desc: 'HTTP Request nodes + parsowanie HTML', time: 'dzień 3–5' },
+      { num: '03', title: 'Prompt engineering i testy', desc: '10 testowych audytów, kalibracja jakości raportu', time: 'dzień 6–8' },
+      { num: '04', title: 'Odbiór', desc: 'Demo live + dokumentacja', time: 'dzień 9–10' },
+    ],
+    stack: ['n8n (self-hosted)', 'OpenAI GPT-4o', 'Google Docs API', 'Gmail / SMTP', 'Telegram Bot'],
+    stripeLink: 'STRIPE_LINK_AUDYTOR_STRON',
+  },
+  'agent-opinii': {
+    emoji: '⭐',
+    name: 'Agent Opinii Google Maps',
+    desc: 'Po każdej wizycie analizuje sentyment klienta. Zadowolony klient dostaje prośbę o opinię Google Maps. Niezadowolony? Dostajesz alert, zanim napisze złą recenzję. Połączony z CRM.',
+    priceMin: 2000, priceMax: 3000,
+    includes: [
+      { text: 'Webhook aktywowany po wizycie (z CRM / ręcznie / z formularza)' },
+      { text: 'GPT-4o analizuje odpowiedź klienta i ocenia sentyment (pozytywny / neutralny / negatywny)' },
+      { text: 'Pozytywny → automatyczny SMS / e-mail z linkiem do recenzji Google' },
+      { text: 'Negatywny → natychmiastowy alert na Slack / Telegram z treścią rozmowy' },
+      { text: 'Zapis wyników w Airtable (historia reakcji, statystyki)' },
+      { text: '14 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Konfiguracja', desc: 'SMTP/Twilio, Slack webhook, Airtable', time: 'dzień 1–2' },
+      { num: '02', title: 'Logika sentymentu', desc: 'Prompt GPT-4o + routing warunkowy', time: 'dzień 3–4' },
+      { num: '03', title: 'Testy i odbiór', desc: 'Scenariusze pozytywny / negatywny / neutralny', time: 'dzień 5–7' },
+    ],
+    stack: ['n8n (self-hosted)', 'OpenAI GPT-4o', 'Twilio SMS', 'Gmail / SMTP', 'Slack', 'Airtable'],
+    stripeLink: 'STRIPE_LINK_AGENT_OPINII',
+  },
+  'ksef': {
+    emoji: '📑',
+    name: 'KSeF — Faktury Kosztowe',
+    flagowy: true,
+    desc: 'Zaciąga faktury z państwowego Krajowego Systemu e-Faktur, sprawdza je pod kątem ryzyka — Biała Lista VAT, duplikaty, nietypowe kwoty. Nadaje kolor: zielony / żółty / czerwony. Zgodne z obowiązkowymi wymogami KSeF dla firm w Polsce.',
+    priceMin: 4000, priceMax: 6000,
+    includes: [
+      { text: 'Integracja z API KSeF MF (środowisko testowe + produkcyjne)', note: 'wymaga certyfikatu kwalifikowanego lub tokenu API MF' },
+      { text: 'Automatyczne pobieranie faktur kosztowych z KSeF' },
+      { text: 'Weryfikacja kontrahenta na Białej Liście VAT (API MF)' },
+      { text: 'Detekcja duplikatów i anomalii kwotowych' },
+      { text: 'Kolor ryzyka: zielony (OK) / żółty (uwaga) / czerwony (blokuj)' },
+      { text: 'Zapis do Google Sheets: NIP, kwoty, stawka VAT, status ryzyka' },
+      { text: 'Alert na Slack / Telegram dla faktur z ryzykiem' },
+      { text: '30 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Autoryzacja KSeF', desc: 'Konfiguracja certyfikatu / tokenu API MF, testy na środowisku testowym', time: 'dzień 1–3' },
+      { num: '02', title: 'Integracja i pobieranie', desc: 'Workflow pobierający faktury, parsowanie XML', time: 'dzień 4–7' },
+      { num: '03', title: 'Logika ryzyka', desc: 'Biała Lista, duplikaty, anomalie kwotowe, routing kolorów', time: 'dzień 8–12' },
+      { num: '04', title: 'Google Sheets + alerty', desc: 'Arkusz z wynikami, Slack / Telegram powiadomienia', time: 'dzień 13–16' },
+      { num: '05', title: 'Odbiór i dokumentacja', desc: 'Testy z realnymi fakturami, protokół odbioru', time: 'dzień 17–21' },
+    ],
+    stack: ['n8n (self-hosted)', 'KSeF API MF', 'Biała Lista VAT API', 'Google Sheets', 'Slack / Telegram'],
+    stripeLink: 'STRIPE_LINK_KSEF',
+  },
+  'weryfikacja-nip': {
+    emoji: '🔍',
+    name: 'Weryfikacja Kontrahenta po NIP',
+    desc: 'Werdykt ryzyka w kilka sekund. Sprawdza Białą Listę VAT, KRS, CEIDG. Wysyła krótki raport z uzasadnieniem na Telegramie — czy bezpiecznie wchodzić w transakcję z daną firmą.',
+    priceMin: 2500, priceMax: 4000,
+    includes: [
+      { text: 'Bot Telegram: wpisujesz NIP → dostajesz raport' },
+      { text: 'Weryfikacja na Białej Liście VAT (API MF) — status VAT czynny / zwolniony / nie zarejestrowany' },
+      { text: 'Sprawdzenie KRS — data rejestracji, PKD, adres, zarząd' },
+      { text: 'CEIDG — weryfikacja działalności jednoosobowej' },
+      { text: 'GPT-4o generuje czytelny werdykt: BEZPIECZNY / UWAGA / RYZYKO + uzasadnienie' },
+      { text: 'Historia zapytań w Airtable' },
+      { text: '14 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Setup bot Telegram + n8n', desc: 'BotFather → token, webhook w n8n', time: 'dzień 1' },
+      { num: '02', title: 'Integracje API', desc: 'Biała Lista, KRS, CEIDG — wszystkie publiczne i bezpłatne', time: 'dzień 2–4' },
+      { num: '03', title: 'Logika GPT + werdykt', desc: 'Prompt + parsowanie odpowiedzi, Airtable zapis', time: 'dzień 5–7' },
+      { num: '04', title: 'Testy i odbiór', desc: '20 weryfikacji testowych na realnych NIPach', time: 'dzień 8–10' },
+    ],
+    stack: ['n8n (self-hosted)', 'Telegram Bot API', 'OpenAI GPT-4o', 'Biała Lista VAT API (MF)', 'KRS API', 'CEIDG API', 'Airtable'],
+    stripeLink: 'STRIPE_LINK_WERYFIKACJA_NIP',
+  },
+  'system-rag': {
+    emoji: '🧠',
+    name: 'System RAG — Baza Wiedzy',
+    desc: 'Dokumenty firmowe trafiają do folderu na Drive — system buduje z nich przeszukiwalną bazę wiedzy. Pytasz na Telegramie, bot odpowiada na podstawie treści Twoich plików. Hybrid search łączy szukanie semantyczne i po słowach kluczowych.',
+    priceMin: 3500, priceMax: 6000,
+    includes: [
+      { text: 'Pipeline ingestion: Google Drive → tekst → embeddingi → PostgreSQL pgvector' },
+      { text: 'Hybrid search: wyszukiwanie wektorowe (semantic) + full-text (pg_trgm) dla PL' },
+      { text: 'Bot Telegram z kontekstem — zadajesz pytanie, dostajesz odpowiedź z cytatem źródła' },
+      { text: 'Obsługa plików: PDF, DOCX, TXT, Google Docs' },
+      { text: 'Automatyczne odświeżanie bazy przy nowym pliku na Drive' },
+      { text: 'Historia pytań i odpowiedzi w logach PostgreSQL' },
+      { text: '30 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Baza danych PostgreSQL + pgvector', desc: 'Instalacja rozszerzeń, tworzenie tabel, indeksy', time: 'dzień 1–2' },
+      { num: '02', title: 'Pipeline ingestion', desc: 'Drive → n8n → OpenAI embeddings → PostgreSQL', time: 'dzień 3–6' },
+      { num: '03', title: 'Hybrid search + bot Telegram', desc: 'Logika wyszukiwania, prompt RAG, formatowanie odpowiedzi', time: 'dzień 7–12' },
+      { num: '04', title: 'Testy i optymalizacja', desc: '50 pytań testowych, kalibracja threshold similarity', time: 'dzień 13–16' },
+      { num: '05', title: 'Odbiór i dokumentacja', desc: 'Demo z dokumentami klienta, protokół odbioru', time: 'dzień 17–21' },
+    ],
+    stack: ['n8n (self-hosted)', 'OpenAI text-embedding-3-small', 'OpenAI GPT-4o', 'PostgreSQL + pgvector', 'pg_trgm', 'Telegram Bot', 'Google Drive API'],
+    stripeLink: 'STRIPE_LINK_SYSTEM_RAG',
+  },
+  'followup-social': {
+    emoji: '📧',
+    name: 'Auto Follow-Up Ofert + Social Media',
+    desc: 'Dwa flow w jednym pakiecie. Follow-Up pilnuje wysłanych ofert i przygotowuje przypomnienie do zatwierdzenia. Social Media: wpisujesz pomysł — agent generuje posty, akceptujesz, system publikuje na LinkedIn, Instagram i X przez Blotato.',
+    priceMin: 2000, priceMax: 4000,
+    includes: [
+      { text: 'Flow Follow-Up: monitorowanie Airtable tabeli ofert', note: 'alert kiedy oferta bez odpowiedzi przez X dni' },
+      { text: 'GPT-4o przygotowuje treść maila follow-up — zatwierdzasz jednym kliknięciem' },
+      { text: 'Flow Social Media: webhook przyjmujący pomysł + branżę + ton' },
+      { text: 'GPT-4o generuje 3 warianty postów (Twitter-style, LinkedIn long-form, Instagram caption)' },
+      { text: 'Wysyłka propozycji na e-mail — akceptujesz wersję' },
+      { text: 'Publikacja przez Blotato API: X, LinkedIn, Instagram + potwierdzenie mailem' },
+      { text: '30 dni wsparcia powdrożeniowego' },
+    ],
+    timeline: [
+      { num: '01', title: 'Konfiguracja Airtable + Blotato', desc: 'Struktura tabeli Oferty, klucz API Blotato, konta social', time: 'dzień 1–2' },
+      { num: '02', title: 'Flow Follow-Up', desc: 'Cron sprawdzający oferty, GPT-4o draft, e-mail zatwierdzenia', time: 'dzień 3–6' },
+      { num: '03', title: 'Flow Social Media', desc: 'Webhook, generowanie postów, routing akceptacji, Blotato pub', time: 'dzień 7–11' },
+      { num: '04', title: 'Testy i odbiór', desc: 'End-to-end dla obu flow, publikacja testowa', time: 'dzień 12–14' },
+    ],
+    stack: ['n8n (self-hosted)', 'OpenAI GPT-4o', 'Blotato API', 'Airtable', 'Gmail / SMTP', 'Slack'],
+    stripeLink: 'STRIPE_LINK_FOLLOWUP_SOCIAL',
+  },
+};
+
+/* ── INIT ── */
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var serviceKey = params.get('service');
+  var svc = serviceKey ? SERVICES[serviceKey] : null;
+
+  if (!svc) {
+    document.getElementById('notFound').style.display = 'block';
+    return;
+  }
+
+  document.title = svc.name + ' — Integracje Biznesowe';
+  document.getElementById('serviceContent').style.display = 'block';
+  document.getElementById('breadName').textContent = svc.name;
+  document.getElementById('svcEmoji').textContent = svc.emoji;
+  document.getElementById('svcTitle').innerHTML = svc.flagowy
+    ? svc.name + ' <em style="font-size:0.55em;vertical-align:middle;background:var(--lime);color:#111827;padding:3px 10px;border-radius:100px;font-family:var(--fb)">FLAGOWY</em>'
+    : svc.name;
+  document.getElementById('svcDesc').textContent = svc.desc;
+
+  /* Price */
+  var mid = (svc.priceMin + svc.priceMax) / 2;
+  var deposit = Math.round(mid * 0.3);
+  document.getElementById('svcPriceDisplay').textContent = mid.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('svcPriceHint').textContent = 'Zakres: ' + svc.priceMin.toLocaleString('pl-PL') + ' – ' + svc.priceMax.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('depositDisplay').textContent = deposit.toLocaleString('pl-PL') + ' zł';
+  document.getElementById('depositBtnAmount').textContent = deposit.toLocaleString('pl-PL') + ' zł';
+
+  /* Includes */
+  var ul = document.getElementById('svcIncludes');
+  svc.includes.forEach(function(item) {
+    var li = document.createElement('li');
+    li.innerHTML = '<svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><div><span>' + item.text + '</span>'
+      + (item.note ? '<span class="note">' + item.note + '</span>' : '') + '</div>';
+    ul.appendChild(li);
+  });
+
+  /* Timeline */
+  var tl = document.getElementById('svcTimeline');
+  svc.timeline.forEach(function(step) {
+    var div = document.createElement('div');
+    div.className = 'tl-item';
+    div.innerHTML = '<div class="tl-num">' + step.num + '</div>'
+      + '<div class="tl-content"><div class="tl-title">' + step.title + '</div>'
+      + '<div class="tl-desc">' + step.desc + '</div>'
+      + '<span class="tl-time">' + step.time + '</span></div>';
+    tl.appendChild(div);
+  });
+
+  /* Stack */
+  var sr = document.getElementById('svcStack');
+  svc.stack.forEach(function(tag) {
+    var span = document.createElement('span');
+    span.className = 'tech-tag';
+    span.textContent = tag;
+    sr.appendChild(span);
+  });
+
+  /* Pay buttons */
+  var stripeBtn = document.getElementById('payBtnStripe');
+  if (svc.stripeLink && svc.stripeLink.indexOf('STRIPE_LINK') === -1) {
+    stripeBtn.href = svc.stripeLink;
+  } else {
+    stripeBtn.href = 'mailto:biuro@integracjebiznesowe.pl?subject=' + encodeURIComponent('Zadatek — ' + svc.name) + '&body=' + encodeURIComponent('Dzień dobry,\n\nChciałbym wpłacić zadatek ' + deposit.toLocaleString('pl-PL') + ' zł za wdrożenie: ' + svc.name + '\n\nProszę o wystawienie linku płatniczego.\n\nPozdrawiam');
+    stripeBtn.removeAttribute('target');
+    stripeBtn.removeAttribute('rel');
+  }
+
+  var emailBtn = document.getElementById('payBtnEmail');
+  emailBtn.href = 'mailto:biuro@integracjebiznesowe.pl?subject=' + encodeURIComponent('Zamówienie — ' + svc.name) + '&body=' + encodeURIComponent('Dzień dobry,\n\nChciałbym zamówić wdrożenie: ' + svc.name + '\n\nProszę o kontakt w celu ustalenia szczegółów.\n\nPozdrawiam');
+})();
+</script>
+</body>
+</html>

@@ -186,7 +186,8 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .process-img-wrap{margin-top:52px;border-radius:var(--rlg);overflow:hidden;box-shadow:var(--sh-md);border:1px solid var(--border)}
 .process-img-wrap img{width:100%;height:auto;display:block}
 .step{padding:0 18px;position:relative;z-index:1}
-.step-circle{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;transition:border-color 0.2s,box-shadow 0.2s}
+.step-circle{width:52px;height:52px;border-radius:50%;background:#fff;border:2px solid var(--border2);display:flex;align-items:center;justify-content:center;margin:0 auto 22px;transform:scale(0.65);transition:transform 0.55s cubic-bezier(0.34,1.56,0.64,1),border-color 0.2s,box-shadow 0.2s}
+.step-circle.in{transform:scale(1)}
 .step:hover .step-circle{border-color:var(--lime);box-shadow:0 0 0 5px var(--lime-dim)}
 .step-num{font-family:var(--fd);font-size:14px;font-weight:700;color:var(--lime-text)}
 .step-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:8px;text-align:center}
@@ -200,7 +201,9 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .pricing-card:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
 .pricing-card.featured{background:#fff;border:2px solid var(--lime);box-shadow:0 0 0 1px var(--lime-border),var(--sh-md)}
 .pricing-card.featured:hover{transform:translateY(-4px);box-shadow:0 0 0 2px var(--lime-border),var(--sh-lg)}
-.pricing-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime);color:#111827;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 14px;border-radius:100px;white-space:nowrap}
+.pricing-badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime);color:#111827;font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;padding:4px 14px;border-radius:100px;white-space:nowrap;overflow:hidden}
+.pricing-badge::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,0.65) 50%,transparent 100%);transform:translateX(-120%);animation:badge-shine 3.2s ease-in-out 1.8s infinite}
+@keyframes badge-shine{0%,100%{transform:translateX(-120%)}35%{transform:translateX(120%)}}
 .pricing-tier{font-size:11px;font-weight:700;color:var(--lime-text);letter-spacing:.09em;text-transform:uppercase;margin-bottom:6px}
 .pricing-name{font-family:var(--fd);font-size:22px;font-weight:700;margin-bottom:16px}
 /* Price display — number big, currency symbol smaller superscript */
@@ -276,22 +279,96 @@ footer{background:#111827;padding:60px 0 32px}
 [dir=rtl] .footer-tagline{text-align:right}
 [dir=rtl] .pricing-price{flex-direction:row-reverse}
 
+/* ── OFERTA ── */
+#oferta{padding:96px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.oferta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px}
+@media(max-width:900px) and (min-width:581px){.oferta-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:580px){.oferta-grid{grid-template-columns:1fr}}
+.oferta-card{background:#fff;border:1px solid var(--border);border-radius:var(--rlg);padding:28px 24px;display:flex;flex-direction:column;position:relative;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s}
+.oferta-card:hover{border-color:var(--lime-border);box-shadow:0 4px 24px rgba(207,224,70,0.1);transform:translateY(-2px)}
+.oferta-card.flagowy{border:2px solid var(--lime)}
+.oferta-flag{position:absolute;top:-13px;left:20px;background:var(--lime);color:#111827;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 12px;border-radius:100px}
+.oferta-emoji{font-size:26px;margin-bottom:12px;line-height:1}
+.oferta-title{font-family:var(--fd);font-size:15px;font-weight:700;margin-bottom:8px;line-height:1.3}
+.oferta-desc{font-size:13px;color:var(--text2);line-height:1.66;flex:1;margin-bottom:18px}
+.oferta-price-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.oferta-price-range{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--text);margin-bottom:16px}
+.oferta-cta{display:block;text-align:center;background:var(--lime);color:#111827;border:none;border-radius:var(--r);padding:11px 14px;font-family:var(--fb);font-size:13px;font-weight:700;text-decoration:none;transition:all 0.2s var(--ease)}
+.oferta-cta:hover{box-shadow:0 6px 20px rgba(207,224,70,0.44);transform:translateY(-1px);color:#111827}
+
+/* ── SCROLL PROGRESS BAR ── */
+.scroll-bar{position:fixed;top:0;left:0;height:2px;background:var(--lime);z-index:2001;width:0;pointer-events:none;will-change:width}
+
 /* ── REDUCED MOTION ── */
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
   .reveal{opacity:1!important;transform:none!important}
   .hero-title,.hero-sub,.hero-ctas{animation:none!important;opacity:1!important}
+  .step-circle{transform:scale(1)!important}
+  .pricing-badge::after{animation:none!important}
 }
 
 /* ── MOBILE SPECIFIC ── */
 @media(max-width:480px){
   .btn-primary,.btn-secondary{width:100%;justify-content:center}
   .hero-ctas{flex-direction:column}
-  .contact-card .btn-primary{font-size:14px;padding:14px 20px;word-break:break-all}
+}
+
+/* ── HERO TITLE — single column layout ── */
+@media(max-width:880px){
+  .hero-title{font-size:clamp(32px,4.5vw,48px)}
+}
+
+/* ── MOBILE ── */
+@media(max-width:767px){
+
+  /* Performance — bg grid kosztuje GPU na słabszych telefonach */
+  .bg-grid{display:none}
+
+  /* Hero — mniej powietrza pionowego */
+  #hero{min-height:auto;padding:100px 0 52px}
+
+  /* Spacing — wszystkie sekcje zwarte */
+  #usługi,#jak-dziala,#oferta,#cennik,#blog,#kontakt{padding:56px 0}
+  .sec-header{margin-bottom:32px}
+
+  /* Stats — ukryj 4. (metadane, nie liczba), 3. rozciągnij na całą szerokość */
+  .stat-item{padding:20px 12px}
+  .stat-item:nth-child(4){display:none}
+  .stat-item:nth-child(3){grid-column:1/-1}
+  .stat-label{font-size:12px}
+
+  /* Karty — mniejszy padding */
+  .service-card{padding:22px 18px}
+  .oferta-card{padding:20px 16px}
+  .pricing-card{padding:26px 20px}
+
+  /* Services note — usuń, powtarza sekcję kontaktu */
+  .services-note{display:none}
+
+  /* Blog — ukryj miniaturę, liczy się tytuł */
+  .post-thumb{display:none}
+  .post-card{grid-template-columns:1fr}
+
+  /* Contact CTA — skróć adres email na krótszy label */
+  #contactCta{font-size:0}
+  #contactCta::after{content:"Napisz do mnie \2192";font-size:15px;font-family:var(--fb);font-weight:700}
+
+  /* Footer */
+  footer{padding:44px 0 24px}
+  .footer-grid{margin-bottom:32px}
+}
+
+/* ── MOBILE FOOTER — linki w jednym flowię ── */
+@media(max-width:460px){
+  .footer-col-title{display:none}
+  .footer-links{flex-direction:row;flex-wrap:wrap;gap:4px 18px}
+  .footer-links a{font-size:13px}
 }
 </style>
 </head>
 <body>
+<div class="scroll-bar" aria-hidden="true"></div>
 <div class="bg-grid" aria-hidden="true"></div>
 
 <!-- NAV -->
@@ -313,6 +390,7 @@ footer{background:#111827;padding:60px 0 32px}
   <div class="nav-links" role="list">
     <a href="#usługi"     class="nav-link" role="listitem" data-i18n="nav_services">Usługi</a>
     <a href="#cennik"     class="nav-link" role="listitem" data-i18n="nav_pricing">Cennik</a>
+    <a href="#oferta"     class="nav-link" role="listitem">Oferta</a>
     <a href="#jak-dziala" class="nav-link" role="listitem" data-i18n="nav_process">Jak działam</a>
     <a href="blog.html"   class="nav-link" role="listitem" data-i18n="nav_blog">Blog</a>
     <a href="#kontakt"    class="nav-link" role="listitem" data-i18n="nav_contact">Kontakt</a>
@@ -341,6 +419,7 @@ footer{background:#111827;padding:60px 0 32px}
 <div class="mobile-menu" id="mobileMenu" aria-hidden="true" role="dialog" aria-label="Menu mobilne">
   <a href="#usługi"     class="mobile-link" data-i18n="nav_services">Usługi</a>
   <a href="#cennik"     class="mobile-link" data-i18n="nav_pricing">Cennik</a>
+  <a href="#oferta"     class="mobile-link">Oferta</a>
   <a href="#jak-dziala" class="mobile-link" data-i18n="nav_process">Jak działam</a>
   <a href="blog.html"   class="mobile-link" data-i18n="nav_blog">Blog</a>
   <a href="#kontakt"    class="mobile-link" data-i18n="nav_contact">Kontakt</a>
@@ -365,9 +444,9 @@ footer{background:#111827;padding:60px 0 32px}
           Automatyzacja procesów
         </div>
         <h1 class="hero-title" id="hero-heading" data-i18n-html="hero_title">
-          Twoja firma może działać<br><span class="accent">szybciej i sprawniej</span> — automatyzuję to, co Cię spowalnia
+          Ile godzin w tygodniu robisz to,<br>co <span class="accent">mogłoby się robić samo?</span>
         </h1>
-        <p class="hero-sub" data-i18n="hero_sub">Pomagam małym firmom odzyskać czas, automatyzując rutynowe procesy — od prostych przepływów pracy po integracje między systemami, które już dziś używasz.</p>
+        <p class="hero-sub" data-i18n="hero_sub">Buduję automatyzacje dla małych firm — łączę narzędzia, które już masz, i ustawiam je tak, żeby działały bez Twojego udziału. Napisz co Cię wkurza, resztą się zajmę.</p>
         <div class="hero-ctas">
           <a href="#cennik" class="btn-primary" data-i18n="hero_cta1">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
@@ -466,6 +545,95 @@ footer{background:#111827;padding:60px 0 32px}
     </div>
     <div class="services-note reveal" data-i18n-html="services_note">
       <strong>Masz konkretny proces, który Cię męczy?</strong> Napisz do mnie — bezpłatnie sprawdzimy, czy da się go zautomatyzować.
+    </div>
+  </div>
+</section>
+
+<!-- OFERTA -->
+<section id="oferta" aria-labelledby="oferta-heading">
+  <div class="container">
+    <div class="sec-header center reveal">
+      <div class="sec-tag">Oferta</div>
+      <h2 class="sec-title slim" id="oferta-heading">Gotowe wdrożenia <em>do kupienia od ręki</em></h2>
+      <p class="sec-sub">7 przetestowanych automatyzacji n8n gotowych do wdrożenia. Zadatek 30% uruchamia prace — resztę płacisz po odbiorze.</p>
+    </div>
+    <div class="oferta-grid">
+
+      <!-- 1: System Agentów 24/7 -->
+      <div class="oferta-card flagowy reveal">
+        <div class="oferta-flag">FLAGOWY</div>
+        <div class="oferta-emoji">💬</div>
+        <h3 class="oferta-title">System Agentów 24/7</h3>
+        <p class="oferta-desc">Wirtualny pracownik na WhatsApp i SMS — umawia wizyty, odpowiada klientom, zapisuje w CRM. Pracuje przez całą dobę bez urlopu.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">3 000 – 5 000 zł</div>
+        <a href="oferta-klienta.html?service=agent-24-7" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 2: Agent Audytor -->
+      <div class="oferta-card reveal reveal-d1">
+        <div class="oferta-emoji">🔍</div>
+        <h3 class="oferta-title">Agent Audytor Stron WWW</h3>
+        <p class="oferta-desc">Skanuje stronę klienta i generuje profesjonalny raport SEO/UX — gotowy powód do kontaktu z realną wartością dla potencjalnego klienta.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">2 000 – 3 500 zł</div>
+        <a href="oferta-klienta.html?service=audytor-stron" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 3: Agent Opinii -->
+      <div class="oferta-card reveal reveal-d2">
+        <div class="oferta-emoji">⭐</div>
+        <h3 class="oferta-title">Agent Opinii Google Maps</h3>
+        <p class="oferta-desc">Zadowolony klient → prośba o opinię. Niezadowolony → alert do Ciebie, zanim napisze złą recenzję. Automatycznie, po każdej wizycie.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">2 000 – 3 000 zł</div>
+        <a href="oferta-klienta.html?service=agent-opinii" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 4: KSeF -->
+      <div class="oferta-card flagowy reveal">
+        <div class="oferta-flag">FLAGOWY</div>
+        <div class="oferta-emoji">📑</div>
+        <h3 class="oferta-title">KSeF — Faktury Kosztowe</h3>
+        <p class="oferta-desc">Zaciąga faktury z państwowego KSeF, weryfikuje Białą Listę VAT, wykrywa duplikaty. Kolor: zielony / żółty / czerwony. Zgodne z wymogami prawnymi PL.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">4 000 – 6 000 zł</div>
+        <a href="oferta-klienta.html?service=ksef" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 5: Weryfikacja NIP -->
+      <div class="oferta-card reveal reveal-d1">
+        <div class="oferta-emoji">🏢</div>
+        <h3 class="oferta-title">Weryfikacja Kontrahenta NIP</h3>
+        <p class="oferta-desc">Wpisujesz NIP na Telegramie — w kilka sekund dostajesz werdykt: Biała Lista VAT, KRS, CEIDG. Bezpieczny / Uwaga / Ryzyko.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">2 500 – 4 000 zł</div>
+        <a href="oferta-klienta.html?service=weryfikacja-nip" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 6: System RAG -->
+      <div class="oferta-card reveal reveal-d2">
+        <div class="oferta-emoji">🧠</div>
+        <h3 class="oferta-title">System RAG — Baza Wiedzy</h3>
+        <p class="oferta-desc">Pytasz bota Telegram o swoje dokumenty firmowe — odpowiada na podstawie ich treści. Hybrid search: semantyczny + słowa kluczowe. WOW efekt na demo.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">3 500 – 6 000 zł</div>
+        <a href="oferta-klienta.html?service=system-rag" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+      <!-- 7: Follow-Up + Social -->
+      <div class="oferta-card reveal">
+        <div class="oferta-emoji">📧</div>
+        <h3 class="oferta-title">Auto Follow-Up + Social Media</h3>
+        <p class="oferta-desc">Pilnuje wysłanych ofert i przypomina o braku odpowiedzi. Wpisujesz pomysł na post — system publikuje na LinkedIn, Instagram i X przez Blotato.</p>
+        <div class="oferta-price-label">Wartość rynkowa</div>
+        <div class="oferta-price-range">2 000 – 4 000 zł</div>
+        <a href="oferta-klienta.html?service=followup-social" class="oferta-cta">KUP i wdróż →</a>
+      </div>
+
+    </div>
+    <div class="services-note reveal">
+      <strong>Nie wiesz, który wybrać?</strong> Napisz do mnie — bezpłatnie omówimy, które wdrożenie przyniesie Ci największy zwrot. <a href="#kontakt" style="color:var(--lime-text);font-weight:700;text-decoration:none">Skontaktuj się →</a>
     </div>
   </div>
 </section>
@@ -608,12 +776,12 @@ footer{background:#111827;padding:60px 0 32px}
     <div class="contact-card reveal">
       <div class="sec-tag" data-i18n="sec_tag_contact">Kontakt</div>
       <h2 class="sec-title" id="kontakt-heading" data-i18n-html="sec_title_contact">Masz proces, który Cię <em>męczy?</em></h2>
-      <p class="sec-sub" data-i18n="sec_sub_contact">Napisz, co robisz ręcznie i powtarzalnie w swojej firmie — sprawdzimy razem, czy da się to zautomatyzować.</p>
+      <p class="sec-sub" data-i18n="sec_sub_contact">Opisz mi co Cię wkurza — odpisuję w ciągu kilku godzin.</p>
       <div class="remote-notice">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-        <span data-i18n="remote_notice">Całość komunikacji przez e-mail — bez konieczności spotkania.</span>
+        <span data-i18n="remote_notice">Wszystko przez e-mail — bez spotkań, bez Zooma, bez Teams.</span>
       </div>
-      <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-primary" data-i18n="contact_cta">
+      <a href="mailto:biuro@integracjebiznesowe.pl" class="btn-primary" id="contactCta" data-i18n="contact_cta">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
         biuro@integracjebiznesowe.pl
       </a>
@@ -664,6 +832,7 @@ footer{background:#111827;padding:60px 0 32px}
         <div class="footer-links">
           <a href="audyt-potencjalu-ai.html" data-i18n="footer_audit">Audyt Potencjału AI</a>
           <a href="kalkulator-roi.html" data-i18n="footer_roi">Kalkulator ROI</a>
+          <a href="safety-pack-prawny.html">Safety Pack Prawny</a>
         </div>
       </div>
     </div>
@@ -674,14 +843,131 @@ footer{background:#111827;padding:60px 0 32px}
   </div>
 </footer>
 
+<!-- ── PREMIUM MICRO-INTERACTIONS ── -->
+<script>
+(function(){
+  'use strict';
+  var ease = 'cubic-bezier(0.23,1,0.32,1)';
+  var isTouch = window.matchMedia('(hover:none)').matches;
+
+  /* 1 — Scroll progress bar */
+  var bar = document.querySelector('.scroll-bar');
+  if (bar) {
+    var docEl = document.documentElement;
+    window.addEventListener('scroll', function() {
+      var max = docEl.scrollHeight - docEl.clientHeight;
+      bar.style.width = (max ? Math.round(docEl.scrollTop / max * 1000) / 10 : 0) + '%';
+    }, {passive:true});
+  }
+
+  /* 2 — Stats count-up */
+  var statEls = document.querySelectorAll('.stat-number[data-count]');
+  if (statEls.length && 'IntersectionObserver' in window) {
+    var so = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        so.unobserve(entry.target);
+        var el = entry.target;
+        var target = +el.getAttribute('data-count');
+        var duration = 1500;
+        var startTs = null;
+        var tn = el.firstChild;
+        requestAnimationFrame(function run(ts) {
+          if (!startTs) startTs = ts;
+          var p = Math.min((ts - startTs) / duration, 1);
+          var val = Math.round((1 - Math.pow(1 - p, 3)) * target);
+          if (tn && tn.nodeType === 3) tn.textContent = val;
+          if (p < 1) requestAnimationFrame(run);
+        });
+      });
+    }, {threshold: 0.6});
+    statEls.forEach(function(el) { so.observe(el); });
+  }
+
+  /* 3 — Card 3D tilt on hover (desktop only) */
+  if (!isTouch) {
+    var tiltCards = document.querySelectorAll('.service-card, .oferta-card, .pricing-card');
+    tiltCards.forEach(function(card) {
+      var maxDeg = card.classList.contains('pricing-card') ? 5 : 8;
+      card.addEventListener('mousemove', function(e) {
+        var r = card.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        card.style.transition = 'border-color 0.2s, box-shadow 0.2s';
+        card.style.transform = 'perspective(700px) rotateY(' + (x * maxDeg) + 'deg) rotateX(' + (-y * maxDeg) + 'deg) translateZ(6px)';
+      });
+      card.addEventListener('mouseleave', function() {
+        card.style.transition = 'transform 0.7s ' + ease + ', border-color 0.2s, box-shadow 0.2s';
+        card.style.transform = '';
+      });
+    });
+  }
+
+  /* 4 — Magnetic primary buttons (hero + contact) */
+  if (!isTouch) {
+    var magBtns = document.querySelectorAll('#hero .btn-primary, #hero .btn-secondary, #kontakt .btn-primary');
+    magBtns.forEach(function(btn) {
+      btn.addEventListener('mousemove', function(e) {
+        var r = btn.getBoundingClientRect();
+        var x = e.clientX - r.left - r.width / 2;
+        var y = e.clientY - r.top - r.height / 2;
+        btn.style.transition = 'transform 0.12s, box-shadow 0.2s';
+        btn.style.transform = 'translate(' + (x * 0.2) + 'px,' + (y * 0.25) + 'px)';
+      });
+      btn.addEventListener('mouseleave', function() {
+        btn.style.transition = 'transform 0.5s ' + ease + ', box-shadow 0.2s';
+        btn.style.transform = '';
+      });
+    });
+  }
+
+  /* 5 — Hero visual cursor parallax */
+  if (!isTouch) {
+    var heroEl = document.getElementById('hero');
+    var visualEl = document.querySelector('.hero-visual');
+    if (heroEl && visualEl) {
+      heroEl.addEventListener('mousemove', function(e) {
+        var r = heroEl.getBoundingClientRect();
+        var x = (e.clientX - r.left) / r.width - 0.5;
+        var y = (e.clientY - r.top) / r.height - 0.5;
+        visualEl.style.transition = 'transform 0.25s var(--ease)';
+        visualEl.style.transform = 'translate(' + (x * -18) + 'px,' + (y * -10) + 'px)';
+      });
+      heroEl.addEventListener('mouseleave', function() {
+        visualEl.style.transition = 'transform 1s ' + ease;
+        visualEl.style.transform = '';
+      });
+    }
+  }
+
+  /* 6 — Step circle spring entrance */
+  var circles = document.querySelectorAll('.step-circle');
+  if (circles.length && 'IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function(entries) {
+      entries.forEach(function(entry) {
+        if (!entry.isIntersecting) return;
+        co.unobserve(entry.target);
+        var el = entry.target;
+        var stepEl = el.parentElement;
+        var m = stepEl && stepEl.className.match(/reveal-d(\d)/);
+        var delay = m ? parseInt(m[1]) * 100 : 0;
+        setTimeout(function() { el.classList.add('in'); }, delay);
+      });
+    }, {threshold: 0.4});
+    circles.forEach(function(el) { co.observe(el); });
+  }
+
+})();
+</script>
+
 <!-- ── TRANSLATIONS ── -->
 <script>
 var T = {
   pl:{
     nav_services:"Usługi",nav_pricing:"Cennik",nav_process:"Jak działam",nav_blog:"Blog",nav_contact:"Kontakt",nav_cta:"Zobacz cennik",
     hero_eyebrow:"Automatyzacja procesów",
-    hero_title:'Twoja firma może działać<br><span class="accent">szybciej i sprawniej</span> — automatyzuję to, co Cię spowalnia',
-    hero_sub:"Pomagam małym firmom odzyskać czas, automatyzując rutynowe procesy — od prostych przepływów pracy po integracje między systemami, które już dziś używasz.",
+    hero_title:'Ile godzin w tygodniu robisz to,<br>co <span class="accent">mogłoby się robić samo?</span>',
+    hero_sub:"Buduję automatyzacje dla małych firm — łączę narzędzia, które już masz, i ustawiam je tak, żeby działały bez Twojego udziału. Napisz co Cię wkurza, resztą się zajmę.",
     hero_cta1:"Zobacz pakiety",hero_cta2:"Napisz do mnie →",
     stat1_label:"wdrożonych automatyzacji",stat2_label:"tygodniowo zaoszczędzone",stat3_label:"zdalna współpraca",stat4_label:"narzędzia: n8n, Make.com, AI",
     sec_tag_services:"Czym się zajmuję",
@@ -712,8 +998,8 @@ var T = {
     post_excerpt:"Czym właściwie jest automatyzacja procesów, jakie zadania warto zautomatyzować najpierw i jak zrobić to małymi krokami, bez dużych inwestycji.",
     post_link:"Czytaj artykuł →",
     sec_tag_contact:"Kontakt",sec_title_contact:'Masz proces, który Cię <em>męczy?</em>',
-    sec_sub_contact:"Napisz, co robisz ręcznie i powtarzalnie w swojej firmie — sprawdzimy razem, czy da się to zautomatyzować.",
-    remote_notice:"Całość komunikacji przez e-mail — bez konieczności spotkania.",contact_cta:"biuro@integracjebiznesowe.pl",
+    sec_sub_contact:"Opisz mi co Cię wkurza — odpisuję w ciągu kilku godzin.",
+    remote_notice:"Wszystko przez e-mail — bez spotkań, bez Zooma, bez Teams.",contact_cta:"biuro@integracjebiznesowe.pl",
     footer_tagline:"Automatyzacja procesów biznesowych dla małych firm. Wdrożenia n8n i Make.com w całości zdalnie.",
     footer_col_nav:"Nawigacja",footer_col_legal:"Prawne",footer_terms:"Regulamin",footer_privacy:"Polityka Prywatności",footer_col_tools:"Narzędzia",footer_audit:"Audyt Potencjału AI",footer_roi:"Kalkulator ROI",
     fc1_label:"Workflow",fc1_value:"Oferta PDF",fc1_sub:"Gotowa w 30 sekund",fc1_status:"Działa automatycznie",

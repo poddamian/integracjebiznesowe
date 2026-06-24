@@ -1,0 +1,739 @@
+﻿<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Safety Pack Prawny – Generator umów AI + RODO | Integracje Biznesowe</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="canonical" href="https://integracjebiznesowe.pl/safety-pack-prawny.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #ffffff;
+  --surface: #f3f5fb;
+  --surface2: #eaeff8;
+  --border: rgba(0,0,0,0.07);
+  --border2: rgba(0,0,0,0.13);
+  --accent: #496300;
+  --accent2: #3d5200;
+  --lime: #CFE046;
+  --gold: #b45309;
+  --green: #16a34a;
+  --red: #dc2626;
+  --text: #111827;
+  --muted: #9ca3af;
+  --muted2: #4b5563;
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* bg grid */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: linear-gradient(rgba(0,0,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.025) 1px,transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(ellipse 80% 40% at 50% 0%,black,transparent);
+  -webkit-mask-image: radial-gradient(ellipse 80% 40% at 50% 0%,black,transparent);
+  pointer-events: none; z-index: 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  min-height: 100vh;
+  position: relative; z-index: 1;
+}
+@media(max-width:900px){ .layout { grid-template-columns:1fr; } }
+
+/* SIDEBAR */
+aside {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  padding: 32px 24px;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto; overflow-x: hidden;
+}
+@media(max-width:900px){ aside { position:static; height:auto; } }
+
+.sidebar-logo {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 32px; padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.logo-icon {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+.logo-text { font-size: 14px; font-weight: 700; }
+.logo-sub { font-size: 11px; color: var(--muted); }
+
+.section-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 12px; margin-top: 24px;
+}
+.section-label:first-of-type { margin-top: 0; }
+
+.form-group { margin-bottom: 16px; }
+label { display: block; font-size: 12px; color: var(--muted2); margin-bottom: 6px; font-weight: 500; }
+input[type=text], input[type=email], textarea, select {
+  width: 100%;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  transition: border-color 0.2s;
+  resize: vertical;
+}
+input[type=text]:focus, input[type=email]:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: rgba(207,224,70,0.6);
+  box-shadow: 0 0 0 3px rgba(207,224,70,0.15);
+}
+input::placeholder, textarea::placeholder { color: var(--muted); }
+select { cursor: pointer; }
+select option { background: var(--surface2); }
+
+.checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+.checkbox-item {
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; font-size: 12px; color: var(--muted2);
+  padding: 8px; border-radius: 6px;
+  border: 1px solid transparent; transition: all 0.2s;
+}
+.checkbox-item:hover { background: var(--surface2); border-color: var(--border); }
+.checkbox-item input { accent-color: var(--accent); width: 14px; height: 14px; cursor: pointer; }
+.checkbox-item span { color: var(--text); font-size: 12px; }
+
+.sidebar-btns { margin-top: 28px; display: flex; flex-direction: column; gap: 10px; }
+.btn-generate {
+  background: var(--lime);
+  color: #111827; border: none; border-radius: 10px;
+  padding: 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 14px; font-weight: 700; cursor: pointer;
+  transition: all 0.2s; letter-spacing: 0.01em;
+}
+.btn-generate:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(207,224,70,0.4); }
+.btn-print {
+  background: transparent; color: var(--muted2);
+  border: 1px solid var(--border2); border-radius: 10px;
+  padding: 12px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn-print:hover { border-color: var(--accent); color: var(--text); background: var(--surface); }
+
+/* MAIN DOC AREA */
+main {
+  padding: 48px 60px;
+  max-width: 860px;
+}
+@media(max-width:900px){ main { padding: 32px 20px; } }
+
+.doc-tabs {
+  display: flex; gap: 4px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px; padding: 4px;
+  margin-bottom: 36px; width: fit-content;
+}
+.tab {
+  padding: 8px 20px; border-radius: 7px; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all 0.2s; color: var(--muted2);
+}
+.tab.active {
+  background: var(--lime);
+  color: #111827; box-shadow: 0 2px 12px rgba(207,224,70,0.35);
+}
+.tab:not(.active):hover { color: var(--text); background: var(--surface2); }
+
+/* DOCUMENT */
+.document {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.doc-toolbar {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+}
+.doc-toolbar-left { display: flex; align-items: center; gap: 8px; }
+.doc-badge {
+  background: rgba(207,224,70,0.15);
+  border: 1px solid rgba(207,224,70,0.4);
+  color: var(--accent); font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em; padding: 3px 10px; border-radius: 4px;
+  text-transform: uppercase;
+}
+.doc-version { font-size: 11px; color: var(--muted); }
+.btn-copy {
+  background: transparent; color: var(--muted2);
+  border: 1px solid var(--border); border-radius: 6px;
+  padding: 6px 14px; font-family: 'DM Sans', sans-serif;
+  font-size: 12px; cursor: pointer; transition: all 0.2s;
+}
+.btn-copy:hover { border-color: var(--border2); color: var(--text); }
+
+.doc-body {
+  padding: 48px 52px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text);
+  max-height: 75vh;
+  overflow-y: auto;
+}
+@media(max-width:600px){ .doc-body { padding: 28px 20px; } }
+
+/* Document styles */
+.doc-body h1 {
+  font-size: 22px; font-weight: 400; font-style: italic;
+  letter-spacing: -0.01em; margin-bottom: 8px;
+  color: var(--text); text-align: center;
+}
+.doc-body h2 {
+  font-size: 13px; font-weight: 400; font-family: 'DM Sans', sans-serif;
+  font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent); margin: 28px 0 12px; padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.doc-body h3 {
+  font-size: 12px; font-weight: 700; font-family: 'DM Sans', sans-serif;
+  letter-spacing: 0.05em; margin: 16px 0 8px; color: var(--muted2);
+}
+.doc-body p { margin-bottom: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; }
+.doc-body .meta {
+  text-align: center; margin-bottom: 32px; padding: 20px;
+  background: var(--surface2); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted2);
+  border: 1px solid var(--border);
+}
+.doc-body .meta strong { color: var(--text); }
+.highlight {
+  background: rgba(232,184,75,0.08);
+  border: 1px solid rgba(232,184,75,0.2);
+  border-radius: 6px; padding: 12px 16px;
+  margin: 16px 0;
+  font-family: 'DM Sans', sans-serif; font-size: 12px;
+  color: var(--gold);
+}
+.placeholder {
+  background: rgba(79,124,255,0.1);
+  border: 1px dashed rgba(79,124,255,0.3);
+  border-radius: 4px; padding: 2px 8px;
+  color: var(--accent); font-style: italic;
+  font-family: 'DM Sans', monospace; font-size: 12px;
+}
+ol, ul { padding-left: 20px; margin-bottom: 10px; }
+li { font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.7; margin-bottom: 4px; }
+.sign-section {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 40px; margin-top: 48px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.sign-block { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted2); }
+.sign-line { border-top: 1px solid var(--muted); margin: 32px 0 8px; }
+.doc-footer {
+  text-align: center; margin-top: 40px; padding-top: 16px;
+  border-top: 1px solid var(--border);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; color: var(--muted);
+}
+
+/* Compliance checklist */
+.checklist-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px; padding: 28px; margin-top: 20px;
+}
+.cl-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.cl-item:last-child { border-bottom: none; }
+.cl-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+.cl-text h4 { font-size: 13px; font-weight: 600; margin-bottom: 3px; }
+.cl-text p { font-size: 12px; color: var(--muted2); line-height: 1.5; }
+.cl-status {
+  margin-left: auto; flex-shrink: 0;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+  padding: 3px 10px; border-radius: 4px;
+}
+.cl-ok { background: rgba(52,211,153,0.1); color: var(--green); border: 1px solid rgba(52,211,153,0.2); }
+.cl-warn { background: rgba(232,184,75,0.1); color: var(--gold); border: 1px solid rgba(232,184,75,0.2); }
+.cl-err { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+
+@media print {
+  aside, .doc-tabs, .doc-toolbar, .checklist-panel { display: none !important; }
+  .layout { display: block; }
+  main { padding: 0; max-width: 100%; }
+  .document { border: none; border-radius: 0; }
+  .doc-body { max-height: none; overflow: visible; color: #111; background: white; padding: 20px; }
+  .doc-body h1, .doc-body h2, .doc-body h3 { color: #111 !important; }
+  .doc-body .meta { background: #f5f5f5; color: #444; }
+  .highlight { background: #fffbeb; color: #92400e; border-color: #fcd34d; }
+  .placeholder { color: #1d4ed8; background: #eff6ff; border-color: #93c5fd; }
+  body::before { display:none; }
+  .sign-block { color: #444; }
+  .doc-footer { color: #999; }
+}
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <aside>
+    <a href="index.html" style="display:inline-flex;align-items:center;gap:7px;text-decoration:none;color:var(--muted2);font-size:12px;margin-bottom:20px;transition:color 0.18s" onmouseover="this.style.color='var(--text)'" onmouseout="this.style.color='var(--muted2)'">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Powrót do strony
+    </a>
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background:linear-gradient(135deg,#c8f135,#9fc700)">
+        <svg width="18" height="18" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="4" fill="#06070d"/>
+          <circle cx="16" cy="5" r="2.5" fill="#06070d"/>
+          <circle cx="6" cy="26" r="2.5" fill="#06070d"/>
+          <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+          <line x1="16" y1="11.5" x2="16" y2="7.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="13" y1="19.5" x2="8" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Safety Pack Prawny</div>
+        <div class="logo-sub">Integracje Biznesowe · RODO + Umowa AI</div>
+      </div>
+    </div>
+
+    <div class="section-label">Dane Zleceniodawcy (Klient)</div>
+    <div class="form-group"><label>Pełna nazwa firmy</label><input type="text" id="klientNazwa" placeholder="Kowalski Sp. z o.o." oninput="renderDoc()"></div>
+    <div class="form-group"><label>NIP</label><input type="text" id="klientNip" placeholder="123-456-78-90" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Adres</label><input type="text" id="klientAdres" placeholder="ul. Kwiatowa 1, 00-001 Warszawa" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Reprezentant (imię i nazwisko)</label><input type="text" id="klientRep" placeholder="Jan Kowalski, Prezes" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Email</label><input type="email" id="klientEmail" placeholder="biuro@domena.pl" oninput="renderDoc()"></div>
+
+    <div class="section-label">Dane Wykonawcy (Twoja firma)</div>
+    <div class="form-group"><label>Twoja firma / imię i nazwisko</label><input type="text" id="execNazwa" value="Integracje Biznesowe Damian Podbielski" oninput="renderDoc()"></div>
+    <div class="form-group"><label>NIP wykonawcy</label><input type="text" id="execNip" placeholder="np. 123-456-78-90" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Adres wykonawcy</label><input type="text" id="execAdres" value="ul. Radziwiłłowska 10, 16-060 Zabłudów" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Email wykonawcy</label><input type="email" id="execEmail" value="biuro@integracjebiznesowe.pl" oninput="renderDoc()"></div>
+
+    <div class="section-label">Parametry umowy</div>
+    <div class="form-group">
+      <label>Zakres usług AI</label>
+      <select id="zakres" onchange="renderDoc()">
+        <option value="agent24">💬 System Agentów 24/7 (WhatsApp + SMS + CRM)</option>
+        <option value="audyt">🔍 Agent Audytor Stron WWW</option>
+        <option value="opinii">⭐ Agent Opinii Google Maps</option>
+        <option value="ksef">📑 KSeF — Faktury Kosztowe</option>
+        <option value="nip">🏢 Weryfikacja Kontrahenta po NIP</option>
+        <option value="rag">🧠 System RAG — Baza Wiedzy</option>
+        <option value="social">📧 Auto Follow-Up Ofert + Social Media</option>
+        <option value="custom">⚙️ Indywidualny zakres</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Wynagrodzenie wdrożeniowe (zł brutto)</label><input type="text" id="kwotaSetup" placeholder="8 000" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Miesięczny abonament (zł brutto)</label><input type="text" id="kwotaMiesiac" placeholder="1 200" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Czas wdrożenia (dni roboczych)</label><input type="text" id="czasWdrozenia" placeholder="21" oninput="renderDoc()"></div>
+    <div class="form-group"><label>Czas trwania umowy</label>
+      <select id="czasUmowy" onchange="renderDoc()">
+        <option value="bezterminowa">Bezterminowa z okresem wypowiedzenia</option>
+        <option value="12">12 miesięcy</option>
+        <option value="6">6 miesięcy</option>
+        <option value="3">3 miesiące</option>
+      </select>
+    </div>
+    <div class="form-group"><label>Karencja wypowiedzenia</label>
+      <select id="wypowiedzenie" onchange="renderDoc()">
+        <option value="30">30 dni</option>
+        <option value="14">14 dni</option>
+        <option value="60">60 dni</option>
+        <option value="90">90 dni</option>
+      </select>
+    </div>
+
+    <div class="section-label">Dodatkowe klauzule</div>
+    <div class="checkbox-group">
+      <label class="checkbox-item"><input type="checkbox" id="kl_kara" onchange="renderDoc()" checked> <span>Kara umowna za wcześniejsze rozwiązanie</span></label>
+      <label class="checkbox-item"><input type="checkbox" id="kl_nda" onchange="renderDoc()" checked> <span>Klauzula poufności (NDA)</span></label>
+      <label class="checkbox-item"><input type="checkbox" id="kl_rodo" onchange="renderDoc()" checked> <span>Powierzenie przetwarzania danych (RODO)</span></label>
+      <label class="checkbox-item"><input type="checkbox" id="kl_sla" onchange="renderDoc()" checked> <span>SLA (poziom dostępności usług)</span></label>
+      <label class="checkbox-item"><input type="checkbox" id="kl_ip" onchange="renderDoc()" checked> <span>Prawa własności intelektualnej</span></label>
+    </div>
+
+    <div class="sidebar-btns">
+      <button class="btn-generate" onclick="renderDoc()">⚡ Generuj dokument</button>
+      <button class="btn-print" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Drukuj / Pobierz PDF
+      </button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="doc-tabs">
+      <div class="tab active" onclick="switchTab('umowa', this)">📄 Umowa o Współpracy</div>
+      <div class="tab" onclick="switchTab('rodo', this)">🔒 Klauzula RODO</div>
+      <div class="tab" onclick="switchTab('checklist', this)">✅ Lista Kontrolna</div>
+    </div>
+
+    <!-- UMOWA -->
+    <div id="tab-umowa" class="document">
+      <div class="doc-toolbar">
+        <div class="doc-toolbar-left">
+          <div class="doc-badge">Umowa</div>
+          <div class="doc-version">Wersja 2.1 / 2025</div>
+        </div>
+        <button class="btn-copy" onclick="copyDoc('doc-umowa-body')">📋 Kopiuj tekst</button>
+      </div>
+      <div class="doc-body" id="doc-umowa-body">
+        <!-- Generated by JS -->
+      </div>
+    </div>
+
+    <!-- RODO -->
+    <div id="tab-rodo" class="document" style="display:none">
+      <div class="doc-toolbar">
+        <div class="doc-toolbar-left">
+          <div class="doc-badge" style="background:rgba(124,92,252,0.12);border-color:rgba(124,92,252,0.2);color:var(--accent2)">RODO</div>
+          <div class="doc-version">GDPR Art. 28 / 2025</div>
+        </div>
+        <button class="btn-copy" onclick="copyDoc('doc-rodo-body')">📋 Kopiuj tekst</button>
+      </div>
+      <div class="doc-body" id="doc-rodo-body"></div>
+    </div>
+
+    <!-- CHECKLIST -->
+    <div id="tab-checklist" style="display:none">
+      <div class="checklist-panel" id="checklist-panel"></div>
+    </div>
+  </main>
+</div>
+
+<script>
+function g(id) { return document.getElementById(id)?.value || ''; }
+function gc(id) { return document.getElementById(id)?.checked; }
+function ph(text, fallback='[uzupełnij]') { return text || `<span class="placeholder">${fallback}</span>`; }
+function today() { return new Date().toLocaleDateString('pl-PL',{year:'numeric',month:'long',day:'numeric'}); }
+
+const zakresy = {
+  agent24: 'wdrożenie i utrzymanie Systemu Agentów AI 24/7, obsługującego komunikację z klientami przez kanały WhatsApp i SMS, automatyczne umawianie wizyt, prowadzenie rozmów sprzedażowych oraz synchronizację danych z systemem CRM Zleceniodawcy (Airtable)',
+  audyt: 'wdrożenie i utrzymanie Agenta Audytora Stron WWW, automatycznie skanującego wskazane strony internetowe, generującego profesjonalne raporty z rekomendacjami w zakresie SEO, UX i szybkości ładowania oraz wysyłającego je drogą elektroniczną',
+  opinii: 'wdrożenie i utrzymanie Agenta Opinii Google Maps, automatycznie analizującego sentyment klientów po każdej wizycie: kierującego zadowolonych klientów do wystawienia opinii w Google Maps oraz generującego alerty dla Zleceniodawcy w przypadku klientów niezadowolonych',
+  ksef: 'wdrożenie i utrzymanie systemu automatycznego pobierania i weryfikacji faktur kosztowych z Krajowego Systemu e-Faktur (KSeF), obejmującego kontrolę kontrahentów na Białej Liście VAT MF, wykrywanie duplikatów i anomalii kwotowych oraz kategoryzację faktur według statusu ryzyka',
+  nip: 'wdrożenie i utrzymanie systemu automatycznej weryfikacji kontrahentów po numerze NIP, sprawdzającego status w Białej Liście VAT MF, rejestrze KRS oraz CEIDG, generującego werdykt ryzyka transakcji z uzasadnieniem i dostarczającego raport przez interfejs Telegram Bot',
+  rag: 'wdrożenie i utrzymanie Systemu RAG (Retrieval-Augmented Generation) – firmowej bazy wiedzy z interfejsem chatbota Telegram, umożliwiającej przeszukiwanie dokumentów firmowych (PDF, DOCX, Google Docs) metodą hybrydową łączącą wyszukiwanie semantyczne i pełnotekstowe',
+  social: 'wdrożenie i utrzymanie systemu automatycznego follow-up wysłanych ofert handlowych oraz automatyzacji publikacji w mediach społecznościowych, obejmującego generowanie treści postów przez GPT-4o i ich dystrybucję na platformy LinkedIn, Instagram i X (Twitter) przez Blotato API',
+  custom: 'indywidualnie uzgodniony zakres automatyzacji procesów biznesowych z wykorzystaniem technologii Sztucznej Inteligencji i narzędzi n8n/Make.com, szczegółowo opisany w Załączniku nr 1 do niniejszej Umowy',
+};
+
+function renderDoc() {
+  const klient = ph(g('klientNazwa'),'[NAZWA KLIENTA]');
+  const kNip = ph(g('klientNip'),'[NIP]');
+  const kAdres = ph(g('klientAdres'),'[ADRES]');
+  const kRep = ph(g('klientRep'),'[REPREZENTANT]');
+  const kEmail = ph(g('klientEmail'),'[EMAIL]');
+  const exec = ph(g('execNazwa'),'[NAZWA WYKONAWCY]');
+  const eNip = ph(g('execNip'),'[NIP]');
+  const eAdres = ph(g('execAdres'),'[ADRES]');
+  const eEmail = ph(g('execEmail'),'[EMAIL]');
+  const zakresText = zakresy[g('zakres') || 'agent24'];
+  const kwotaS = ph(g('kwotaSetup'),'[KWOTA]');
+  const kwotaM = ph(g('kwotaMiesiac'),'[KWOTA]');
+  const czasW = ph(g('czasWdrozenia'),'21');
+  const wypow = g('wypowiedzenie') || '30';
+  const czasU = g('czasUmowy') || 'bezterminowa';
+
+  const klKara = gc('kl_kara');
+  const klNda = gc('kl_nda');
+  const klRodo = gc('kl_rodo');
+  const klSla = gc('kl_sla');
+  const klIp = gc('kl_ip');
+
+  const umowaCzas = czasU === 'bezterminowa'
+    ? `Umowa zawierana jest na czas nieokreślony. Każda ze Stron może wypowiedzieć Umowę z zachowaniem ${wypow}-dniowego okresu wypowiedzenia, ze skutkiem na ostatni dzień miesiąca kalendarzowego.`
+    : `Umowa zawierana jest na czas określony ${czasU} (${czasU} miesięcy) od daty podpisania. Po upływie okresu umowa ulega przedłużeniu na czas nieokreślony, chyba że jedna ze Stron złoży wypowiedzenie z zachowaniem ${wypow}-dniowego okresu.`;
+
+  let html = `
+<h1>Umowa o Świadczenie Usług Automatyzacji AI</h1>
+<div class="meta">
+  Zawarta dnia ${today()}<br><br>
+  <strong>ZLECENIODAWCA:</strong> ${klient} NIP: ${kNip}, ${kAdres}, reprezentowana przez: ${kRep}, email: ${kEmail}<br><br>
+  <strong>WYKONAWCA:</strong> ${exec}, NIP: ${eNip}, ${eAdres}, email: ${eEmail}
+</div>
+
+<h2>§ 1. Przedmiot Umowy</h2>
+<p>1. Wykonawca zobowiązuje się do świadczenia usług polegających na ${zakresText} (dalej: „System AI" lub „Usługi").</p>
+<p>2. Szczegółowy zakres wdrożenia, harmonogram oraz specyfikacja techniczna stanowią Załącznik nr 1 do niniejszej Umowy.</p>
+<p>3. Wykonawca oświadcza, że posiada odpowiednią wiedzę, doświadczenie i narzędzia niezbędne do należytego wykonania Umowy.</p>
+
+<h2>§ 2. Wynagrodzenie i Płatności</h2>
+<p>1. Wynagrodzenie jednorazowe za wdrożenie (setup fee): <strong>${kwotaS} zł brutto</strong>. Płatne w ciągu 7 dni od podpisania Umowy lub w dwóch równych ratach: 50% przy podpisaniu, 50% przy odbiorze wdrożenia.</p>
+<p>2. Miesięczny abonament za utrzymanie, aktualizacje i wsparcie techniczne: <strong>${kwotaM} zł brutto</strong>, płatny do 10. dnia każdego miesiąca na podstawie faktury VAT.</p>
+<p>3. Wynagrodzenie zostanie przekazane przelewem na rachunek bankowy Wykonawcy wskazany na fakturze VAT.</p>
+<p>4. W przypadku opóźnienia w płatności Zleceniodawca zapłaci odsetki ustawowe za opóźnienie w transakcjach handlowych.</p>
+<p>5. Wykonawca zastrzega sobie prawo do corocznej waloryzacji abonamentu o wskaźnik inflacji GUS.</p>
+
+<h2>§ 3. Harmonogram Wdrożenia</h2>
+<p>1. Wykonawca zobowiązuje się do uruchomienia Systemu AI w ciągu <strong>${czasW} dni roboczych</strong> od daty wpłynięcia wynagrodzenia wdrożeniowego lub jego pierwszej raty.</p>
+<p>2. Zleceniodawca zobowiązuje się do dostarczenia Wykonawcy niezbędnych danych dostępowych (API, dane logowania, materiały) w ciągu 3 dni roboczych od podpisania Umowy.</p>
+<p>3. Odbiór wdrożenia następuje na podstawie pisemnego protokołu odbioru podpisanego przez obie Strony.</p>
+<p>4. Opóźnienia wynikające z działań Zleceniodawcy (brak danych, opóźnione odpowiedzi) nie obciążają Wykonawcy.</p>
+
+<h2>§ 4. Zakres Wsparcia i Utrzymania</h2>
+<p>1. W ramach miesięcznego abonamentu Wykonawca zapewnia:</p>
+<ul>
+  <li>Monitoring i utrzymanie technicznie Systemu AI,</li>
+  <li>Aktualizacje modeli AI i bibliotek,</li>
+  <li>Wsparcie techniczne e-mail w godzinach 9:00–17:00 w dni robocze,</li>
+  <li>Do 2 godzin modyfikacji/optymalizacji miesięcznie,</li>
+  <li>Tworzenie kopii zapasowych konfiguracji systemu.</li>
+</ul>
+<p>2. Wsparcie poza zakresem abonamentu jest rozliczane godzinowo według aktualnego cennika Wykonawcy.</p>
+
+${klSla ? `
+<h2>§ 5. Poziom Dostępności Usług (SLA)</h2>
+<p>1. Wykonawca gwarantuje dostępność Systemu AI na poziomie <strong>99% w skali miesiąca</strong> (dopuszczalna niedostępność: maks. 7,2 h/miesiąc).</p>
+<p>2. Czas reakcji na zgłoszony błąd krytyczny (system niedostępny): do 4 godzin roboczych. Błąd standardowy: do 24 godzin roboczych.</p>
+<p>3. W przypadku niedotrzymania SLA powyżej 24 godzin, abonament za dany miesiąc ulega proporcjonalnemu obniżeniu.</p>
+<p>4. SLA nie obejmuje przerw spowodowanych działaniem siły wyższej, awariami API firm trzecich (OpenAI, Twilio, Airtable) lub planowanymi przerwami konserwacyjnymi (max. 2h/miesiąc, z 24h wcześniejszym powiadomieniem).</p>
+` : ''}
+
+${klIp ? `
+<h2>§ 6. Prawa Własności Intelektualnej</h2>
+<p>1. Z chwilą zapłaty pełnego wynagrodzenia wdrożeniowego Wykonawca udziela Zleceniodawcy niewyłącznej licencji na korzystanie z wdrożonego Systemu AI w zakresie działalności Zleceniodawcy.</p>
+<p>2. Wykonawca zachowuje prawa do ogólnych komponentów, frameworków i narzędzi wykorzystanych w Systemie AI (n8n workflows, szablony agentów, metodologia).</p>
+<p>3. Dane biznesowe, treści oraz informacje Zleceniodawcy wprowadzone do Systemu AI pozostają wyłączną własnością Zleceniodawcy.</p>
+<p>4. W przypadku rozwiązania Umowy Wykonawca przekazuje Zleceniodawcy pełną dokumentację techniczną i eksport konfiguracji Systemu AI w ciągu 14 dni.</p>
+` : ''}
+
+${klNda ? `
+<h2>§ 7. Poufność (NDA)</h2>
+<p>1. Strony zobowiązują się do zachowania w ściślejszej tajemnicy wszelkich informacji poufnych uzyskanych w związku z realizacją Umowy, w szczególności: danych klientów, strategii biznesowych, danych finansowych, know-how.</p>
+<p>2. Obowiązek poufności wiąże Strony przez czas trwania Umowy oraz przez <strong>3 lata</strong> po jej wygaśnięciu lub rozwiązaniu.</p>
+<p>3. Informacje poufne mogą być udostępniane pracownikom lub współpracownikom wyłącznie w zakresie niezbędnym do realizacji Umowy, po uprzednim zobowiązaniu ich do zachowania poufności.</p>
+<p>4. Obowiązek poufności nie dotyczy informacji powszechnie znanych lub ujawnionych na podstawie przepisów prawa.</p>
+` : ''}
+
+<h2>§ 8. Czas Trwania i Rozwiązanie Umowy</h2>
+<p>${umowaCzas}</p>
+<p>Zleceniodawcy przysługuje prawo rozwiązania Umowy ze skutkiem natychmiastowym w przypadku rażącego naruszenia jej postanowień przez Wykonawcę, po bezskutecznym wezwaniu do usunięcia naruszenia w terminie 14 dni.</p>
+
+${klKara ? `
+<h2>§ 9. Kara Umowna</h2>
+<p>1. W przypadku rozwiązania Umowy przez Zleceniodawcę przed upływem okresu wypowiedzenia z przyczyn niezależnych od Wykonawcy, Zleceniodawca zapłaci karę umowną w wysokości <strong>jednego miesięcznego abonamentu</strong>.</p>
+<p>2. Wykonawca zapłaci karę umowną w wysokości 10% wartości wynagrodzenia wdrożeniowego za każdy tydzień opóźnienia w uruchomieniu Systemu AI, ponad ustalony termin, chyba że opóźnienie wynika z przyczyn leżących po stronie Zleceniodawcy.</p>
+<p>3. Strony zastrzegają możliwość dochodzenia odszkodowania przewyższającego zastrzeżone kary umowne.</p>
+` : ''}
+
+<h2>§ 10. Odpowiedzialność</h2>
+<p>1. Wykonawca ponosi odpowiedzialność za prawidłowe działanie Systemu AI zgodnie z Umową, z wyłączeniem przypadków siły wyższej oraz awarii usług zewnętrznych (API, chmura).</p>
+<p>2. Łączna odpowiedzialność Wykonawcy z tytułu niniejszej Umowy ograniczona jest do wysokości wynagrodzenia za ostatnie 3 miesiące.</p>
+<p>3. Wykonawca nie ponosi odpowiedzialności za działania podjęte przez systemy AI w zakresie odpowiedzi generowanych przez modele językowe — treść generowana jest probabilistyczna i wymaga nadzoru Zleceniodawcy.</p>
+<p>4. Zleceniodawca zobowiązuje się do zapewnienia zgodności korzystania z Systemu AI z obowiązującymi przepisami prawa.</p>
+
+<h2>§ 11. Postanowienia Końcowe</h2>
+<p>1. Wszelkie zmiany Umowy wymagają formy pisemnej pod rygorem nieważności.</p>
+<p>2. W sprawach nieuregulowanych niniejszą Umową zastosowanie mają przepisy Kodeksu Cywilnego oraz właściwe przepisy prawa polskiego.</p>
+<p>3. Spory wynikające z Umowy Strony będą rozstrzygać polubownie. W razie braku porozumienia spory rozstrzyga sąd właściwy dla siedziby Wykonawcy.</p>
+<p>4. Umowa sporządzona została w dwóch jednobrzmiących egzemplarzach, po jednym dla każdej ze Stron.</p>
+
+<div class="sign-section">
+  <div class="sign-block">
+    <div class="sign-line"></div>
+    <strong>ZLECENIODAWCA</strong><br>
+    ${klient}<br>
+    ${kRep}<br>
+    Data: ______________________
+  </div>
+  <div class="sign-block">
+    <div class="sign-line"></div>
+    <strong>WYKONAWCA</strong><br>
+    ${exec}<br>
+    Data: ______________________
+  </div>
+</div>
+<div class="doc-footer">Safety Pack Prawny v2.1 | Dokument wygenerowany ${today()} | Przed podpisaniem zaleca się konsultację z prawnikiem</div>`;
+
+  document.getElementById('doc-umowa-body').innerHTML = html;
+
+  // RODO
+  if (gc('kl_rodo')) renderRodo(klient, kNip, exec, eNip, today);
+  else document.getElementById('doc-rodo-body').innerHTML = '<p style="color:var(--muted);padding:40px;text-align:center">Zaznacz opcję "Powierzenie przetwarzania danych (RODO)" w panelu bocznym.</p>';
+
+  renderChecklist();
+}
+
+function renderRodo(klient, kNip, exec, eNip, today) {
+  const html = `
+<h1>Umowa Powierzenia Przetwarzania Danych Osobowych</h1>
+<div class="meta">
+  Zawarta dnia ${today()} jako Załącznik do Umowy o Świadczenie Usług Automatyzacji AI<br><br>
+  <strong>ADMINISTRATOR:</strong> ${klient}, NIP: ${kNip}<br>
+  <strong>PROCESOR (PODMIOT PRZETWARZAJĄCY):</strong> ${exec}, NIP: ${eNip}
+</div>
+
+<div class="highlight">
+  ⚖️ Niniejsza Umowa zawarta jest na podstawie art. 28 Rozporządzenia Parlamentu Europejskiego i Rady (UE) 2016/679 z dnia 27 kwietnia 2016 r. (RODO/GDPR) i stanowi integralną część Umowy głównej.
+</div>
+
+<h2>§ 1. Przedmiot i Cel Przetwarzania</h2>
+<p>1. Administrator powierza Procesorowi przetwarzanie danych osobowych w celu realizacji Umowy o Świadczenie Usług Automatyzacji AI, w szczególności: obsługi klientów przez System AI, automatyzacji komunikacji, zarządzania rezerwacjami i zapytaniami.</p>
+<p>2. <strong>Rodzaj danych:</strong> dane identyfikacyjne (imię, nazwisko), dane kontaktowe (numer telefonu, adres e-mail), historia komunikacji z systemem AI, dane dotyczące wizyt i transakcji.</p>
+<p>3. <strong>Kategorie osób:</strong> klienci i potencjalni klienci Administratora.</p>
+<p>4. <strong>Cel przetwarzania:</strong> automatyczna obsługa zapytań klientów, umawianie wizyt, wysyłanie powiadomień i przypomnień, zarządzanie relacjami z klientami (CRM).</p>
+
+<h2>§ 2. Obowiązki Procesora</h2>
+<p>Procesor zobowiązuje się do:</p>
+<ol>
+  <li>Przetwarzania danych osobowych wyłącznie na udokumentowane polecenie Administratora,</li>
+  <li>Zapewnienia, że osoby mające dostęp do danych są zobowiązane do zachowania poufności lub są objęte ustawowym obowiązkiem zachowania tajemnicy,</li>
+  <li>Stosowania wszelkich środków wymaganych na mocy art. 32 RODO (środki techniczne i organizacyjne),</li>
+  <li>Nieprzekazywania danych do państw trzecich bez uprzedniej pisemnej zgody Administratora, z zastrzeżeniem korzystania z usług certyfikowanych podprocesorów (patrz §3),</li>
+  <li>Pomocy Administratorowi w wywiązywaniu się z obowiązków (prawa podmiotów danych, naruszenia, DPIA),</li>
+  <li>Usunięcia lub zwrotu danych po zakończeniu Umowy (w ciągu 30 dni),</li>
+  <li>Udostępniania Administratorowi wszelkich informacji niezbędnych do wykazania spełnienia obowiązków z art. 28 RODO.</li>
+</ol>
+
+<h2>§ 3. Podprocesory (Dalsze Powierzenie)</h2>
+<p>Administrator wyraża ogólną zgodę na korzystanie przez Procesora z następujących podprocesorów:</p>
+<ol>
+  <li><strong>OpenAI, L.L.C.</strong> (USA) – przetwarzanie języka naturalnego (modele GPT), Data Processing Agreement: <em>privacy.openai.com/policies</em>, certyfikat EU-US Data Privacy Framework,</li>
+  <li><strong>Twilio Inc.</strong> (USA) – wysyłka SMS i WhatsApp, certyfikat EU-US DPF, szyfrowanie end-to-end,</li>
+  <li><strong>Airtable Inc.</strong> (USA) – baza CRM, certyfikat EU-US DPF, serwery EU dostępne,</li>
+  <li><strong>n8n GmbH</strong> (Niemcy/UE) – platforma automatyzacji, serwery w Unii Europejskiej,</li>
+  <li><strong>Google LLC</strong> (UE) – Google Sheets/Drive (opcjonalnie), certyfikat EU-US DPF.</li>
+</ol>
+<p>Procesor powiadomi Administratora z 30-dniowym wyprzedzeniem o planowanych zmianach dotyczących podprocesorów. Administrator może zgłosić sprzeciw w terminie 14 dni.</p>
+
+<h2>§ 4. Środki Bezpieczeństwa</h2>
+<p>Procesor wdraża i utrzymuje następujące środki ochrony danych:</p>
+<ul>
+  <li>Szyfrowanie danych w tranzycie (TLS 1.2+) i w spoczynku (AES-256),</li>
+  <li>Pseudonimizacja danych tam gdzie to możliwe,</li>
+  <li>Kontrola dostępu – zasada minimalnych uprawnień,</li>
+  <li>Regularne kopie zapasowe z możliwością przywrócenia,</li>
+  <li>Monitoring dostępów i logowanie zdarzeń bezpieczeństwa,</li>
+  <li>Procedura reagowania na naruszenia danych (powiadomienie Administratora w ciągu 24h).</li>
+</ul>
+
+<h2>§ 5. Naruszenia Ochrony Danych</h2>
+<p>1. Procesor zobowiązuje się powiadomić Administratora o wykrytym naruszeniu ochrony danych osobowych niezwłocznie, nie później niż w ciągu <strong>24 godzin</strong> od wykrycia incydentu.</p>
+<p>2. Powiadomienie zawiera co najmniej: opis naruszenia, liczbę osób i rekordów których dotyczy, prawdopodobne konsekwencje, zastosowane lub planowane środki zaradcze.</p>
+<p>3. Administrator jest odpowiedzialny za zgłoszenie naruszenia do UODO w terminie 72 godzin od powzięcia wiadomości.</p>
+
+<h2>§ 6. Prawa Podmiotów Danych</h2>
+<p>Procesor zobowiązuje się do niezwłocznego przekazywania Administratorowi wszelkich wniosków osób fizycznych dotyczących praw wynikających z RODO (dostęp, sprostowanie, usunięcie, przenoszenie, sprzeciw). Procesor nie realizuje tych wniosków bezpośrednio, chyba że Administrator udzieli stosownego pełnomocnictwa.</p>
+
+<h2>§ 7. Audyt i Inspekcja</h2>
+<p>Administrator ma prawo do przeprowadzenia audytu zgodności Procesora z niniejszą Umową nie częściej niż raz w roku. Procesor zobowiązuje się umożliwić przeprowadzenie audytu z 14-dniowym wyprzedzeniem, w godzinach roboczych i bez zakłócania normalnej działalności.</p>
+
+<h2>§ 8. Postanowienia Końcowe</h2>
+<p>Niniejsza Umowa Powierzenia Przetwarzania Danych Osobowych wchodzi w życie z dniem podpisania Umowy głównej i wygasa wraz z jej wygaśnięciem lub rozwiązaniem. Do wszelkich kwestii nieuregulowanych niniejszą Umową stosuje się przepisy RODO oraz polskiej ustawy o ochronie danych osobowych.</p>
+
+<div class="sign-section">
+  <div class="sign-block">
+    <div class="sign-line"></div>
+    <strong>ADMINISTRATOR DANYCH</strong><br>
+    ${klient}<br>
+    Data: ______________________
+  </div>
+  <div class="sign-block">
+    <div class="sign-line"></div>
+    <strong>PODMIOT PRZETWARZAJĄCY</strong><br>
+    ${exec}<br>
+    Data: ______________________
+  </div>
+</div>
+<div class="doc-footer">Umowa Powierzenia Przetwarzania Danych | Art. 28 RODO | Safety Pack Prawny v2.1 | Wygenerowano ${today()}</div>`;
+
+  document.getElementById('doc-rodo-body').innerHTML = html;
+}
+
+function renderChecklist() {
+  const kl = { kara: gc('kl_kara'), nda: gc('kl_nda'), rodo: gc('kl_rodo'), sla: gc('kl_sla'), ip: gc('kl_ip') };
+  const hasKlient = g('klientNazwa') && g('klientNip');
+  const hasExec = g('execNazwa') && g('execAdres');
+  const hasKwoty = g('kwotaSetup') && g('kwotaMiesiac');
+
+  const items = [
+    { ok: hasKlient, warn: false, icon: '🏢', title: 'Dane Zleceniodawcy', desc: hasKlient ? 'Nazwa firmy i NIP Zleceniodawcy uzupełnione.' : 'Uzupełnij nazwę firmy i NIP Zleceniodawcy w panelu bocznym.' },
+    { ok: hasExec, warn: false, icon: '👤', title: 'Dane Wykonawcy', desc: hasExec ? 'Dane Wykonawcy uzupełnione.' : 'Uzupełnij nazwę i NIP swojej firmy w panelu bocznym.' },
+    { ok: hasKwoty, warn: false, icon: '💰', title: 'Wynagrodzenie i abonament', desc: hasKwoty ? 'Kwoty wynagrodzenia wdrożeniowego i abonamentu miesięcznego zdefiniowane.' : 'Uzupełnij kwotę wdrożenia i miesięczny abonament.' },
+    { ok: kl.rodo, warn: !kl.rodo, icon: '🔒', title: 'Klauzula RODO (art. 28 RODO)', desc: kl.rodo ? 'Umowa powierzenia przetwarzania danych wygenerowana — wymagana przy obsłudze danych osobowych klientów.' : 'Zalecane! Bez tej klauzuli klient korporacyjny nie podpisze umowy.' },
+    { ok: kl.nda, warn: !kl.nda, icon: '🤫', title: 'Klauzula poufności (NDA)', desc: kl.nda ? 'Poufność zabezpieczona — chroni Twoje know-how i dane biznesowe klienta przez 3 lata.' : 'Zalecane — bez NDA możesz utracić ochronę informacji poufnych.' },
+    { ok: kl.sla, warn: !kl.sla, icon: '⏱️', title: 'Poziom dostępności usług (SLA)', desc: kl.sla ? 'Gwarancja 99% czasu dostępności systemu AI zdefiniowana.' : 'Klienci biznesowi wymagają SLA. Zalecane dla umów abonamentowych.' },
+    { ok: kl.ip, warn: !kl.ip, icon: '©️', title: 'Prawa własności intelektualnej', desc: kl.ip ? 'Licencja i podział praw do systemu AI, kodu i danych zdefiniowane.' : 'Bez tej klauzuli mogą pojawić się spory o własność wdrożonego systemu.' },
+    { ok: kl.kara, warn: false, icon: '⚖️', title: 'Kara umowna', desc: kl.kara ? 'Zabezpieczenie finansowe dla obu Stron umowy zdefiniowane.' : 'Opcjonalne — pomaga dyscyplinować obie strony, ale może budzić opór.' },
+    { ok: true, warn: false, icon: '🗓️', title: 'Harmonogram i okres wypowiedzenia', desc: `Czas wdrożenia: ${g('czasWdrozenia') || '21'} dni roboczych. Okres wypowiedzenia: ${g('wypowiedzenie') || '30'} dni.` },
+  ];
+
+  const score = items.filter(i => i.ok).length;
+  const pct = Math.round((score / items.length) * 100);
+
+  const panel = document.getElementById('checklist-panel');
+  panel.innerHTML = `
+    <div style="margin-bottom:24px">
+      <div style="font-size:13px;font-weight:700;margin-bottom:8px;display:flex;justify-content:space-between">
+        <span>Kompletność dokumentacji umowy</span>
+        <span style="color:${pct >= 80 ? 'var(--green)' : pct >= 60 ? 'var(--gold)' : 'var(--red)'}">${pct}%</span>
+      </div>
+      <div style="background:var(--surface2);border-radius:4px;height:8px;overflow:hidden">
+        <div style="width:${pct}%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 0.5s;border-radius:4px"></div>
+      </div>
+    </div>
+    ${items.map(i => `
+      <div class="cl-item">
+        <div class="cl-icon">${i.icon}</div>
+        <div class="cl-text">
+          <h4>${i.title}</h4>
+          <p>${i.desc}</p>
+        </div>
+        <div class="cl-status ${i.ok ? 'cl-ok' : i.warn ? 'cl-warn' : 'cl-err'}">${i.ok ? '✓ Gotowe' : i.warn ? '⚠ Zalecane' : '✗ Brak'}</div>
+      </div>
+    `).join('')}
+    <div style="margin-top:20px;padding:16px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--muted2);line-height:1.6">
+      ⚠️ <strong>Ważne:</strong> Ten generator tworzy wzorzec umowy na podstawie podanych danych. Przed podpisaniem z klientem korporacyjnym zalecamy konsultację z radcą prawnym specjalizującym się w prawie IT i AI. Dokument przeznaczony wyłącznie do stosowania na rynku polskim.
+    </div>
+  `;
+}
+
+function switchTab(tab, el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tab-umowa').style.display = tab === 'umowa' ? 'block' : 'none';
+  document.getElementById('tab-rodo').style.display = tab === 'rodo' ? 'block' : 'none';
+  document.getElementById('tab-checklist').style.display = tab === 'checklist' ? 'block' : 'none';
+}
+
+function copyDoc(bodyId) {
+  const el = document.getElementById(bodyId);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = event.target;
+    btn.textContent = '✅ Skopiowano!';
+    setTimeout(() => btn.textContent = '📋 Kopiuj tekst', 2000);
+  });
+}
+
+// Init
+renderDoc();
+</script>
+</body>
+</html>
+
