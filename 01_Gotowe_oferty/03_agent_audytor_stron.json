@@ -1,0 +1,157 @@
+{
+  "name": "03 – Agent Audytor Stron WWW",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "audit-strony",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-audit",
+      "name": "Webhook – Start Audytu",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst url = body.url || body.strona || '';\nconst email = body.email || '';\nconst firma = body.firma || 'Firma';\nif (!url) throw new Error('Brak URL strony!');\nreturn [{ json: { url, email, firma } }];"
+      },
+      "id": "parse-input",
+      "name": "Waliduj dane wejściowe",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.url }}",
+        "options": {
+          "timeout": 15000,
+          "response": { "response": { "responseFormat": "text" } }
+        }
+      },
+      "id": "fetch-page",
+      "name": "Pobierz stronę (HTTP)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const html = $input.first().json.data || $input.first().json || '';\nconst url = $('Waliduj dane wejściowe').first().json.url;\n\n// Podstawowe metryki z HTML\nconst hasTitle = /<title[^>]*>([^<]+)<\\/title>/i.test(html);\nconst titleMatch = html.match(/<title[^>]*>([^<]+)<\\/title>/i);\nconst title = titleMatch ? titleMatch[1].trim() : 'Brak';\n\nconst metaDesc = /<meta[^>]+name=[\"']description[\"'][^>]+content=[\"']([^\"']+)[\"']/i.test(html);\nconst hasH1 = /<h1[^>]*>/i.test(html);\nconst h1Count = (html.match(/<h1[^>]*>/gi) || []).length;\nconst imgWithoutAlt = (html.match(/<img(?![^>]*alt=[\"'][^\"']+[\"'])[^>]*>/gi) || []).length;\nconst hasSSL = url.startsWith('https://');\nconst hasViewport = /name=[\"']viewport[\"']/i.test(html);\nconst hasGTM = /googletagmanager|GTM-/i.test(html);\nconst hasGA = /google-analytics|gtag\\(/i.test(html);\nconst hasFacebook = /facebook|fb\\.com/i.test(html);\nconst hasStructuredData = /application\\/ld\\+json/i.test(html);\nconst hasCanonical = /<link[^>]+rel=[\"']canonical[\"']/i.test(html);\nconst pageSize = html.length;\nconst hasContactForm = /contact|kontakt|formularz|form/i.test(html);\nconst hasCTA = /zadzwo[nń]|kup teraz|zam[oó]w|bezp[łl]atna|kup|sprawdź|dowiedz/i.test(html);\n\nreturn [{ json: {\n  url, title, hasTitle, metaDesc, hasH1, h1Count,\n  imgWithoutAlt, hasSSL, hasViewport, hasGTM, hasGA,\n  hasFacebook, hasStructuredData, hasCanonical,\n  pageSize, hasContactForm, hasCTA,\n  htmlSnippet: html.substring(0, 3000)\n}}];"
+      },
+      "id": "extract-metrics",
+      "name": "Ekstrahuj metryki SEO/UX",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Jesteś ekspertem SEO, UX i marketingu cyfrowego. Generujesz profesjonalne audyty stron internetowych w języku polskim. Odpowiadaj TYLKO w formacie JSON zgodnym ze schematem."
+            },
+            {
+              "role": "user",
+              "content": "=Przeanalizuj tę stronę i wygeneruj profesjonalny raport audytu.\n\nURL: {{ $json.url }}\nTytuł strony: {{ $json.title }}\nMetryki techniczne:\n- SSL (HTTPS): {{ $json.hasSSL }}\n- Meta description: {{ $json.metaDesc }}\n- Tag H1: {{ $json.hasH1 }} (liczba: {{ $json.h1Count }})\n- Viewport (mobile): {{ $json.hasViewport }}\n- Obrazy bez alt: {{ $json.imgWithoutAlt }}\n- Google Analytics/GTM: {{ $json.hasGA || $json.hasGTM }}\n- Dane strukturalne: {{ $json.hasStructuredData }}\n- Canonical URL: {{ $json.hasCanonical }}\n- Formularz kontaktowy: {{ $json.hasContactForm }}\n- CTA (wezwania do działania): {{ $json.hasCTA }}\n- Rozmiar strony (znaki HTML): {{ $json.pageSize }}\n\nFragment HTML (pierwsze 3000 znaków):\n{{ $json.htmlSnippet }}\n\nZwróć JSON:\n{\n  \"ocena_ogolna\": \"liczba 1-10\",\n  \"podsumowanie\": \"2-3 zdania ogólnej oceny\",\n  \"sekcje\": [\n    {\n      \"nazwa\": \"SEO Techniczne\",\n      \"ocena\": \"1-10\",\n      \"problemy\": [\"lista problemów\"],\n      \"rekomendacje\": [\"lista konkretnych działań\"]\n    },\n    {\n      \"nazwa\": \"UX i Konwersja\",\n      \"ocena\": \"1-10\",\n      \"problemy\": [],\n      \"rekomendacje\": []\n    },\n    {\n      \"nazwa\": \"Szybkość i Wydajność\",\n      \"ocena\": \"1-10\",\n      \"problemy\": [],\n      \"rekomendacje\": []\n    },\n    {\n      \"nazwa\": \"Analityka i Śledzenie\",\n      \"ocena\": \"1-10\",\n      \"problemy\": [],\n      \"rekomendacje\": []\n    }\n  ],\n  \"top3_priorytety\": [\"3 najważniejsze działania do podjęcia NATYCHMIAST\"],\n  \"quick_wins\": [\"3 rzeczy do zrobienia w ciągu 48h bez budżetu\"],\n  \"potencjal_wspolpracy\": \"opis co agencja mogłaby zrobić dla tej firmy\"\n}"
+            }
+          ]
+        },
+        "options": {
+          "responseFormat": "json_object"
+        }
+      },
+      "id": "ai-audit",
+      "name": "AI – Generuj raport audytu",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.message?.content || $input.first().json.choices?.[0]?.message?.content || '{}';\nlet raport;\ntry { raport = JSON.parse(raw); } catch(e) { raport = { error: 'Błąd parsowania', raw }; }\nconst meta = $('Waliduj dane wejściowe').first().json;\nreturn [{ json: { raport, url: meta.url, email: meta.email, firma: meta.firma } }];"
+      },
+      "id": "parse-raport",
+      "name": "Parsuj raport",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const { raport, url, firma } = $input.first().json;\nconst ocena = raport.ocena_ogolna || '?';\nconst emoji = ocena >= 8 ? '🟢' : ocena >= 5 ? '🟡' : '🔴';\n\nlet html = `<!DOCTYPE html><html lang=\"pl\"><head><meta charset=\"UTF-8\">\n<title>Audyt SEO – ${url}</title>\n<style>\n  body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; color: #333; }\n  h1 { color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; }\n  h2 { color: #16213e; margin-top: 30px; }\n  .score { font-size: 3em; font-weight: bold; color: #e94560; }\n  .section { background: #f8f9fa; border-left: 4px solid #e94560; padding: 15px; margin: 15px 0; border-radius: 4px; }\n  .good { color: #28a745; } .bad { color: #dc3545; } .warn { color: #ffc107; }\n  ul { padding-left: 20px; } li { margin: 5px 0; }\n  .priority { background: #fff3cd; border: 1px solid #ffc107; padding: 10px; border-radius: 4px; margin: 5px 0; }\n  .quickwin { background: #d4edda; border: 1px solid #28a745; padding: 10px; border-radius: 4px; margin: 5px 0; }\n</style></head><body>\n<h1>🔍 Raport Audytu Strony WWW</h1>\n<p><strong>URL:</strong> <a href=\"${url}\">${url}</a></p>\n<p><strong>Data:</strong> ${new Date().toLocaleDateString('pl-PL')}</p>\n<div class=\"score\">${emoji} ${ocena}/10</div>\n<p>${raport.podsumowanie || ''}</p>\n`;\n\nif (raport.top3_priorytety) {\n  html += `<h2>🚨 Top 3 Priorytety</h2>`;\n  raport.top3_priorytety.forEach(p => { html += `<div class=\"priority\">⚡ ${p}</div>`; });\n}\n\nif (raport.sekcje) {\n  html += `<h2>📊 Szczegółowa Analiza</h2>`;\n  raport.sekcje.forEach(s => {\n    html += `<div class=\"section\"><h3>${s.nazwa} – ${s.ocena}/10</h3>`;\n    if (s.problemy?.length) {\n      html += `<strong>❌ Problemy:</strong><ul>`;\n      s.problemy.forEach(p => { html += `<li class=\"bad\">${p}</li>`; });\n      html += `</ul>`;\n    }\n    if (s.rekomendacje?.length) {\n      html += `<strong>✅ Rekomendacje:</strong><ul>`;\n      s.rekomendacje.forEach(r => { html += `<li class=\"good\">${r}</li>`; });\n      html += `</ul>`;\n    }\n    html += `</div>`;\n  });\n}\n\nif (raport.quick_wins) {\n  html += `<h2>⚡ Quick Wins (48h, bez budżetu)</h2>`;\n  raport.quick_wins.forEach(q => { html += `<div class=\"quickwin\">✅ ${q}</div>`; });\n}\n\nif (raport.potencjal_wspolpracy) {\n  html += `<h2>🤝 Jak możemy pomóc?</h2><div class=\"section\">${raport.potencjal_wspolpracy}</div>`;\n}\n\nhtml += `</body></html>`;\nreturn [{ json: { html, raport, url, email: $input.first().json.email, firma } }];"
+      },
+      "id": "generate-html",
+      "name": "Generuj HTML raportu",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.email }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ]
+        }
+      },
+      "id": "if-email",
+      "name": "Czy jest email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "audyt@twojafirma.pl",
+        "toEmail": "={{ $json.email }}",
+        "subject": "=🔍 Raport Audytu Strony: {{ $json.url }}",
+        "emailType": "html",
+        "message": "={{ $json.html }}"
+      },
+      "id": "send-email",
+      "name": "Wyślij raport emailem",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [2000, 180]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($json.raport) }}"
+      },
+      "id": "respond-json",
+      "name": "Zwróć JSON raportu",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [2000, 420]
+    }
+  ],
+  "connections": {
+    "Webhook – Start Audytu": { "main": [[{ "node": "Waliduj dane wejściowe", "type": "main", "index": 0 }]] },
+    "Waliduj dane wejściowe": { "main": [[{ "node": "Pobierz stronę (HTTP)", "type": "main", "index": 0 }]] },
+    "Pobierz stronę (HTTP)": { "main": [[{ "node": "Ekstrahuj metryki SEO/UX", "type": "main", "index": 0 }]] },
+    "Ekstrahuj metryki SEO/UX": { "main": [[{ "node": "AI – Generuj raport audytu", "type": "main", "index": 0 }]] },
+    "AI – Generuj raport audytu": { "main": [[{ "node": "Parsuj raport", "type": "main", "index": 0 }]] },
+    "Parsuj raport": { "main": [[{ "node": "Generuj HTML raportu", "type": "main", "index": 0 }]] },
+    "Generuj HTML raportu": { "main": [[{ "node": "Czy jest email?", "type": "main", "index": 0 }]] },
+    "Czy jest email?": {
+      "main": [
+        [{ "node": "Wyślij raport emailem", "type": "main", "index": 0 }],
+        [{ "node": "Zwróć JSON raportu", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "agenci-ai" }]
+}

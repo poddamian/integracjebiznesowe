@@ -1,0 +1,383 @@
+{
+  "name": "AutoFlow — Oferta → Zatwierdzenie → Umowa",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generator-ofert",
+        "responseMode": "responseNode",
+        "options": { "allowedOrigins": "*" }
+      },
+      "id": "node-webhook",
+      "name": "1. Webhook — formularz klienta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 300],
+      "webhookId": "autoflow-generator-ofert"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "id": "check-platform",
+              "leftValue": "={{ $json.body.platform }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            },
+            {
+              "id": "check-email",
+              "leftValue": "={{ $json.body.email }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            },
+            {
+              "id": "check-processes",
+              "leftValue": "={{ $json.body.processes }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEmpty" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "node-validate",
+      "name": "2. Walidacja danych",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [420, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst platform   = body.platform  || 'nie podano';\nconst orders     = body.orders    || 'nie podano';\nconst industry   = body.industry  || 'nie podano';\nconst tools      = body.tools     || 'nie podano';\nconst extra      = body.extra     || 'brak';\nconst clientName = body.name      || 'Klient';\nconst clientEmail= body.email     || '';\nconst clientPhone= body.phone     || 'nie podano';\nconst shopUrl    = body.shopUrl   || 'nie podano';\nconst budget     = body.budget    || 'nie podano';\n\nlet processes = [];\nif (Array.isArray(body.processes)) {\n  processes = body.processes;\n} else if (typeof body.processes === 'string') {\n  processes = body.processes.split(',').map(p => p.trim()).filter(Boolean);\n}\nconst processList = processes.join(', ');\n\n// Unikalny ID oferty\nconst offerId = 'AF-' + Date.now().toString(36).toUpperCase();\nconst offerDate = new Date().toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });\n\nconst prompt = `Jesteś ekspertem automatyzacji e-commerce. Napisz profesjonalną ofertę handlową PO POLSKU.\n\nDANE KLIENTA:\n- Imię/firma: ${clientName}\n- Platforma: ${platform}\n- Sklep: ${shopUrl}\n- Zamówienia/mies.: ${orders}\n- Branża: ${industry}\n- Używane narzędzia: ${tools}\n- Procesy do automatyzacji: ${processList}\n- Budżet: ${budget}\n- Dodatkowe info: ${extra}\n\nStruktura oferty:\n1. Personalizowane powitanie używające imienia/nazwy firmy\n2. Analiza sytuacji (2-3 zdania pokazujące zrozumienie ich biznesu)\n3. Proponowane rozwiązania (3-5 konkretnych automatyzacji z n8n/Make.com)\n4. Harmonogram wdrożenia (tabela: etap, zakres, czas)\n5. Inwestycja (podaj konkretną cenę lub zakres, np. 3500-4500 zł)\n6. Co wchodzi w pakiet (lista 5-7 punktów)\n7. Gwarancja i wsparcie po wdrożeniu\n8. Proponowany kolejny krok (\"Odpiszę w ciągu 24h aby umówić 30-minutową konsultację\")\n\nNa końcu w osobnej linii:\nCENA: [konkretna kwota lub zakres np. 4000-5500 zł]\nPACKAGE: [Starter|Growth|Retainer]\n\nTon: profesjonalny, partnerski, konkretny. Max 500 słów.`;\n\nreturn [{\n  json: {\n    prompt,\n    offerId,\n    offerDate,\n    clientName,\n    clientEmail,\n    clientPhone,\n    platform,\n    orders,\n    industry,\n    processList,\n    budget,\n    shopUrl\n  }\n}];"
+      },
+      "id": "node-build-prompt",
+      "name": "3. Przygotuj dane i prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "x-api-key", "value": "={{ $credentials.anthropicApiKey }}" },
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" }
+          ]
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 1500,\n  \"messages\": [{ \"role\": \"user\", \"content\": {{ JSON.stringify($json.prompt) }} }]\n}",
+        "options": { "timeout": 60000 }
+      },
+      "id": "node-claude",
+      "name": "4. Claude API — generuj ofertę",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [860, 220]
+    },
+    {
+      "parameters": {
+        "jsCode": "const claudeResp = $input.first().json;\nconst prev = $('3. Przygotuj dane i prompt').first().json;\n\nlet fullText = '';\nif (claudeResp.content && Array.isArray(claudeResp.content)) {\n  fullText = claudeResp.content.filter(b => b.type === 'text').map(b => b.text).join('');\n}\n\nconst priceMatch   = fullText.match(/CENA:\\s*([^\\n]+)/i);\nconst packageMatch = fullText.match(/PACKAGE:\\s*([^\\n]+)/i);\nconst price   = priceMatch   ? priceMatch[1].trim()   : 'Do ustalenia';\nconst pkg     = packageMatch ? packageMatch[1].trim() : 'Growth';\nconst offerText = fullText.replace(/CENA:[^\\n]*/i, '').replace(/PACKAGE:[^\\n]*/i, '').trim();\n\n// Zbuduj URL zatwierdzenia i odrzucenia (przez kolejny webhook)\nconst baseUrl = 'https://TWOJA-DOMENA.n8n.cloud/webhook';\nconst approveUrl = `${baseUrl}/zatwierdz-oferte?id=${prev.offerId}&action=approve&email=${encodeURIComponent(prev.clientEmail)}&name=${encodeURIComponent(prev.clientName)}&price=${encodeURIComponent(price)}&pkg=${encodeURIComponent(pkg)}`;\nconst rejectUrl  = `${baseUrl}/zatwierdz-oferte?id=${prev.offerId}&action=reject&email=${encodeURIComponent(prev.clientEmail)}&name=${encodeURIComponent(prev.clientName)}`;\n\nreturn [{\n  json: {\n    ...prev,\n    offerText,\n    price,\n    pkg,\n    approveUrl,\n    rejectUrl\n  }\n}];"
+      },
+      "id": "node-parse",
+      "name": "5. Parsuj ofertę i zbuduj linki",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1080, 220]
+    },
+    {
+      "parameters": {
+        "fromEmail": "kontakt@autoflow.pl",
+        "toEmail": "kontakt@autoflow.pl",
+        "subject": "=🔔 Nowa oferta do zatwierdzenia — {{ $json.offerId }} | {{ $json.clientName }}",
+        "emailType": "html",
+        "message": "=<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#333'>\n<div style='background:#0a0a0f;padding:20px 24px;border-radius:12px;margin-bottom:24px'>\n  <h2 style='color:#00e5a0;margin:0;font-size:20px'>AutoFlow — Nowa oferta do zatwierdzenia</h2>\n  <p style='color:#888;margin:4px 0 0;font-size:13px'>ID: {{ $json.offerId }} | {{ $json.offerDate }}</p>\n</div>\n\n<table style='width:100%;border-collapse:collapse;margin-bottom:24px'>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;width:140px;border:1px solid #e0e0d8'>Klient</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.clientName }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>E-mail</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.clientEmail }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Telefon</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.clientPhone }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Platforma</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.platform }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Sklep</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.shopUrl }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Zamówienia</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.orders }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Procesy</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.processList }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Budżet</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.budget }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Cena AI</td><td style='padding:8px 12px;border:1px solid #e0e0d8;color:#008060;font-weight:bold'>{{ $json.price }}</td></tr>\n  <tr><td style='padding:8px 12px;background:#f5f5f0;font-weight:bold;border:1px solid #e0e0d8'>Pakiet</td><td style='padding:8px 12px;border:1px solid #e0e0d8'>{{ $json.pkg }}</td></tr>\n</table>\n\n<div style='background:#f9f9f5;border:1px solid #e0e0d8;border-radius:8px;padding:20px;margin-bottom:24px'>\n  <h3 style='margin:0 0 12px;font-size:15px'>Treść oferty wygenerowanej przez AI:</h3>\n  <div style='font-size:14px;line-height:1.7;white-space:pre-wrap'>{{ $json.offerText }}</div>\n</div>\n\n<div style='display:flex;gap:12px;margin-bottom:24px'>\n  <a href='{{ $json.approveUrl }}' style='display:inline-block;background:#008060;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px'>✅ ZATWIERDŹ i wyślij do klienta</a>\n  <a href='{{ $json.rejectUrl }}' style='display:inline-block;background:#cc3333;color:#fff;padding:14px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;margin-left:12px'>❌ ODRZUĆ ofertę</a>\n</div>\n\n<p style='font-size:12px;color:#999'>AutoFlow Generator Ofert | {{ $json.offerDate }}</p>\n</body></html>",
+        "options": {}
+      },
+      "id": "node-email-you",
+      "name": "6. E-mail do Ciebie — zatwierdź ofertę",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1300, 220],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-creds",
+          "name": "SMTP AutoFlow"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"success\": true, \"message\": \"Oferta wygenerowana. Właściciel sklepu zatwierdzi ją i wyślemy do Ciebie wkrótce.\", \"offerId\": \"{{ $json.offerId }}\" }",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "*" },
+              { "name": "Content-Type", "value": "application/json" }
+            ]
+          }
+        }
+      },
+      "id": "node-respond-ok",
+      "name": "7. Odpowiedź — sukces dla klienta",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1520, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"success\": false, \"error\": \"Wypełnij wymagane pola: platforma, e-mail i minimum jeden proces.\" }",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "*" },
+              { "name": "Content-Type", "value": "application/json" }
+            ]
+          }
+        }
+      },
+      "id": "node-respond-err",
+      "name": "7b. Odpowiedź — błąd walidacji",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [640, 420]
+    },
+
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "zatwierdz-oferte",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node-approval-webhook",
+      "name": "8. Webhook — Twoja decyzja (zatwierdź/odrzuć)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 620],
+      "webhookId": "autoflow-zatwierdz"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {},
+          "conditions": [
+            {
+              "id": "check-action",
+              "leftValue": "={{ $json.query.action }}",
+              "rightValue": "approve",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "node-check-action",
+      "name": "9. Zatwierdzona czy odrzucona?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [420, 620]
+    },
+    {
+      "parameters": {
+        "jsCode": "const q = $input.first().json.query;\n\nconst offerId     = q.id    || 'AF-XXX';\nconst clientEmail = decodeURIComponent(q.email || '');\nconst clientName  = decodeURIComponent(q.name  || 'Kliencie');\nconst price       = decodeURIComponent(q.price || 'Do ustalenia');\nconst pkg         = decodeURIComponent(q.pkg   || 'Growth');\nconst today       = new Date().toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });\n\n// Termin ważności oferty (14 dni)\nconst validUntil = new Date();\nvalidUntil.setDate(validUntil.getDate() + 14);\nconst validUntilStr = validUntil.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' });\n\n// Mapowanie pakietu na szczegóły\nconst packages = {\n  'Starter': { workflows: '1 workflow', integrations: '2 systemy', support: '30 dni', price: price },\n  'Growth':  { workflows: 'do 4 workflow', integrations: 'do 5 systemów', support: '60 dni', price: price },\n  'Retainer':{ workflows: 'do 8h/mies.', integrations: 'bez limitu', support: 'bezterminowo', price: price }\n};\nconst pkgDetails = packages[pkg] || packages['Growth'];\n\nreturn [{\n  json: {\n    offerId,\n    clientEmail,\n    clientName,\n    price,\n    pkg,\n    pkgDetails,\n    today,\n    validUntilStr\n  }\n}];"
+      },
+      "id": "node-prep-contract",
+      "name": "10. Przygotuj dane do umowy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 520]
+    },
+    {
+      "parameters": {
+        "fromEmail": "kontakt@autoflow.pl",
+        "toEmail": "={{ $json.clientEmail }}",
+        "subject": "=✅ Twoja oferta AutoFlow — {{ $json.offerId }} | Dokumenty do podpisania",
+        "emailType": "html",
+        "message": "=<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:680px;margin:0 auto;padding:20px;color:#333'>\n\n<div style='background:#141210;padding:24px;border-radius:12px;margin-bottom:28px;text-align:center'>\n  <h1 style='color:#00c98a;margin:0 0 6px;font-size:24px'>AutoFlow</h1>\n  <p style='color:#888;margin:0;font-size:13px'>Automatyzacja e-commerce</p>\n</div>\n\n<h2 style='font-size:20px;margin-bottom:8px'>Cześć {{ $json.clientName }},</h2>\n<p style='font-size:15px;line-height:1.7;margin-bottom:20px'>Dziękuję za zainteresowanie automatyzacją Twojego sklepu. Zapoznałem się z Twoim zapytaniem i z przyjemnością przesyłam <strong>zatwierdzoną ofertę</strong> wraz z dokumentami do zawarcia współpracy.</p>\n\n<div style='background:#f0faf5;border:1px solid #b3e6d0;border-radius:10px;padding:20px;margin-bottom:24px'>\n  <h3 style='margin:0 0 16px;color:#006644;font-size:16px'>📋 Podsumowanie oferty</h3>\n  <table style='width:100%;border-collapse:collapse'>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555;width:160px'>Nr oferty</td><td style='padding:7px 10px;font-weight:bold;color:#006644'>{{ $json.offerId }}</td></tr>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555;background:#f9fffc'>Pakiet</td><td style='padding:7px 10px;background:#f9fffc'>{{ $json.pkg }}</td></tr>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555'>Zakres</td><td style='padding:7px 10px'>{{ $json.pkgDetails.workflows }}, integracja z {{ $json.pkgDetails.integrations }}</td></tr>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555;background:#f9fffc'>Wsparcie</td><td style='padding:7px 10px;background:#f9fffc'>{{ $json.pkgDetails.support }}</td></tr>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555'>Inwestycja</td><td style='padding:7px 10px;font-size:18px;font-weight:bold;color:#006644'>{{ $json.price }} + VAT</td></tr>\n    <tr><td style='padding:7px 10px;font-weight:bold;color:#555;background:#f9fffc'>Oferta ważna do</td><td style='padding:7px 10px;background:#f9fffc'>{{ $json.validUntilStr }}</td></tr>\n  </table>\n</div>\n\n<div style='background:#fff8f0;border:1px solid #f5d6a0;border-radius:10px;padding:20px;margin-bottom:24px'>\n  <h3 style='margin:0 0 12px;color:#854f0b;font-size:15px'>📄 Dokumenty do przeczytania i podpisania</h3>\n  <p style='font-size:14px;color:#666;margin-bottom:12px'>W załączniku znajdziesz dwa dokumenty w formacie PDF:</p>\n  <ol style='font-size:14px;line-height:2;color:#555;margin:0 0 12px;padding-left:20px'>\n    <li><strong>Umowa o świadczenie usług</strong> — główna umowa projektowa</li>\n    <li><strong>Umowa NDA</strong> — umowa o poufności danych</li>\n  </ol>\n  <p style='font-size:13px;color:#888;margin:0'>Proszę o podpisanie, zeskanowanie i odesłanie na adres <strong>kontakt@autoflow.pl</strong>.<br>Możesz też podpisać elektronicznie przez <a href='https://smallpdf.com/sign-pdf' style='color:#854f0b'>SmallPDF</a> lub <a href='https://www.ilovepdf.com/sign-pdf' style='color:#854f0b'>iLovePDF</a> (bezpłatne).</p>\n</div>\n\n<div style='background:#f5f5f0;border-radius:10px;padding:20px;margin-bottom:24px'>\n  <h3 style='margin:0 0 12px;font-size:15px'>🚀 Co dzieje się po podpisaniu umowy</h3>\n  <ol style='font-size:14px;line-height:1.9;color:#555;margin:0;padding-left:20px'>\n    <li>Odsyłasz podpisane dokumenty na kontakt@autoflow.pl</li>\n    <li>Wystawiam fakturę zaliczkową (50% wartości projektu)</li>\n    <li>Po otrzymaniu zaliczki — umawiam się z Tobą na <strong>kick-off call (30 min)</strong></li>\n    <li>Przystępuję do wdrożenia w ciągu <strong>48h od kick-off</strong></li>\n    <li>Wdrożenie gotowe — odbiór i płatność końcowa</li>\n  </ol>\n</div>\n\n<div style='text-align:center;margin-bottom:28px'>\n  <p style='font-size:14px;color:#666;margin-bottom:16px'>Masz pytania? Napisz lub zadzwoń — chętnie wyjaśnię szczegóły przed podpisaniem.</p>\n  <a href='mailto:kontakt@autoflow.pl' style='display:inline-block;background:#008060;color:#fff;padding:13px 28px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:15px;margin-right:10px'>✉️ Napisz do mnie</a>\n</div>\n\n<hr style='border:none;border-top:1px solid #e8e8e0;margin:24px 0'>\n<p style='font-size:12px;color:#aaa;text-align:center;margin:0'>AutoFlow | kontakt@autoflow.pl | {{ $json.today }}<br>Nr oferty: {{ $json.offerId }}</p>\n</body></html>",
+        "attachments": "contract_service,contract_nda",
+        "options": {}
+      },
+      "id": "node-email-client",
+      "name": "11. E-mail do klienta — oferta + umowy",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [860, 520],
+      "credentials": {
+        "smtp": {
+          "id": "smtp-creds",
+          "name": "SMTP AutoFlow"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json;\n\n// === UMOWA O ŚWIADCZENIE USŁUG ===\nconst contract = `UMOWA O ŚWIADCZENIE USŁUG AUTOMATYZACJI\nNr umowy: ${d.offerId}\nData: ${d.today}\n\nZawarta pomiędzy:\n\nUSŁUGODAWCA:\nAutoFlow (jednoosobowa działalność gospodarcza)\nAdres: [TWÓJ ADRES]\nNIP: [TWÓJ NIP]\nE-mail: kontakt@autoflow.pl\n(dalej: \"Usługodawca\")\n\nA\n\nKLIENT:\n${d.clientName}\nE-mail: ${d.clientEmail}\n(dalej: \"Klient\")\n\n§1. PRZEDMIOT UMOWY\n1. Usługodawca zobowiązuje się do zaprojektowania, wdrożenia i uruchomienia\n   systemu automatyzacji procesów dla sklepu internetowego Klienta.\n2. Zakres prac obejmuje: ${d.pkgDetails.workflows}, integrację z ${d.pkgDetails.integrations}.\n3. Szczegółowy zakres zostanie określony w Specyfikacji Technicznej\n   przekazanej przed rozpoczęciem prac.\n\n§2. WYNAGRODZENIE I PŁATNOŚCI\n1. Strony ustalają wynagrodzenie w wysokości: ${d.price} + VAT.\n2. Płatność następuje w dwóch ratach:\n   a) 50% zaliczki przed rozpoczęciem prac (faktura pro forma),\n   b) 50% po odbiorze projektu przez Klienta.\n3. Płatność realizowana jest przelewem na podstawie faktury VAT\n   lub przez platformę Useme.\n4. Termin płatności: 7 dni od daty wystawienia faktury.\n\n§3. HARMONOGRAM\n1. Usługodawca zobowiązuje się do realizacji projektu w terminie\n   uzgodnionym w Specyfikacji Technicznej (orientacyjnie 5-10 dni\n   roboczych od dnia otrzymania zaliczki).\n2. Klient zobowiązuje się do dostarczenia niezbędnych dostępów\n   (API, dane logowania) w ciągu 24h od kick-off call.\n\n§4. ODBIÓR I GWARANCJA\n1. Po wdrożeniu Klient ma 5 dni roboczych na zgłoszenie uwag.\n   Brak zgłoszenia = akceptacja projektu.\n2. Usługodawca udziela gwarancji na poprawne działanie\n   wdrożonych automatyzacji przez ${d.pkgDetails.support} od daty odbioru.\n3. Gwarancja nie obejmuje awarii spowodowanych zmianami w API\n   systemów zewnętrznych (Shopify, WooCommerce, Allegro itp.).\n\n§5. WŁASNOŚĆ INTELEKTUALNA\n1. Z chwilą uregulowania pełnej należności Klient nabywa\n   niewyłączną licencję na korzystanie z wdrożonych rozwiązań.\n2. Usługodawca zachowuje prawo do stosowania opracowanych\n   metodyk i wzorców w innych projektach.\n\n§6. POUFNOŚĆ\n1. Usługodawca zobowiązuje się do zachowania poufności wszystkich\n   informacji uzyskanych w trakcie realizacji projektu.\n2. Zobowiązanie do poufności nie wygasa po zakończeniu umowy.\n\n§7. ODPOWIEDZIALNOŚĆ\n1. Odpowiedzialność Usługodawcy ograniczona jest do wysokości\n   wynagrodzenia zapłaconego za projekt.\n2. Usługodawca nie ponosi odpowiedzialności za pośrednie straty\n   lub utracone korzyści.\n\n§8. POSTANOWIENIA KOŃCOWE\n1. Umowa podlega prawu polskiemu.\n2. Spory rozstrzygane przez sąd właściwy dla siedziby Usługodawcy.\n3. Zmiany umowy wymagają formy pisemnej pod rygorem nieważności.\n\nPodpisy:\n\n_________________________________      _________________________________\nUsługodawca                            Klient\nAutoFlow                               ${d.clientName}\nData: ___________________              Data: ___________________\n`;\n\n// === NDA ===\nconst nda = `UMOWA O ZACHOWANIU POUFNOŚCI (NDA)\nNr: ${d.offerId}-NDA\nData: ${d.today}\n\nZawarta pomiędzy:\n\nAutoFlow (dalej: \"Usługodawca\") oraz ${d.clientName} (dalej: \"Klient\")\n\n§1. DEFINICJE\n\"Informacje Poufne\" oznaczają wszelkie informacje techniczne,\nbiznesowe, handlowe i finansowe przekazane przez którąkolwiek\nze Stron w związku z realizacją projektu automatyzacji,\nw tym w szczególności: dane dostępowe (API keys, hasła),\narchitektura systemów, dane klientów sklepu, informacje\no obrotach i marżach, strategie biznesowe.\n\n§2. ZOBOWIĄZANIA STRON\n1. Każda ze Stron zobowiązuje się do:\n   a) nieujawniania Informacji Poufnych osobom trzecim,\n   b) wykorzystywania Informacji Poufnych wyłącznie w celu\n      realizacji projektu,\n   c) zastosowania co najmniej takich samych środków ochrony,\n      jakie stosuje wobec własnych informacji poufnych.\n2. Usługodawca zobowiązuje się do:\n   a) niekopiowania danych klientów sklepu Klienta,\n   b) usunięcia lub zwrotu danych dostępowych po zakończeniu projektu,\n   c) nieinformowania o szczegółach projektu podmiotów\n      konkurencyjnych wobec Klienta.\n\n§3. WYŁĄCZENIA\nZobowiązania nie dotyczą informacji, które:\na) są lub staną się publicznie znane bez naruszenia niniejszej umowy,\nb) były znane Stronie przed zawarciem umowy,\nc) zostały uzyskane od osoby trzeciej uprawnionej do ich ujawnienia,\nd) muszą być ujawnione na podstawie przepisów prawa.\n\n§4. CZAS OBOWIĄZYWANIA\n1. Niniejsza umowa obowiązuje przez czas nieokreślony.\n2. Zobowiązania do poufności wygasają po 5 latach od\n   zakończenia projektu, chyba że dotyczą danych osobowych\n   (wtedy bezterminowo).\n\n§5. NARUSZENIE\nW przypadku naruszenia umowy Strona poszkodowana ma prawo\ndochodzić odszkodowania na zasadach ogólnych Kodeksu Cywilnego.\n\n§6. POSTANOWIENIA KOŃCOWE\nUmowa podlega prawu polskiemu. Wszelkie zmiany wymagają\nformy pisemnej.\n\nPodpisy:\n\n_________________________________      _________________________________\nUsługodawca                            Klient\nAutoFlow                               ${d.clientName}\nData: ___________________              Data: ___________________\n`;\n\nreturn [{\n  json: {\n    ...d,\n    contract_service: contract,\n    contract_nda: nda\n  }\n}];"
+      },
+      "id": "node-gen-contracts",
+      "name": "10b. Generuj treść umów",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [640, 620]
+    },
+    {
+      "parameters": {
+        "fromEmail": "kontakt@autoflow.pl",
+        "toEmail": "kontakt@autoflow.pl",
+        "subject": "=📊 Oferta {{ $json.query.id }} — wysłana do klienta {{ $json.query.name }}",
+        "emailType": "html",
+        "message": "=<p style='font-family:Arial,sans-serif'>Oferta <strong>{{ $json.query.id }}</strong> została zatwierdzona i wysłana do:<br><strong>{{ $json.query.name }}</strong> ({{ $json.query.email }})</p><p>Cena: <strong>{{ $json.query.price }}</strong> | Pakiet: <strong>{{ $json.query.pkg }}</strong></p>",
+        "options": {}
+      },
+      "id": "node-notify-you-sent",
+      "name": "12. Powiadomienie — wysłano do klienta",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [1080, 520],
+      "credentials": {
+        "smtp": { "id": "smtp-creds", "name": "SMTP AutoFlow" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "html",
+        "responseBody": "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:500px;margin:60px auto;text-align:center;padding:20px'><div style='background:#f0faf5;border:2px solid #00c98a;border-radius:16px;padding:40px'><div style='font-size:48px;margin-bottom:16px'>✅</div><h2 style='color:#006644;margin-bottom:12px'>Oferta zatwierdzona!</h2><p style='color:#555;line-height:1.7'>Oferta i dokumenty zostały wysłane do klienta.<br>Otrzymasz kopię potwierdzenia na swój e-mail.</p><p style='margin-top:24px'><a href='javascript:window.close()' style='background:#008060;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold'>Zamknij okno</a></p></div></body></html>",
+        "options": { "responseCode": 200 }
+      },
+      "id": "node-respond-approved",
+      "name": "13. Strona potwierdzenia — zatwierdzone",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1300, 520]
+    },
+    {
+      "parameters": {
+        "fromEmail": "kontakt@autoflow.pl",
+        "toEmail": "kontakt@autoflow.pl",
+        "subject": "=⚠️ Oferta {{ $json.query.id }} odrzucona",
+        "emailType": "html",
+        "message": "=<p style='font-family:Arial,sans-serif'>Oferta <strong>{{ $json.query.id }}</strong> dla klienta <strong>{{ $json.query.name }}</strong> ({{ $json.query.email }}) została odrzucona.<br>Możesz skontaktować się z klientem ręcznie i wysłać zmodyfikowaną ofertę.</p>",
+        "options": {}
+      },
+      "id": "node-email-rejected",
+      "name": "11b. E-mail — oferta odrzucona",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [640, 780],
+      "credentials": {
+        "smtp": { "id": "smtp-creds", "name": "SMTP AutoFlow" }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "html",
+        "responseBody": "<!DOCTYPE html><html><body style='font-family:Arial,sans-serif;max-width:500px;margin:60px auto;text-align:center;padding:20px'><div style='background:#fff5f5;border:2px solid #cc3333;border-radius:16px;padding:40px'><div style='font-size:48px;margin-bottom:16px'>❌</div><h2 style='color:#990000;margin-bottom:12px'>Oferta odrzucona</h2><p style='color:#555;line-height:1.7'>Oferta została oznaczona jako odrzucona.<br>Klient nie otrzyma dokumentów.<br>Możesz skontaktować się z nim ręcznie.</p><p style='margin-top:24px'><a href='javascript:window.close()' style='background:#cc3333;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold'>Zamknij okno</a></p></div></body></html>",
+        "options": { "responseCode": 200 }
+      },
+      "id": "node-respond-rejected",
+      "name": "12b. Strona potwierdzenia — odrzucone",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [860, 780]
+    },
+    {
+      "parameters": {
+        "httpMethod": "OPTIONS",
+        "path": "generator-ofert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "node-cors",
+      "name": "CORS preflight",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [200, 900],
+      "webhookId": "autoflow-cors-options"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              { "name": "Access-Control-Allow-Origin", "value": "*" },
+              { "name": "Access-Control-Allow-Methods", "value": "POST, OPTIONS" },
+              { "name": "Access-Control-Allow-Headers", "value": "Content-Type" }
+            ]
+          }
+        }
+      },
+      "id": "node-cors-resp",
+      "name": "CORS odpowiedź",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [420, 900]
+    }
+  ],
+  "connections": {
+    "1. Webhook — formularz klienta": {
+      "main": [[{ "node": "2. Walidacja danych", "type": "main", "index": 0 }]]
+    },
+    "2. Walidacja danych": {
+      "main": [
+        [{ "node": "3. Przygotuj dane i prompt", "type": "main", "index": 0 }],
+        [{ "node": "7b. Odpowiedź — błąd walidacji", "type": "main", "index": 0 }]
+      ]
+    },
+    "3. Przygotuj dane i prompt": {
+      "main": [[{ "node": "4. Claude API — generuj ofertę", "type": "main", "index": 0 }]]
+    },
+    "4. Claude API — generuj ofertę": {
+      "main": [[{ "node": "5. Parsuj ofertę i zbuduj linki", "type": "main", "index": 0 }]]
+    },
+    "5. Parsuj ofertę i zbuduj linki": {
+      "main": [[{ "node": "6. E-mail do Ciebie — zatwierdź ofertę", "type": "main", "index": 0 }]]
+    },
+    "6. E-mail do Ciebie — zatwierdź ofertę": {
+      "main": [[{ "node": "7. Odpowiedź — sukces dla klienta", "type": "main", "index": 0 }]]
+    },
+    "8. Webhook — Twoja decyzja (zatwierdź/odrzuć)": {
+      "main": [[{ "node": "9. Zatwierdzona czy odrzucona?", "type": "main", "index": 0 }]]
+    },
+    "9. Zatwierdzona czy odrzucona?": {
+      "main": [
+        [{ "node": "10. Przygotuj dane do umowy", "type": "main", "index": 0 }],
+        [{ "node": "11b. E-mail — oferta odrzucona", "type": "main", "index": 0 }]
+      ]
+    },
+    "10. Przygotuj dane do umowy": {
+      "main": [[{ "node": "10b. Generuj treść umów", "type": "main", "index": 0 }]]
+    },
+    "10b. Generuj treść umów": {
+      "main": [[{ "node": "11. E-mail do klienta — oferta + umowy", "type": "main", "index": 0 }]]
+    },
+    "11. E-mail do klienta — oferta + umowy": {
+      "main": [[{ "node": "12. Powiadomienie — wysłano do klienta", "type": "main", "index": 0 }]]
+    },
+    "12. Powiadomienie — wysłano do klienta": {
+      "main": [[{ "node": "13. Strona potwierdzenia — zatwierdzone", "type": "main", "index": 0 }]]
+    },
+    "11b. E-mail — oferta odrzucona": {
+      "main": [[{ "node": "12b. Strona potwierdzenia — odrzucone", "type": "main", "index": 0 }]]
+    },
+    "CORS preflight": {
+      "main": [[{ "node": "CORS odpowiedź", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true
+  },
+  "tags": [{ "name": "AutoFlow" }]
+}

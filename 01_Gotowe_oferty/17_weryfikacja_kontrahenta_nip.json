@@ -1,0 +1,190 @@
+{
+  "name": "17 – Weryfikacja Kontrahenta po NIP (Biała Lista + KRS + CEIDG)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "telegram-trigger-nip",
+      "name": "Telegram – Podaj NIP",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const msg = $input.first().json.message?.text || '';\nconst chatId = $input.first().json.message?.chat?.id;\n\n// Wyekstrahuj NIP (10 cyfr, opcjonalnie z myślnikami)\nconst nipMatch = msg.replace(/[\\s\\-]/g, '').match(/\\d{10}/);\nconst nip = nipMatch ? nipMatch[0] : null;\n\nif (!nip) {\n  return [{ json: { error: 'Brak NIP', chatId, msg } }];\n}\n\nreturn [{ json: { nip, chatId } }];"
+      },
+      "id": "extract-nip",
+      "name": "Wyekstrahuj NIP",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.nip }}",
+              "rightValue": "",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ]
+        }
+      },
+      "id": "if-valid-nip",
+      "name": "Poprawny NIP?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "❌ Nie znalazłem numeru NIP w wiadomości. Podaj 10-cyfrowy NIP, np.:\n`/nip 1234567890`",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send-nip-error",
+      "name": "Wyślij błąd NIP",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 480]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "⏳ Weryfikuję NIP `{{ $json.nip }}`...",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send-checking",
+      "name": "Wyślij 'Weryfikuję...'",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [900, 180]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://wl-api.mf.gov.pl/api/search/nip/{{ $('Wyekstrahuj NIP').first().json.nip }}?date={{ $today.toFormat('yyyy-MM-dd') }}",
+        "options": { "timeout": 15000 }
+      },
+      "id": "check-biala-lista-nip",
+      "name": "API Biała Lista VAT (MF)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 180]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api-krs.ms.gov.pl/api/krs/ODataService.svc/Full/Podmiot?$filter=numerNIP eq '{{ $('Wyekstrahuj NIP').first().json.nip }}'&$format=json",
+        "options": { "timeout": 15000 }
+      },
+      "id": "check-krs",
+      "name": "API KRS (MS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 360]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://aplikacja.ceidg.gov.pl/CEIDG/CEIDG.Public.UI/Search.aspx?NIP={{ $('Wyekstrahuj NIP').first().json.nip }}&format=json",
+        "options": { "timeout": 15000 }
+      },
+      "id": "check-ceidg",
+      "name": "CEIDG (działalność gosp.)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 540]
+    },
+    {
+      "parameters": {
+        "jsCode": "const nip = $('Wyekstrahuj NIP').first().json.nip;\nconst bialaLista = $('API Biała Lista VAT (MF)').first().json;\nconst krs = $('API KRS (MS)').first().json;\n\n// Biała Lista\nconst podmiot = bialaLista.result?.subject || bialaLista.result?.subjects?.[0] || {};\nconst statusVAT = podmiot.statusVat || 'Nieznany';\nconst czynnyVAT = statusVAT === 'Czynny';\nconst nazwaFirmy = podmiot.name || podmiot.firma || 'Nieznana';\nconst numerKRS = podmiot.krs || '';\nconst rachunkiBankowe = podmiot.accountNumbers || [];\nconst dataRejestracji = podmiot.registrationLegalDate || podmiot.residenceAddressData?.regon || '';\n\n// Sygnały ryzyka\nconst ryzyka = [];\nconst zalety = [];\n\nif (czynnyVAT) {\n  zalety.push('✅ Czynny podatnik VAT (Biała Lista)');\n} else {\n  ryzyka.push('🚨 NIE jest czynnym podatnikiem VAT!');\n}\n\nif (rachunkiBankowe.length > 0) {\n  zalety.push(`✅ ${rachunkiBankowe.length} rachunek(ów) bankowych na Białej Liście`);\n} else {\n  ryzyka.push('⚠️ Brak rachunków bankowych na Białej Liście');\n}\n\nif (podmiot.registrationDenialDate) {\n  ryzyka.push(`🚨 Data wykreślenia: ${podmiot.registrationDenialDate}`);\n}\n\n// Ocena ryzyka\nlet poziomRyzyka, kolorEmoji;\nif (ryzyka.length === 0) {\n  poziomRyzyka = 'NISKIE'; kolorEmoji = '🟢';\n} else if (ryzyka.filter(r => r.includes('🚨')).length > 0) {\n  poziomRyzyka = 'WYSOKIE'; kolorEmoji = '🔴';\n} else {\n  poziomRyzyka = 'ŚREDNIE'; kolorEmoji = '🟡';\n}\n\nconst raport = {\n  nip,\n  nazwaFirmy,\n  statusVAT,\n  numerKRS,\n  rachunki: rachunkiBankowe.slice(0, 3).join(', ') || 'Brak danych',\n  ryzyka,\n  zalety,\n  poziomRyzyka,\n  kolorEmoji,\n  dataWeryfikacji: new Date().toLocaleDateString('pl-PL')\n};\n\nreturn [{ json: { raport, chatId: $('Wyekstrahuj NIP').first().json.chatId } }];"
+      },
+      "id": "analyze-risk",
+      "name": "Analizuj dane i oceń ryzyko",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 360]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Jesteś ekspertem compliance. Na podstawie danych o firmie napisz KRÓTKIE (4-6 zdań) uzasadnienie decyzji o ryzyku transakcji. Pisz po polsku, konkretnie. Zakończ jednoznaczną rekomendacją: BEZPIECZNIE / Z OSTROŻNOŚCIĄ / UNIKAJ."
+            },
+            {
+              "role": "user",
+              "content": "=Firma: {{ $json.raport.nazwaFirmy }}\nNIP: {{ $json.raport.nip }}\nStatus VAT: {{ $json.raport.statusVAT }}\nPoziom ryzyka: {{ $json.raport.poziomRyzyka }}\nZalety: {{ $json.raport.zalety.join(', ') }}\nRyzyka: {{ $json.raport.ryzyka.join(', ') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "ai-verdict",
+      "name": "AI – Werdykt ryzyka",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [1560, 360]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raport = $('Analizuj dane i oceń ryzyko').first().json.raport;\nconst uzasadnienie = $input.first().json.message?.content || $input.first().json.choices?.[0]?.message?.content || '';\n\nconst msg = `${raport.kolorEmoji} *Raport Weryfikacji Kontrahenta*\n\n*Firma:* ${raport.nazwaFirmy}\n*NIP:* \\`${raport.nip}\\`\n*Status VAT:* ${raport.statusVAT}\n*Ryzyko:* *${raport.poziomRyzyka}* ${raport.kolorEmoji}\n\n${raport.zalety.length ? '*✅ Pozytywne sygnały:*\\n' + raport.zalety.join('\\n') : ''}\n${raport.ryzyka.length ? '\\n*⚠️ Ryzyka:*\\n' + raport.ryzyka.join('\\n') : ''}\n\n*Rachunki bankowe (Biała Lista):*\n${raport.rachunki || 'Brak danych'}\n\n*📋 Werdykt:*\n${uzasadnienie}\n\n_Weryfikacja: ${raport.dataWeryfikacji}_`;\n\nreturn [{ json: { msg, chatId: $('Analizuj dane i oceń ryzyko').first().json.chatId } }];"
+      },
+      "id": "format-telegram-msg",
+      "name": "Formatuj raport Telegram",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 360]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.chatId }}",
+        "text": "={{ $json.msg }}",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "id": "send-report-telegram",
+      "name": "Wyślij raport przez Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2000, 360]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "verify-nip-api",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-nip-api",
+      "name": "Webhook – API weryfikacji NIP",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 600]
+    }
+  ],
+  "connections": {
+    "Telegram – Podaj NIP": { "main": [[{ "node": "Wyekstrahuj NIP", "type": "main", "index": 0 }]] },
+    "Wyekstrahuj NIP": { "main": [[{ "node": "Poprawny NIP?", "type": "main", "index": 0 }]] },
+    "Poprawny NIP?": {
+      "main": [
+        [{ "node": "Wyślij 'Weryfikuję...'", "type": "main", "index": 0 }],
+        [{ "node": "Wyślij błąd NIP", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wyślij 'Weryfikuję...'": { "main": [[{ "node": "API Biała Lista VAT (MF)", "type": "main", "index": 0 }]] },
+    "API Biała Lista VAT (MF)": { "main": [[{ "node": "Analizuj dane i oceń ryzyko", "type": "main", "index": 0 }]] },
+    "API KRS (MS)": { "main": [[{ "node": "Analizuj dane i oceń ryzyko", "type": "main", "index": 0 }]] },
+    "Analizuj dane i oceń ryzyko": { "main": [[{ "node": "AI – Werdykt ryzyka", "type": "main", "index": 0 }]] },
+    "AI – Werdykt ryzyka": { "main": [[{ "node": "Formatuj raport Telegram", "type": "main", "index": 0 }]] },
+    "Formatuj raport Telegram": { "main": [[{ "node": "Wyślij raport przez Telegram", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "agenci-ai" }, { "name": "compliance" }]
+}

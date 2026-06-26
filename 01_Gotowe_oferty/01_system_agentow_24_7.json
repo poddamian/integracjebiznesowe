@@ -1,0 +1,201 @@
+{
+  "name": "01 – System Agentów 24/7 (WhatsApp + SMS + CRM)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-wa",
+      "name": "Webhook – WhatsApp / SMS",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nconst from = body.From || body.from || 'unknown';\nconst msgBody = body.Body || body.body || body.text || '';\nconst channel = body.From?.startsWith('whatsapp:') ? 'whatsapp' : 'sms';\nreturn [{ json: { from, msgBody, channel, timestamp: new Date().toISOString() } }];"
+      },
+      "id": "parse-message",
+      "name": "Parsuj wiadomość",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "Jesteś wirtualnym asystentem firmy. Odpowiadasz na pytania klientów, umawiasz wizyty i informujesz o usługach. Bądź uprzejmy, profesjonalny i zwięzły. Odpowiadaj po polsku.\n\nMożesz:\n1. Odpowiadać na pytania o usługi\n2. Umawiać wizyty (poproś o datę, godzinę, imię)\n3. Podawać cennik\n4. Przekierowywać pilne sprawy do człowieka\n\nJeśli klient chce umówić wizytę, zbierz: imię, telefon, preferowana data i godzina, rodzaj usługi.\nZwróć JSON z polami: intent (info/booking/complaint/human_needed), reply (treść odpowiedzi), booking_data (null lub {name, phone, date, time, service})."
+            },
+            {
+              "role": "user",
+              "content": "={{ $json.msgBody }}"
+            }
+          ]
+        },
+        "options": {
+          "responseFormat": "json_object"
+        }
+      },
+      "id": "ai-agent",
+      "name": "AI Agent – Decyzja",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.message?.content || $input.first().json.choices?.[0]?.message?.content || '{}';\nlet parsed;\ntry { parsed = JSON.parse(raw); } catch(e) { parsed = { intent: 'info', reply: raw, booking_data: null }; }\nreturn [{ json: { ...parsed, from: $('Parsuj wiadomość').first().json.from, channel: $('Parsuj wiadomość').first().json.channel } }];"
+      },
+      "id": "parse-ai-response",
+      "name": "Parsuj odpowiedź AI",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": false },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "booking",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "if-booking",
+      "name": "Czy rezerwacja?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.airtable.com/v0/YOUR_BASE_ID/Wizyty",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_AIRTABLE_TOKEN" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"records\": [{\n    \"fields\": {\n      \"Imię\": \"{{ $json.booking_data.name }}\",\n      \"Telefon\": \"{{ $json.from }}\",\n      \"Data\": \"{{ $json.booking_data.date }}\",\n      \"Godzina\": \"{{ $json.booking_data.time }}\",\n      \"Usługa\": \"{{ $json.booking_data.service }}\",\n      \"Status\": \"Nowa\",\n      \"Kanał\": \"{{ $json.channel }}\",\n      \"Data zapisu\": \"{{ $now }}\"\n    }\n  }]\n}"
+      },
+      "id": "crm-airtable",
+      "name": "Zapisz do CRM (Airtable)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 180]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $('Parsuj odpowiedź AI').first().json.channel }}",
+              "rightValue": "whatsapp",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "if-whatsapp",
+      "name": "WhatsApp czy SMS?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1340, 420]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "From", "value": "whatsapp:+YOUR_TWILIO_NUMBER" },
+            { "name": "To", "value": "={{ $('Parsuj odpowiedź AI').first().json.from }}" },
+            { "name": "Body", "value": "={{ $('Parsuj odpowiedź AI').first().json.reply }}" }
+          ]
+        }
+      },
+      "id": "send-whatsapp",
+      "name": "Wyślij WhatsApp (Twilio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "From", "value": "+YOUR_TWILIO_SMS_NUMBER" },
+            { "name": "To", "value": "={{ $('Parsuj odpowiedź AI').first().json.from }}" },
+            { "name": "Body", "value": "={{ $('Parsuj odpowiedź AI').first().json.reply }}" }
+          ]
+        }
+      },
+      "id": "send-sms",
+      "name": "Wyślij SMS (Twilio)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 540]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "OK"
+      },
+      "id": "respond-webhook",
+      "name": "Odpowiedź Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1780, 420]
+    }
+  ],
+  "connections": {
+    "Webhook – WhatsApp / SMS": { "main": [[{ "node": "Parsuj wiadomość", "type": "main", "index": 0 }]] },
+    "Parsuj wiadomość": { "main": [[{ "node": "AI Agent – Decyzja", "type": "main", "index": 0 }]] },
+    "AI Agent – Decyzja": { "main": [[{ "node": "Parsuj odpowiedź AI", "type": "main", "index": 0 }]] },
+    "Parsuj odpowiedź AI": { "main": [[{ "node": "Czy rezerwacja?", "type": "main", "index": 0 }]] },
+    "Czy rezerwacja?": {
+      "main": [
+        [{ "node": "Zapisz do CRM (Airtable)", "type": "main", "index": 0 }],
+        [{ "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Zapisz do CRM (Airtable)": { "main": [[{ "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }]] },
+    "WhatsApp czy SMS?": {
+      "main": [
+        [{ "node": "Wyślij WhatsApp (Twilio)", "type": "main", "index": 0 }],
+        [{ "node": "Wyślij SMS (Twilio)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Wyślij WhatsApp (Twilio)": { "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]] },
+    "Wyślij SMS (Twilio)": { "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "agenci-ai" }]
+}

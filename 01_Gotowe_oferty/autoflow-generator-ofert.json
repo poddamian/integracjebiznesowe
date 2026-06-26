@@ -1,0 +1,384 @@
+{
+  "name": "AutoFlow — Generator Ofert AI",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generator-ofert",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "*"
+        }
+      },
+      "id": "webhook-node",
+      "name": "Webhook — Odbierz formularz",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "autoflow-generator-ofert"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "check-platform",
+              "leftValue": "={{ $json.body.platform }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "check-orders",
+              "leftValue": "={{ $json.body.orders }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            },
+            {
+              "id": "check-processes",
+              "leftValue": "={{ $json.body.processes }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        }
+      },
+      "id": "validate-node",
+      "name": "Walidacja danych",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst platform = body.platform || 'nie podano';\nconst orders = body.orders || 'nie podano';\nconst industry = body.industry || 'nie podano';\nconst tools = body.tools || 'nie podano';\nconst extra = body.extra || 'brak';\n\n// processes może być string (przecinki) lub tablica\nlet processes = [];\nif (Array.isArray(body.processes)) {\n  processes = body.processes;\n} else if (typeof body.processes === 'string') {\n  processes = body.processes.split(',').map(p => p.trim()).filter(Boolean);\n}\n\nconst processList = processes.length > 0 ? processes.join(', ') : 'nie podano';\n\nconst prompt = `Jesteś ekspertem od automatyzacji e-commerce z wieloletnim doświadczeniem na polskim rynku. Wygeneruj profesjonalną, konkretną ofertę automatyzacji dla klienta.\n\nDANE KLIENTA:\n- Platforma sklepu: ${platform}\n- Liczba zamówień miesięcznie: ${orders}\n- Branża: ${industry}\n- Używane narzędzia: ${tools}\n- Procesy do automatyzacji: ${processList}\n- Dodatkowe informacje: ${extra}\n\nNapisz ofertę PO POLSKU zawierającą:\n1. Krótką analizę sytuacji klienta (2-3 zdania — pokaż że rozumiesz ich biznes)\n2. Proponowane rozwiązania (lista 3-5 konkretnych automatyzacji z technologiami: n8n lub Make.com, bez nadmiernego technicznego żargonu)\n3. Szacowany czas wdrożenia każdego elementu\n4. Kluczowe korzyści biznesowe (oszczędność czasu w godzinach, redukcja błędów, wzrost przychodów)\n5. Rekomendowany pakiet (Starter 2500 zł / Growth 5500 zł / Retainer 1800 zł/mies.) z uzasadnieniem\n6. Proponowane kolejne kroki\n\nNa końcu, w osobnej linii, podaj:\nCENA: [konkretny zakres np. 3500-5500 zł]\n\nTon: profesjonalny, partnerski, konkretny. Unikaj marketingowego bełkotu. Pisz jak ekspert który rozumie biznes klienta. Maksymalnie 450 słów.`;\n\nreturn [{\n  json: {\n    prompt,\n    platform,\n    orders,\n    industry,\n    processList\n  }\n}];"
+      },
+      "id": "build-prompt-node",
+      "name": "Zbuduj prompt",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 220]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-api-key",
+              "value": "={{ $credentials.anthropicApiKey }}"
+            },
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": []
+        },
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 1200,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": {{ JSON.stringify($json.prompt) }}\n    }\n  ]\n}",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "claude-api-node",
+      "name": "Claude API — Generuj ofertę",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 220],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "anthropic-creds",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\n\n// Pobierz tekst z odpowiedzi Claude\nlet fullText = '';\nif (response.content && Array.isArray(response.content)) {\n  fullText = response.content\n    .filter(block => block.type === 'text')\n    .map(block => block.text)\n    .join('');\n}\n\nif (!fullText) {\n  return [{\n    json: {\n      success: false,\n      error: 'Brak odpowiedzi od Claude API',\n      text: '',\n      price: ''\n    }\n  }];\n}\n\n// Wyodrębnij cenę z końca tekstu\nconst priceMatch = fullText.match(/CENA:\\s*([^\\n]+)/i);\nconst price = priceMatch ? priceMatch[1].trim() : '3 500 – 6 500 zł';\n\n// Usuń linię z ceną z głównego tekstu\nconst cleanText = fullText.replace(/CENA:[^\\n]*/i, '').trim();\n\n// Liczba tokenów użytych (opcjonalnie do logowania)\nconst inputTokens = response.usage?.input_tokens || 0;\nconst outputTokens = response.usage?.output_tokens || 0;\n\nreturn [{\n  json: {\n    success: true,\n    text: cleanText,\n    price: price,\n    model: response.model || 'claude-sonnet-4-20250514',\n    tokens: {\n      input: inputTokens,\n      output: outputTokens\n    }\n  }\n}];"
+      },
+      "id": "parse-response-node",
+      "name": "Parsuj odpowiedź",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1120, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"text\": {{ JSON.stringify($json.text) }},\n  \"price\": {{ JSON.stringify($json.price) }},\n  \"model\": {{ JSON.stringify($json.model) }}\n}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-success-node",
+      "name": "Odpowiedź — Sukces",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1340, 220]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"error\": \"Proszę wypełnić wymagane pola: platforma, liczba zamówień i minimum jeden proces.\"\n}",
+        "options": {
+          "responseCode": 400,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-validation-error-node",
+      "name": "Odpowiedź — Błąd walidacji",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [680, 420]
+    },
+    {
+      "parameters": {
+        "jsCode": "const error = $input.first().json;\nconsole.error('Claude API Error:', JSON.stringify(error));\n\nreturn [{\n  json: {\n    success: false,\n    error: 'Błąd komunikacji z Claude API. Spróbuj ponownie za chwilę.',\n    details: error.message || 'Nieznany błąd'\n  }\n}];"
+      },
+      "id": "handle-error-node",
+      "name": "Obsługa błędu API",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 420]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": false,\n  \"error\": {{ JSON.stringify($json.error) }}\n}",
+        "options": {
+          "responseCode": 500,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Content-Type",
+                "value": "application/json"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond-api-error-node",
+      "name": "Odpowiedź — Błąd API",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [1120, 420]
+    },
+    {
+      "parameters": {
+        "httpMethod": "OPTIONS",
+        "path": "generator-ofert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "cors-preflight-node",
+      "name": "CORS Preflight (OPTIONS)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 520],
+      "webhookId": "autoflow-generator-ofert-options"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{}",
+        "options": {
+          "responseCode": 200,
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Methods",
+                "value": "POST, OPTIONS"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "id": "cors-respond-node",
+      "name": "CORS — Odpowiedź",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [460, 520]
+    }
+  ],
+  "connections": {
+    "Webhook — Odbierz formularz": {
+      "main": [
+        [
+          {
+            "node": "Walidacja danych",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Walidacja danych": {
+      "main": [
+        [
+          {
+            "node": "Zbuduj prompt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Odpowiedź — Błąd walidacji",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Zbuduj prompt": {
+      "main": [
+        [
+          {
+            "node": "Claude API — Generuj ofertę",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude API — Generuj ofertę": {
+      "main": [
+        [
+          {
+            "node": "Parsuj odpowiedź",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ],
+      "error": [
+        [
+          {
+            "node": "Obsługa błędu API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parsuj odpowiedź": {
+      "main": [
+        [
+          {
+            "node": "Odpowiedź — Sukces",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Obsługa błędu API": {
+      "main": [
+        [
+          {
+            "node": "Odpowiedź — Błąd API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CORS Preflight (OPTIONS)": {
+      "main": [
+        [
+          {
+            "node": "CORS — Odpowiedź",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": ""
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "updatedAt": "2026-01-01T00:00:00.000Z",
+      "id": "autoflow-tag",
+      "name": "AutoFlow"
+    }
+  ],
+  "triggerCount": 2,
+  "updatedAt": "2026-05-24T00:00:00.000Z",
+  "versionId": "1"
+}

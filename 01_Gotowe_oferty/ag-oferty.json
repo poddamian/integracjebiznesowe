@@ -1,0 +1,81 @@
+{
+  "nodes": [
+    {
+      "id": "1",
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "parameters": {
+        "path": "new-offer",
+        "method": "POST"
+      }
+    },
+    {
+      "id": "2",
+      "name": "Generate Offer (AI)",
+      "type": "n8n-nodes-base.openai",
+      "parameters": {
+        "operation": "createCompletion",
+        "model": "gpt-4",
+        "prompt": "Stwórz profesjonalną ofertę na podstawie danych: {{$json}}"
+      }
+    },
+    {
+      "id": "3",
+      "name": "Create Google Doc",
+      "type": "n8n-nodes-base.googleDocs",
+      "parameters": {
+        "title": "Oferta - {{$json.clientName}}",
+        "content": "{{$json.offerText}}"
+      }
+    },
+    {
+      "id": "4",
+      "name": "Convert to PDF",
+      "type": "n8n-nodes-base.googleDrive",
+      "parameters": {
+        "operation": "export",
+        "fileId": "={{$json.fileId}}",
+        "mimeType": "application/pdf"
+      }
+    },
+    {
+      "id": "5",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.smtp",
+      "parameters": {
+        "toEmail": "={{$json.clientEmail}}",
+        "subject": "Twoja oferta",
+        "attachments": "={{$json.pdf}}"
+      }
+    },
+    {
+      "id": "6",
+      "name": "Wait 24h",
+      "type": "n8n-nodes-base.wait",
+      "parameters": {
+        "amount": 24,
+        "unit": "hours"
+      }
+    },
+    {
+      "id": "7",
+      "name": "Send Follow-up",
+      "type": "n8n-nodes-base.smtp",
+      "parameters": {
+        "toEmail": "={{$json.clientEmail}}",
+        "subject": "Czy zapoznałeś się z ofertą?",
+        "text": "Cześć! Wysyłam krótkie przypomnienie o przesłanej ofercie."
+      }
+    }
+  ],
+  "connections": {
+    "1": { "main": [[{ "node": "2" }]] },
+    "2": { "main": [[{ "node": "3" }]] },
+    "3": { "main": [[{ "node": "4" }]] },
+    "4": { "main": [[{ "node": "5" }]] },
+    "5": { "main": [[{ "node": "6" }]] },
+    "6": { "main": [[{ "node": "7" }]] }
+  }
+}
+
+

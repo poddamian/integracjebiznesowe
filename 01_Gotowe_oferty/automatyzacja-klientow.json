@@ -1,0 +1,104 @@
+{
+  "name": "Obsługa nowych klientów - automatyzacja",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "nowy-klient",
+        "options": {}
+      },
+      "name": "Webhook - Nowy Klient",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [200, 300],
+      "webhookDescription": "Odbiera dane z formularza"
+    },
+    {
+      "parameters": {
+        "fields": {
+          "string": [
+            { "name": "name", "value": "={{$json[\"name\"]}}" },
+            { "name": "email", "value": "={{$json[\"email\"]}}" },
+            { "name": "company_type", "value": "={{$json[\"company_type\"]}}" },
+            { "name": "message", "value": "={{$json[\"message\"]}}" }
+          ]
+        }
+      },
+      "name": "Set - Dane Klienta",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "resource": "values",
+        "operation": "append",
+        "sheetId": "TWÓJ_ID_ARKUSZA_GOOGLE",
+        "range": "Leady!A:D",
+        "options": {},
+        "valueInputMode": "USER_ENTERED",
+        "data": "={{[[$json.name, $json.email, $json.company_type, $json.message]]}}"
+      },
+      "name": "Google Sheets - Zapisz Leada",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 1,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4-turbo",
+        "prompt": "Na podstawie poniższych danych klienta zaproponuj krótki, spersonalizowany opis automatyzacji, która pomoże jego firmie. Skup się na korzyściach. Dane klienta: {{$json}}"
+      },
+      "name": "AI - Generuj Odpowiedź",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 2,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "mail@twojadomena.pl",
+        "toEmail": "={{$json[\"email\"]}}",
+        "subject": "Dziękujemy za zgłoszenie – oto nasza propozycja",
+        "text": "Cześć {{$json[\"name\"]}},\n\nDziękujemy za wypełnienie formularza! Na podstawie Twoich odpowiedzi przygotowaliśmy krótką propozycję automatyzacji:\n\n{{$json[\"data\"][0][\"text\"]}}\n\nPozdrawiam,\nDamian\nTwoja firma"
+      },
+      "name": "SMTP - E-mail do Klienta",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1200, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "mail@twojadomena.pl",
+        "toEmail": "mail@twojadomena.pl",
+        "subject": "Nowe zgłoszenie klienta",
+        "text": "Nowe zgłoszenie od: {{$json[\"name\"]}} ({{$json[\"email\"]}})\nTyp firmy: {{$json[\"company_type\"]}}\nWiadomość: {{$json[\"message\"]}}"
+      },
+      "name": "SMTP - Powiadomienie dla mnie",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1200, 500]
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "Dziękujemy! Twoje zgłoszenie zostało przyjęte. Skontaktujemy się wkrótce.",
+        "responseCode": 200
+      },
+      "name": "Webhook Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1450, 300]
+    }
+  ],
+  "connections": {
+    "Webhook - Nowy Klient": { "main": [[{ "node": "Set - Dane Klienta", "type": "main", "index": 0 }]] },
+    "Set - Dane Klienta": { "main": [[{ "node": "Google Sheets - Zapisz Leada", "type": "main", "index": 0 }]] },
+    "Google Sheets - Zapisz Leada": { "main": [[{ "node": "AI - Generuj Odpowiedź", "type": "main", "index": 0 }]] },
+    "AI - Generuj Odpowiedź": {
+      "main": [
+        { "node": "SMTP - E-mail do Klienta", "type": "main", "index": 0 },
+        { "node": "SMTP - Powiadomienie dla mnie", "type": "main", "index": 0 }
+      ]
+    },
+    "SMTP - E-mail do Klienta": { "main": [[{ "node": "Webhook Response", "type": "main", "index": 0 }]] }
+  }
+}

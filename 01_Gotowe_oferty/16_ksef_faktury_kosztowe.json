@@ -1,0 +1,199 @@
+{
+  "name": "16 – KSeF Agent Faktury Kosztowe (FLAGOWY)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": { "interval": [{ "field": "hours", "minutesInterval": 6 }] }
+      },
+      "id": "trigger-cron",
+      "name": "Cron – Co 6h pobierz faktury",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ksef.mf.gov.pl/api/online/Session/AuthorisationChallenge",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "Accept", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={ \"contextIdentifier\": { \"type\": \"onip\", \"identifier\": \"{{ $vars.NIP_FIRMY }}\" } }"
+      },
+      "id": "ksef-challenge",
+      "name": "KSeF – Pobierz Challenge",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Symulacja podpisania tokenu (w produkcji użyj certyfikatu kwalifikowanego)\n// W rzeczywistości tutaj następuje podpisanie challenge tokenem XAdES lub profilem zaufanym\nconst challenge = $input.first().json.challenge || 'mock-challenge';\nconst timestamp = $input.first().json.timestamp || new Date().toISOString();\n\n// UWAGA: W produkcji podpisz challenge kwalifikowanym podpisem elektronicznym\nconst signedToken = Buffer.from(`${challenge}|${timestamp}`).toString('base64');\n\nreturn [{ json: { signedToken, challenge, timestamp } }];"
+      },
+      "id": "sign-token",
+      "name": "Podpisz token (XAdES/Profil Zaufany)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ksef.mf.gov.pl/api/online/Session/Authorisation",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"contextIdentifier\": { \"type\": \"onip\", \"identifier\": \"{{ $vars.NIP_FIRMY }}\" },\n  \"authorisationToken\": \"{{ $json.signedToken }}\"\n}"
+      },
+      "id": "ksef-auth",
+      "name": "KSeF – Autoryzacja sesji",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://ksef.mf.gov.pl/api/online/Query/Invoice/Async/Initiate",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "SessionToken", "value": "={{ $json.sessionToken?.token }}" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"queryCriteria\": {\n    \"subjectType\": \"subject3\",\n    \"type\": \"incremental\",\n    \"acquisitionTimestampThresholdFrom\": \"{{ DateTime.now().minus({hours: 6}).toISO() }}\",\n    \"acquisitionTimestampThresholdTo\": \"{{ DateTime.now().toISO() }}\"\n  }\n}"
+      },
+      "id": "ksef-query",
+      "name": "KSeF – Zapytanie o faktury",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parsowanie odpowiedzi z KSeF i symulacja danych faktury\n// W produkcji tutaj parsuj XML faktury UPO/FA(2)\nconst queryResult = $input.first().json;\nconst sessionToken = $('KSeF – Autoryzacja sesji').first().json.sessionToken?.token || 'mock-token';\n\n// Przykładowe faktury (w produkcji pobierane z KSeF)\nconst faktury = [\n  {\n    ksefNumer: 'PL9999999999-20250101-ABC123-FA',\n    nip: '1234567890',\n    nazwaWystawcy: 'Firma XYZ Sp. z o.o.',\n    dataWystawienia: '2025-01-15',\n    numerFaktury: 'FV/2025/001',\n    kwotaNetto: 5000.00,\n    kwotaVAT: 1150.00,\n    kwotaBrutto: 6150.00,\n    stawkaVAT: '23%',\n    opis: 'Usługi IT'\n  },\n  {\n    ksefNumer: 'PL8888888888-20250101-DEF456-FA',\n    nip: '9876543210',\n    nazwaWystawcy: 'Dostawca ABC',\n    dataWystawienia: '2025-01-16',\n    numerFaktury: 'FS-100/01/2025',\n    kwotaNetto: 800.00,\n    kwotaVAT: 184.00,\n    kwotaBrutto: 984.00,\n    stawkaVAT: '23%',\n    opis: 'Materiały biurowe'\n  }\n];\n\nreturn faktury.map(f => ({ json: { ...f, sessionToken } }));"
+      },
+      "id": "parse-invoices",
+      "name": "Parsuj faktury z KSeF",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://wl-api.mf.gov.pl/api/search/nip/{{ $json.nip }}?date={{ $now.split('T')[0] }}",
+        "options": { "timeout": 10000 }
+      },
+      "id": "check-biala-lista",
+      "name": "Sprawdź Białą Listę VAT",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1560, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const faktura = $('Parsuj faktury z KSeF').first().json;\nconst bialaListaResponse = $input.first().json;\n\n// Sprawdź status na Białej Liście\nconst podmiot = bialaListaResponse.result?.subject;\nconst czynnyVAT = podmiot?.statusVat === 'Czynny';\nconst zarejestrowany = podmiot?.registrationDenialDate === null;\n\n// Ryzyka\nconst ryzyka = [];\nif (!czynnyVAT) ryzyka.push('Kontrahent NIE jest czynnym podatnikiem VAT!');\nif (!zarejestrowany) ryzyka.push('Kontrahent wykreślony z rejestru VAT!');\nif (faktura.kwotaBrutto > 15000) ryzyka.push('Transakcja gotówkowa powyżej 15 000 zł – obowiązek przelewu!');\nif (faktura.kwotaBrutto > 50000) ryzyka.push('Wysoka kwota – wymagana weryfikacja rachunku bankowego!');\n\n// Duplikaty (w produkcji sprawdzaj w bazie)\nconst czyDupl = false; // Placeholder\nif (czyDupl) ryzyka.push('Możliwy duplikat faktury!');\n\n// Kolor statusu\nlet kolor, status;\nif (ryzyka.length === 0) {\n  kolor = 'ZIELONY'; status = '🟢';\n} else if (ryzyka.length === 1 && !ryzyka[0].includes('NIE jest czynnym')) {\n  kolor = 'ŻÓŁTY'; status = '🟡';\n} else {\n  kolor = 'CZERWONY'; status = '🔴';\n}\n\nreturn [{ json: {\n  ...faktura,\n  czynnyVAT, ryzyka, kolor, status,\n  weryfikacjaData: new Date().toISOString()\n}}];"
+      },
+      "id": "risk-assessment",
+      "name": "Oceń ryzyko faktury",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1780, 300]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "value": "YOUR_GOOGLE_SHEET_ID" },
+        "sheetName": { "value": "Faktury KSeF" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "A": "={{ $json.ksefNumer }}",
+            "B": "={{ $json.nip }}",
+            "C": "={{ $json.nazwaWystawcy }}",
+            "D": "={{ $json.numerFaktury }}",
+            "E": "={{ $json.dataWystawienia }}",
+            "F": "={{ $json.kwotaNetto }}",
+            "G": "={{ $json.kwotaVAT }}",
+            "H": "={{ $json.kwotaBrutto }}",
+            "I": "={{ $json.stawkaVAT }}",
+            "J": "={{ $json.opis }}",
+            "K": "={{ $json.kolor }}",
+            "L": "={{ $json.ryzyka.join(', ') || 'Brak' }}",
+            "M": "={{ $json.weryfikacjaData }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "save-sheet",
+      "name": "Zapisz do Google Sheets (PKPiR)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [2000, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.kolor }}",
+              "rightValue": "ZIELONY",
+              "operator": { "type": "string", "operation": "notEquals" }
+            }
+          ]
+        }
+      },
+      "id": "if-alert",
+      "name": "Wymaga alertu?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [2220, 300]
+    },
+    {
+      "parameters": {
+        "channel": "#faktury-ksief",
+        "text": "={{ $json.status }} *Faktura wymaga weryfikacji!*\n\n*Numer:* `{{ $json.numerFaktury }}`\n*Wystawca:* {{ $json.nazwaWystawcy }}\n*NIP:* {{ $json.nip }}\n*Kwota brutto:* {{ $json.kwotaBrutto }} PLN\n*Data:* {{ $json.dataWystawienia }}\n*Status:* {{ $json.kolor }}\n\n*⚠️ Ryzyka:*\n{{ $json.ryzyka.join('\\n') }}",
+        "otherOptions": {}
+      },
+      "id": "slack-invoice-alert",
+      "name": "Alert Slack – Ryzykowna faktura",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [2440, 180]
+    }
+  ],
+  "connections": {
+    "Cron – Co 6h pobierz faktury": { "main": [[{ "node": "KSeF – Pobierz Challenge", "type": "main", "index": 0 }]] },
+    "KSeF – Pobierz Challenge": { "main": [[{ "node": "Podpisz token (XAdES/Profil Zaufany)", "type": "main", "index": 0 }]] },
+    "Podpisz token (XAdES/Profil Zaufany)": { "main": [[{ "node": "KSeF – Autoryzacja sesji", "type": "main", "index": 0 }]] },
+    "KSeF – Autoryzacja sesji": { "main": [[{ "node": "KSeF – Zapytanie o faktury", "type": "main", "index": 0 }]] },
+    "KSeF – Zapytanie o faktury": { "main": [[{ "node": "Parsuj faktury z KSeF", "type": "main", "index": 0 }]] },
+    "Parsuj faktury z KSeF": { "main": [[{ "node": "Sprawdź Białą Listę VAT", "type": "main", "index": 0 }]] },
+    "Sprawdź Białą Listę VAT": { "main": [[{ "node": "Oceń ryzyko faktury", "type": "main", "index": 0 }]] },
+    "Oceń ryzyko faktury": { "main": [[{ "node": "Zapisz do Google Sheets (PKPiR)", "type": "main", "index": 0 }]] },
+    "Zapisz do Google Sheets (PKPiR)": { "main": [[{ "node": "Wymaga alertu?", "type": "main", "index": 0 }]] },
+    "Wymaga alertu?": {
+      "main": [
+        [{ "node": "Alert Slack – Ryzykowna faktura", "type": "main", "index": 0 }],
+        []
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "agenci-ai" }, { "name": "ksief" }]
+}

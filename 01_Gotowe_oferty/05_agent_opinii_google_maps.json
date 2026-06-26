@@ -1,0 +1,178 @@
+{
+  "name": "05 – Agent Opinii Google Maps (Sentyment + CRM)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "opinia-klienta",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-opinia",
+      "name": "Webhook – Po wizycie",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body || $input.first().json;\nreturn [{ json: {\n  klientNazwa: body.klient_nazwa || body.name || 'Klient',\n  klientEmail: body.klient_email || body.email || '',\n  klientTelefon: body.klient_telefon || body.phone || '',\n  wizytaId: body.wizyta_id || body.id || Date.now().toString(),\n  usluga: body.usluga || body.service || 'Usługa',\n  specjalista: body.specjalista || body.specialist || '',\n  data: body.data || new Date().toISOString().split('T')[0]\n}}];"
+      },
+      "id": "parse-visit",
+      "name": "Parsuj dane wizyty",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "fromEmail": "noreply@twojafirma.pl",
+        "toEmail": "={{ $json.klientEmail }}",
+        "subject": "Jak oceniasz wizytę? – {{ $json.usluga }}",
+        "emailType": "html",
+        "message": "=<!DOCTYPE html><html lang=\"pl\"><head><meta charset=\"UTF-8\"><style>body{font-family:Arial,sans-serif;max-width:500px;margin:0 auto;padding:20px;}.btn{display:inline-block;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:bold;margin:5px;font-size:16px;}.happy{background:#28a745;color:white;}.neutral{background:#ffc107;color:#333;}.sad{background:#dc3545;color:white;}</style></head><body><h2>Cześć {{ $json.klientNazwa }}! 👋</h2><p>Dziękujemy za wizytę w dniu <strong>{{ $json.data }}</strong>.</p><p>Jak oceniasz dzisiejszą wizytę (<em>{{ $json.usluga }}</em>)?</p><div style=\"text-align:center;margin:30px 0;\"><a href=\"https://YOUR_N8N_URL/webhook/feedback-response?id={{ $json.wizytaId }}&rating=happy\" class=\"btn happy\">😊 Świetnie!</a><a href=\"https://YOUR_N8N_URL/webhook/feedback-response?id={{ $json.wizytaId }}&rating=neutral\" class=\"btn neutral\">😐 Średnio</a><a href=\"https://YOUR_N8N_URL/webhook/feedback-response?id={{ $json.wizytaId }}&rating=sad\" class=\"btn sad\">😞 Źle</a></div><p style=\"font-size:12px;color:#999;\">Ta wiadomość dotyczy wizyty nr {{ $json.wizytaId }}</p></body></html>"
+      },
+      "id": "send-survey",
+      "name": "Wyślij ankietę po wizycie",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "feedback-response",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-feedback",
+      "name": "Webhook – Odpowiedź klienta",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [240, 600]
+    },
+    {
+      "parameters": {
+        "jsCode": "const params = $input.first().json.query || $input.first().json;\nconst rating = params.rating || 'neutral';\nconst id = params.id || '';\nreturn [{ json: { rating, wizytaId: id } }];"
+      },
+      "id": "parse-feedback",
+      "name": "Parsuj odpowiedź",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 600]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.rating }}",
+              "rightValue": "happy",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "if-happy",
+      "name": "Zadowolony?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [680, 600]
+    },
+    {
+      "parameters": {
+        "respondWith": "redirect",
+        "redirectURL": "https://g.page/r/YOUR_GOOGLE_REVIEW_LINK/review"
+      },
+      "id": "redirect-google",
+      "name": "Przekieruj → Google Maps Review",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [900, 480]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "conditions": [
+            {
+              "leftValue": "={{ $json.rating }}",
+              "rightValue": "sad",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "if-sad",
+      "name": "Niezadowolony?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [900, 660]
+    },
+    {
+      "parameters": {
+        "channel": "#alerty-klienci",
+        "text": "=🚨 *ALERT – Niezadowolony klient!*\n\n*Wizyta ID:* {{ $('Parsuj odpowiedź').first().json.wizytaId }}\n*Ocena:* 😞 Źle\n*Data alertu:* {{ $now }}\n\n⚡ Oddzwoń ASAP, zanim wystawi złą recenzję Google!",
+        "otherOptions": {}
+      },
+      "id": "slack-alert",
+      "name": "Alert Slack – Niezadowolony klient",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [1120, 600]
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "https://api.airtable.com/v0/YOUR_BASE_ID/Wizyty/{{ $('Parsuj odpowiedź').first().json.wizytaId }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Authorization", "value": "Bearer YOUR_AIRTABLE_TOKEN" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "json",
+        "body": "={\n  \"fields\": {\n    \"Ocena\": \"{{ $('Parsuj odpowiedź').first().json.rating }}\",\n    \"Data oceny\": \"{{ $now }}\"\n  }\n}"
+      },
+      "id": "update-crm",
+      "name": "Zaktualizuj CRM (Airtable)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 780]
+    },
+    {
+      "parameters": {
+        "respondWith": "html",
+        "responseBody": "<!DOCTYPE html><html lang=\"pl\"><body style=\"font-family:Arial;text-align:center;padding:50px;\"><h2>😊 Dziękujemy za opinię!</h2><p>Dziękujemy za podzielenie się swoją oceną. Do zobaczenia!</p></body></html>"
+      },
+      "id": "respond-thanks",
+      "name": "Strona podziękowania",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1340, 660]
+    }
+  ],
+  "connections": {
+    "Webhook – Po wizycie": { "main": [[{ "node": "Parsuj dane wizyty", "type": "main", "index": 0 }]] },
+    "Parsuj dane wizyty": { "main": [[{ "node": "Wyślij ankietę po wizycie", "type": "main", "index": 0 }]] },
+    "Webhook – Odpowiedź klienta": { "main": [[{ "node": "Parsuj odpowiedź", "type": "main", "index": 0 }]] },
+    "Parsuj odpowiedź": { "main": [[{ "node": "Zadowolony?", "type": "main", "index": 0 }]] },
+    "Zadowolony?": {
+      "main": [
+        [{ "node": "Przekieruj → Google Maps Review", "type": "main", "index": 0 }],
+        [{ "node": "Niezadowolony?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Niezadowolony?": {
+      "main": [
+        [{ "node": "Alert Slack – Niezadowolony klient", "type": "main", "index": 0 }],
+        [{ "node": "Zaktualizuj CRM (Airtable)", "type": "main", "index": 0 }]
+      ]
+    },
+    "Alert Slack – Niezadowolony klient": { "main": [[{ "node": "Zaktualizuj CRM (Airtable)", "type": "main", "index": 0 }]] },
+    "Zaktualizuj CRM (Airtable)": { "main": [[{ "node": "Strona podziękowania", "type": "main", "index": 0 }]] }
+  },
+  "settings": { "executionOrder": "v1" },
+  "tags": [{ "name": "agenci-ai" }]
+}
