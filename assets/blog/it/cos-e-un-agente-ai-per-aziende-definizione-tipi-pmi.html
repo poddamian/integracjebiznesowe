@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Un agente AI per aziende è un sistema che prende decisioni autonomamente e agisce per conto della tua azienda. Tipi, applicazioni PMI e come implementarlo senza sviluppatori.">
+<meta name="keywords" content="agente AI azienda, automazione AI PMI, n8n agente AI, Make.com automazione, intelligenza artificiale impresa">
+<meta property="og:title" content="Cos'è un Agente AI per Aziende? Definizione, Tipi e Applicazioni PMI">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://integracjebiznesowe.pl/blog/it/cos-e-un-agente-ai-per-aziende-definizione-tipi-pmi.html">
+<link rel="canonical" href="https://integracjebiznesowe.pl/blog/it/cos-e-un-agente-ai-per-aziende-definizione-tipi-pmi.html">
+<link rel="alternate" hreflang="pl" href="https://integracjebiznesowe.pl/blog/czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp.html">
+<link rel="alternate" hreflang="en" href="https://integracjebiznesowe.pl/blog/en/what-is-an-ai-agent-for-business-definition-types-sme.html">
+<link rel="alternate" hreflang="de" href="https://integracjebiznesowe.pl/blog/de/was-ist-ein-ki-agent-fuer-unternehmen-definition-typen-kmu.html">
+<link rel="alternate" hreflang="it" href="https://integracjebiznesowe.pl/blog/it/cos-e-un-agente-ai-per-aziende-definizione-tipi-pmi.html">
+<link rel="alternate" hreflang="es" href="https://integracjebiznesowe.pl/blog/es/que-es-un-agente-ia-para-empresa-definicion-tipos-pymes.html">
+<link rel="alternate" hreflang="fr" href="https://integracjebiznesowe.pl/blog/fr/quest-ce-quun-agent-ia-pour-entreprise-definition-types-pme.html">
+<link rel="alternate" hreflang="ar" href="https://integracjebiznesowe.pl/blog/ar/ma-huwa-wakil-dhaka-alaistinai-lileamal-tarif-anwaa-tatbiqat.html">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","headline":"Cos'è un Agente AI per Aziende? Definizione, Tipi e Applicazioni PMI","datePublished":"2026-06-30","dateModified":"2026-06-30","author":{"@type":"Person","name":"Integracje Biznesowe"},"publisher":{"@type":"Organization","name":"Integracje Biznesowe"},"mainEntityOfPage":"https://integracjebiznesowe.pl/blog/it/cos-e-un-agente-ai-per-aziende-definizione-tipi-pmi.html","inLanguage":"it"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"Cos'è un agente AI per aziende?","acceptedAnswer":{"@type":"Answer","text":"Un agente AI per aziende è un sistema di intelligenza artificiale capace di prendere decisioni autonomamente ed eseguire compiti per conto dell'azienda, senza intervento umano a ogni passaggio. Analizza il contesto, pianifica azioni e le esegue autonomamente in sistemi esterni come CRM, email o strumenti documentali."}},{"@type":"Question","name":"Come si differenzia un agente AI da un chatbot?","acceptedAnswer":{"@type":"Answer","text":"Un chatbot segue script predefiniti per rispondere a domande. Un agente AI comprende il contesto della conversazione, prende decisioni ed esegue azioni in sistemi esterni — salva nel CRM, genera preventivi, invia email. Un chatbot parla; un agente AI agisce."}},{"@type":"Question","name":"Quanto costa implementare un agente AI?","acceptedAnswer":{"@type":"Answer","text":"Agenti semplici basati su n8n o Make.com con OpenAI API possono essere implementati a partire da 230–580 euro come investimento una tantum. I costi mensili dell'API per una piccola impresa ammontano in genere a poche decine di euro."}}]}
+</script>
+<title>Cos'è un Agente AI per Aziende? Definizione, Tipi e Applicazioni PMI | Integracje Biznesowe</title>
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#ffffff;--bg2:#f4f6fb;--surface:#f0f3fa;--surface2:#e8edf7;--border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.13);--lime:#c8f135;--lime-dim:rgba(200,241,53,0.28);--lime-text:#4d6a00;--text:#141623;--text2:#4a5577;--text3:#8896b8;--radius:14px;--radius-sm:8px;--radius-lg:20px;--font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Inter',sans-serif}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth}body{font-family:var(--font-body);background:var(--bg2);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:80px 80px;-webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent);mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent)}
+section{position:relative;z-index:1}.container{max-width:760px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1000px)/2));transition:background .3s}nav.scrolled{background:rgba(255,255,255,.98)}.nav-logo{font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:15px}.nav-logo span{color:var(--lime-text)}.nav-links{display:flex;align-items:center;gap:4px;flex:1}.nav-link{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all .2s}.nav-link:hover{color:var(--text);background:var(--surface2)}.btn-nav{background:var(--lime);color:#141623;border:none;border-radius:var(--radius-sm);padding:10px 22px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;margin-left:auto;white-space:nowrap}.btn-nav:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(200,241,53,.3)}.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-left:auto}.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}.hamburger.open span:nth-child(2){opacity:0}.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:999;padding:32px 24px;flex-direction:column;gap:8px}.mobile-menu.open{display:flex}.mobile-link{color:var(--text2);text-decoration:none;font-size:17px;font-weight:500;padding:12px 16px;border-radius:var(--radius);transition:all .2s}.mobile-link:hover{color:var(--text);background:var(--surface2)}@media(max-width:760px){.nav-links{display:none}.hamburger{display:flex}.btn-nav{display:none}}
+.article-header{padding:150px 0 40px;background:var(--bg);position:relative;z-index:1}.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:28px;transition:color .2s}.back-link:hover{color:var(--lime-text)}.lang-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:28px}.lang-bar a{font-size:12px;font-weight:600;color:var(--text3);text-decoration:none;padding:4px 10px;border:1px solid var(--border2);border-radius:100px;transition:all .2s}.lang-bar a:hover,.lang-bar a.active{background:var(--lime-dim);color:var(--lime-text);border-color:rgba(200,241,53,.4)}.article-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:20px}.article-title{font-family:var(--font-display);font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:18px;color:var(--text)}.article-meta{font-size:13px;color:var(--text3)}
+article.article-body{background:var(--bg);position:relative;z-index:1}.article-body{padding:40px 0 80px;font-size:16px;line-height:1.85;color:var(--text2)}.article-body h2{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--text);letter-spacing:-.01em;margin:48px 0 18px}.article-body h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--text);margin:32px 0 12px}.article-body p{margin-bottom:18px}.article-body ul,.article-body ol{margin:0 0 18px 22px}.article-body li{margin-bottom:8px}.article-body strong{color:var(--text);font-weight:600}.article-body a{color:var(--lime-text);text-decoration:none;border-bottom:1px solid rgba(77,106,0,.3)}.article-body a:hover{border-color:var(--lime-text)}.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:var(--radius);padding:20px 24px;margin:28px 0;font-size:15px}.callout strong{color:var(--lime-text)}.divider{border:none;border-top:1px solid var(--border);margin:40px 0}.faq-section{margin-top:48px}.faq-item{border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:12px;background:var(--bg)}.faq-q{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text);margin-bottom:10px}.faq-a{font-size:15px;color:var(--text2);line-height:1.75}.cta-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;text-align:center;margin-top:20px}.cta-box h3{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--text);margin-bottom:10px}.cta-box p{color:var(--text2);font-size:14px;margin-bottom:22px}.btn-primary{background:var(--lime);color:#141623;border:none;border-radius:var(--radius);padding:14px 28px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,241,53,.3)}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;position:relative;z-index:1}.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:0 24px}.footer-logo-sm{font-family:var(--font-display);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px;color:var(--text)}.footer-logo-sm span{color:var(--lime-text)}.footer-links-sm{display:flex;gap:20px;flex-wrap:wrap}.footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}.footer-links-sm a:hover{color:var(--lime-text)}.footer-cr{font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<nav id="navbar">
+  <a href="../../index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+  <div class="nav-links">
+    <a href="../../index.html#usługi" class="nav-link">Servizi</a>
+    <a href="../../index.html#jak-dziala" class="nav-link">Come lavoro</a>
+    <a href="../../blog.html" class="nav-link">Blog</a>
+    <a href="../../index.html#kontakt" class="nav-link">Contatto</a>
+  </div>
+  <a href="../../index.html#kontakt" class="btn-nav">Contattaci</a>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../../index.html#usługi" class="mobile-link">Servizi</a>
+  <a href="../../index.html#jak-dziala" class="mobile-link">Come lavoro</a>
+  <a href="../../blog.html" class="mobile-link">Blog</a>
+  <a href="../../index.html#kontakt" class="mobile-link">Contatto</a>
+</div>
+
+<header class="article-header">
+  <div class="container">
+    <a href="../../blog.html" class="back-link">← Torna al blog</a>
+    <div class="lang-bar">
+      <a href="../czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp.html">🇵🇱 PL</a>
+      <a href="../en/what-is-an-ai-agent-for-business-definition-types-sme.html">🇬🇧 EN</a>
+      <a href="../de/was-ist-ein-ki-agent-fuer-unternehmen-definition-typen-kmu.html">🇩🇪 DE</a>
+      <a href="cos-e-un-agente-ai-per-aziende-definizione-tipi-pmi.html" class="active">🇮🇹 IT</a>
+      <a href="../es/que-es-un-agente-ia-para-empresa-definicion-tipos-pymes.html">🇪🇸 ES</a>
+      <a href="../fr/quest-ce-quun-agent-ia-pour-entreprise-definition-types-pme.html">🇫🇷 FR</a>
+      <a href="../ar/ma-huwa-wakil-dhaka-alaistinai-lileamal-tarif-anwaa-tatbiqat.html">🇸🇦 AR</a>
+    </div>
+    <div class="article-tag">Agenti AI</div>
+    <h1 class="article-title">Cos'è un Agente AI per Aziende? Definizione, Tipi e Applicazioni per le PMI</h1>
+    <div class="article-meta">30 giugno 2026 · 8 min di lettura · <a href="../../index.html" style="color:inherit;border:none">Integracje Biznesowe</a></div>
+  </div>
+</header>
+
+<article class="article-body">
+  <div class="container">
+
+    <p>Il tuo cliente invia una richiesta alle 22:30. Tu stai dormendo. L'autorisponditore invia un messaggio generico — il tipo a cui nessuno risponde. Il mattino dopo arriva un nuovo messaggio: „Ho chiamato il tuo concorrente."</p>
+
+    <p>Un <strong>agente AI per aziende</strong> risolve esattamente questo problema — e fa molto di più delle semplici risposte automatiche. Questo articolo spiega cos'è un agente AI, quali tipi esistono e come implementarlo in una piccola o media impresa senza bisogno di un team di sviluppatori.</p>
+
+    <h2>Cos'è un Agente AI — e perché non è solo un altro chatbot?</h2>
+
+    <p>Un agente AI è molto più di un chatbot per le FAQ. È un sistema in grado di <strong>prendere decisioni autonomamente ed eseguire sequenze di azioni</strong> per conto della tua azienda — senza richiedere il tuo intervento a ogni passaggio.</p>
+
+    <h3>Definizione di agente AI nel contesto aziendale</h3>
+    <p>Un <strong>agente AI per aziende</strong> è un programma che:</p>
+    <ul>
+      <li>riceve dati da fonti esterne (modulo, email, CRM, API),</li>
+      <li>analizza il contesto e comprende l'intenzione dietro una richiesta,</li>
+      <li>pianifica un'azione — es. "rispondi, aggiungi al CRM, invia preventivo",</li>
+      <li>esegue quell'azione autonomamente nei sistemi che già utilizzi.</li>
+    </ul>
+    <p>A differenza di un chatbot tradizionale, <strong>un agente AI non parla soltanto — agisce</strong>.</p>
+
+    <h3>Agente AI vs automazione classica</h3>
+    <p>L'automazione classica dei flussi di lavoro (es. in n8n o Make.com) esegue sequenze preprogrammate. Un agente AI va oltre: comprende il contesto, prende decisioni e gestisce situazioni impreviste senza che ogni scenario debba essere definito in anticipo.</p>
+
+    <h2>Tipi di Agenti AI per le PMI</h2>
+
+    <h3>Agente reattivo — risponde solo quando interrogato</h3>
+    <p>Il tipo più semplice. Un cliente o un dipendente avvia il contatto — l'agente risponde usando la base di conoscenza aziendale o i dati CRM. Ideale per la gestione delle FAQ, preventivi preliminari e verifica dello stato degli ordini.</p>
+
+    <h3>Agente proattivo — agisce di propria iniziativa</h3>
+    <ul>
+      <li>Il cliente non ha risposto a un preventivo da 3 giorni → l'agente invia automaticamente un follow-up via email,</li>
+      <li>Nuovo lead nel CRM → l'agente verifica il settore e prepara un messaggio personalizzato.</li>
+    </ul>
+
+    <h3>Agente basato su RAG — risponde dai tuoi documenti</h3>
+    <p>Retrieval-Augmented Generation: l'agente "conosce" i tuoi documenti aziendali — listini, procedure, contratti. Risponde sulla base dei <strong>tuoi file effettivi</strong>, non della conoscenza generale dell'AI. Zero allucinazioni, pieno controllo.</p>
+
+    <div class="callout">
+      <strong>Consiglio pratico:</strong> Se il tuo team risponde continuamente alle stesse domande dei clienti, hai il candidato perfetto per un agente RAG. Carica le tue procedure e il listino prezzi — l'agente farà il resto.
+    </div>
+
+    <h2>Come Funziona un Agente AI in Pratica</h2>
+
+    <h3>Trigger → piano → azione</h3>
+    <ol>
+      <li><strong>Trigger</strong> — nuova richiesta tramite modulo, email o messaggio WhatsApp</li>
+      <li><strong>Percezione</strong> — l'agente elabora l'input e identifica l'intenzione</li>
+      <li><strong>Piano</strong> — l'agente decide cosa fare (es. "chiedi il budget — manca")</li>
+      <li><strong>Azione</strong> — risponde, salva nel CRM, genera documenti, invia notifiche</li>
+    </ol>
+    <p>L'intero ciclo richiede pochi secondi e funziona 24/7, 365 giorni all'anno.</p>
+
+    <h2>Applicazioni degli Agenti AI nelle PMI</h2>
+
+    <h3>Vendite e gestione dei lead</h3>
+    <p>Qualifica i lead, invia automaticamente preventivi dopo l'invio del modulo, monitora le scadenze dei follow-up e ricorda ai commerciali le azioni da compiere.</p>
+
+    <h3>Assistenza clienti 24/7</h3>
+    <ul>
+      <li>Risponde a domande su prezzi, tempi di consegna e procedure di reso,</li>
+      <li>gestisce reclami semplici — escalation a un operatore umano solo quando necessario,</li>
+      <li>invia aggiornamenti sullo stato degli ordini via SMS, email o Telegram.</li>
+    </ul>
+
+    <h3>Amministrazione e documenti</h3>
+    <ul>
+      <li>Genera contratti e preventivi PDF dai dati CRM,</li>
+      <li>verifica partner commerciali (partita IVA, affidabilità creditizia),</li>
+      <li>produce report settimanali automatici per il titolare dell'azienda.</li>
+    </ul>
+
+    <h2>Come Implementare un Agente AI</h2>
+
+    <h3>n8n e Make.com come base</h3>
+    <ul>
+      <li><strong>n8n</strong> — open-source, self-hostable, pieno controllo dei dati,</li>
+      <li><strong>Make.com</strong> — interfaccia visiva intuitiva, avvio rapido,</li>
+      <li><strong>API OpenAI o Anthropic</strong> — il cervello linguistico dell'agente.</li>
+    </ul>
+    <p>Vuoi scoprire cosa è automatizzabile nella tua azienda? <a href="../../index.html#kontakt">Scrivici</a> — analisi gratuita dei processi.</p>
+
+    <h3>Quando hai bisogno di un agente e quando basta l'automazione semplice?</h3>
+    <p>L'automazione semplice è sufficiente quando il processo è ben definito. Un agente AI ha senso quando: il linguaggio naturale deve essere interpretato, è necessaria la comprensione del contesto, o vuoi che il sistema decida autonomamente il passaggio successivo.</p>
+
+    <hr class="divider">
+
+    <h2>Conclusioni</h2>
+    <p>Un <strong>agente AI per aziende</strong> non è più una tecnologia futuristica riservata alle grandi aziende. È uno strumento pratico disponibile per le PMI che opera 24/7, comprende il contesto e si integra con gli strumenti che già utilizzi. Inizia con un processo concreto — idealmente la gestione delle richieste in entrata. Il primo agente può essere operativo in 1–2 giorni lavorativi.</p>
+
+    <div class="cta-box">
+      <h3>Vuoi implementare un agente AI nella tua azienda?</h3>
+      <p>Dicci cosa fa la tua azienda e cosa vuoi automatizzare — analizzeremo i tuoi processi gratuitamente.</p>
+      <a href="../../index.html#kontakt" class="btn-primary">✉️ Scopri cosa si può automatizzare →</a>
+    </div>
+
+    <div class="faq-section">
+      <h2>FAQ</h2>
+      <div class="faq-item">
+        <div class="faq-q">Cos'è un agente AI per aziende?</div>
+        <div class="faq-a">Un agente AI per aziende è un sistema di intelligenza artificiale capace di prendere decisioni autonomamente ed eseguire compiti per conto dell'azienda, senza intervento umano a ogni passaggio. Analizza il contesto, pianifica azioni e le esegue autonomamente in sistemi esterni come CRM, email o strumenti documentali.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Come si differenzia un agente AI da un chatbot?</div>
+        <div class="faq-a">Un chatbot segue script predefiniti per rispondere a domande. Un agente AI comprende il contesto, prende decisioni ed esegue azioni in sistemi esterni — salva nel CRM, genera preventivi, invia email. Un chatbot parla; un agente AI agisce.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Quanto costa implementare un agente AI?</div>
+        <div class="faq-a">Agenti semplici basati su n8n o Make.com con OpenAI API possono essere implementati a partire da 230–580 euro come investimento una tantum. I costi mensili dell'API per una piccola impresa ammontano in genere a poche decine di euro.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Un agente AI può essere implementato senza sviluppatori?</div>
+        <div class="faq-a">Sì. Strumenti come n8n e Make.com permettono di creare agenti AI tramite un editor visivo senza scrivere codice. Scenari più avanzati potrebbero richiedere la configurazione tecnica di un partner specializzato.</div>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-links-sm">
+      <a href="../../index.html">Home</a>
+      <a href="../../blog.html">Blog</a>
+      <a href="../../regulamin.html">Termini</a>
+      <a href="../../polityka-prywatnosci.html">Privacy</a>
+    </div>
+    <div class="footer-cr">© 2026 Integracje Biznesowe</div>
+  </div>
+</footer>
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }));
+</script>
+</body>
+</html>
