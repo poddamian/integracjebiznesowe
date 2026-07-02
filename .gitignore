@@ -1,0 +1,16 @@
+# Tylko assets/ trafia do repozytorium
+.agents/
+.claude/
+02_Workflowy_n8n/
+03_Dokumenty_prawne/
+04_Prototypy_React/
+05_Baza_wiedzy_i_research/
+06_Certyfikaty/
+07_Blog/
+CLAUDE.md
+DOZROBIENIA.md
+STRIPE_WDROZENIE.md
+domeny.txt
+plan-cloudflare-integracjebiznesowe.md
+skills-lock.json
+txt/
