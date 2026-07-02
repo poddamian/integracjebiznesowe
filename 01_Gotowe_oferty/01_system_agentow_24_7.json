@@ -31,7 +31,7 @@
           "values": [
             {
               "role": "system",
-              "content": "Jesteś wirtualnym asystentem firmy. Odpowiadasz na pytania klientów, umawiasz wizyty i informujesz o usługach. Bądź uprzejmy, profesjonalny i zwięzły. Odpowiadaj po polsku.\n\nMożesz:\n1. Odpowiadać na pytania o usługi\n2. Umawiać wizyty (poproś o datę, godzinę, imię)\n3. Podawać cennik\n4. Przekierowywać pilne sprawy do człowieka\n\nJeśli klient chce umówić wizytę, zbierz: imię, telefon, preferowana data i godzina, rodzaj usługi.\nZwróć JSON z polami: intent (info/booking/complaint/human_needed), reply (treść odpowiedzi), booking_data (null lub {name, phone, date, time, service})."
+              "content": "Jesteś wirtualnym asystentem firmy. Odpowiadasz na pytania klientów, umawiasz wizyty i informujesz o usługach. Bądź uprzejmy, profesjonalny i zwięzły. Odpowiadaj po polsku.\n\nMożesz:\n1. Odpowiadać na pytania o usługi\n2. Umawiać wizyty (poproś o datę, godzinę, imię)\n3. Podawać cennik\n4. Przekierowywać pilne sprawy do człowieka\n\nJeśli klient chce umówić wizytę, zbierz: imię, telefon, preferowana data i godzina, rodzaj usługi.\nZwróć JSON z polami: intent (info/booking/complaint/human_needed), reply (treść odpowiedzi dla klienta), booking_data (null lub obiekt {name, phone, date, time, service})."
             },
             {
               "role": "user",
@@ -63,10 +63,16 @@
       "parameters": {
         "conditions": {
           "options": { "caseSensitive": false },
+          "combinator": "and",
           "conditions": [
             {
               "leftValue": "={{ $json.intent }}",
               "rightValue": "booking",
+              "operator": { "type": "string", "operation": "equals" }
+            },
+            {
+              "leftValue": "={{ $json.booking_data !== null && $json.booking_data !== undefined && typeof $json.booking_data === 'object' && !!$json.booking_data.name }}",
+              "rightValue": "true",
               "operator": { "type": "string", "operation": "equals" }
             }
           ]
@@ -82,8 +88,6 @@
       "parameters": {
         "method": "POST",
         "url": "https://api.airtable.com/v0/YOUR_BASE_ID/Wizyty",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
         "sendHeaders": true,
         "headerParameters": {
           "parameters": [
@@ -93,13 +97,59 @@
         },
         "sendBody": true,
         "contentType": "json",
-        "body": "={\n  \"records\": [{\n    \"fields\": {\n      \"Imię\": \"{{ $json.booking_data.name }}\",\n      \"Telefon\": \"{{ $json.from }}\",\n      \"Data\": \"{{ $json.booking_data.date }}\",\n      \"Godzina\": \"{{ $json.booking_data.time }}\",\n      \"Usługa\": \"{{ $json.booking_data.service }}\",\n      \"Status\": \"Nowa\",\n      \"Kanał\": \"{{ $json.channel }}\",\n      \"Data zapisu\": \"{{ $now }}\"\n    }\n  }]\n}"
+        "body": "={{ JSON.stringify({ records: [{ fields: { 'Imię': $json.booking_data ? ($json.booking_data.name || '') : '', 'Telefon': $json.from || '', 'Data': $json.booking_data ? ($json.booking_data.date || '') : '', 'Godzina': $json.booking_data ? ($json.booking_data.time || '') : '', 'Usługa': $json.booking_data ? ($json.booking_data.service || '') : '', 'Status': 'Nowa', 'Kanał': $json.channel || '', 'Data zapisu': new Date().toISOString() } }] }) }}"
       },
       "id": "crm-airtable",
       "name": "Zapisz do CRM (Airtable)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1340, 180]
+      "position": [1340, 160]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "combinator": "or",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "human_needed",
+              "operator": { "type": "string", "operation": "equals" }
+            },
+            {
+              "leftValue": "={{ $json.intent }}",
+              "rightValue": "complaint",
+              "operator": { "type": "string", "operation": "equals" }
+            }
+          ]
+        }
+      },
+      "id": "if-urgent",
+      "name": "Czy pilne?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [1120, 500]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.twilio.com/2010-04-01/Accounts/YOUR_ACCOUNT_SID/Messages.json",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpBasicAuth",
+        "sendBody": true,
+        "contentType": "form-urlencoded",
+        "bodyParameters": {
+          "parameters": [
+            { "name": "From", "value": "+YOUR_TWILIO_SMS_NUMBER" },
+            { "name": "To", "value": "+YOUR_OWNER_PHONE" },
+            { "name": "Body", "value": "={{ '⚠️ ' + ($json.intent === 'complaint' ? 'SKARGA' : 'PILNE') + ' od ' + $json.from + ' [' + $json.channel + ']: ' + ($json.reply || '').substring(0, 120) }}" }
+          ]
+        }
+      },
+      "id": "notify-owner",
+      "name": "Powiadom właściciela (SMS)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1340, 620]
     },
     {
       "parameters": {
@@ -117,7 +167,7 @@
       "name": "WhatsApp czy SMS?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
-      "position": [1340, 420]
+      "position": [1560, 380]
     },
     {
       "parameters": {
@@ -139,7 +189,7 @@
       "name": "Wyślij WhatsApp (Twilio)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1560, 300]
+      "position": [1780, 260]
     },
     {
       "parameters": {
@@ -161,7 +211,7 @@
       "name": "Wyślij SMS (Twilio)",
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.2,
-      "position": [1560, 540]
+      "position": [1780, 500]
     },
     {
       "parameters": {
@@ -172,29 +222,52 @@
       "name": "Odpowiedź Webhook",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1,
-      "position": [1780, 420]
+      "position": [2000, 380]
     }
   ],
   "connections": {
-    "Webhook – WhatsApp / SMS": { "main": [[{ "node": "Parsuj wiadomość", "type": "main", "index": 0 }]] },
-    "Parsuj wiadomość": { "main": [[{ "node": "AI Agent – Decyzja", "type": "main", "index": 0 }]] },
-    "AI Agent – Decyzja": { "main": [[{ "node": "Parsuj odpowiedź AI", "type": "main", "index": 0 }]] },
-    "Parsuj odpowiedź AI": { "main": [[{ "node": "Czy rezerwacja?", "type": "main", "index": 0 }]] },
+    "Webhook – WhatsApp / SMS": {
+      "main": [[{ "node": "Parsuj wiadomość", "type": "main", "index": 0 }]]
+    },
+    "Parsuj wiadomość": {
+      "main": [[{ "node": "AI Agent – Decyzja", "type": "main", "index": 0 }]]
+    },
+    "AI Agent – Decyzja": {
+      "main": [[{ "node": "Parsuj odpowiedź AI", "type": "main", "index": 0 }]]
+    },
+    "Parsuj odpowiedź AI": {
+      "main": [[{ "node": "Czy rezerwacja?", "type": "main", "index": 0 }]]
+    },
     "Czy rezerwacja?": {
       "main": [
         [{ "node": "Zapisz do CRM (Airtable)", "type": "main", "index": 0 }],
+        [{ "node": "Czy pilne?", "type": "main", "index": 0 }]
+      ]
+    },
+    "Zapisz do CRM (Airtable)": {
+      "main": [[{ "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }]]
+    },
+    "Czy pilne?": {
+      "main": [
+        [
+          { "node": "Powiadom właściciela (SMS)", "type": "main", "index": 0 },
+          { "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }
+        ],
         [{ "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }]
       ]
     },
-    "Zapisz do CRM (Airtable)": { "main": [[{ "node": "WhatsApp czy SMS?", "type": "main", "index": 0 }]] },
     "WhatsApp czy SMS?": {
       "main": [
         [{ "node": "Wyślij WhatsApp (Twilio)", "type": "main", "index": 0 }],
         [{ "node": "Wyślij SMS (Twilio)", "type": "main", "index": 0 }]
       ]
     },
-    "Wyślij WhatsApp (Twilio)": { "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]] },
-    "Wyślij SMS (Twilio)": { "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]] }
+    "Wyślij WhatsApp (Twilio)": {
+      "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]]
+    },
+    "Wyślij SMS (Twilio)": {
+      "main": [[{ "node": "Odpowiedź Webhook", "type": "main", "index": 0 }]]
+    }
   },
   "settings": { "executionOrder": "v1" },
   "tags": [{ "name": "agenci-ai" }]
