@@ -1,0 +1,118 @@
+<svg viewBox="0 0 800 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="420" rx="20" fill="#f0f3fa"/>
+  <!-- Background grid -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="limeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c8f135"/>
+      <stop offset="100%" stop-color="#a8d820"/>
+    </linearGradient>
+    <linearGradient id="n8nGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#ea4b71"/>
+      <stop offset="100%" stop-color="#c73b5c"/>
+    </linearGradient>
+    <linearGradient id="makeGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6d4afa"/>
+      <stop offset="100%" stop-color="#5535e0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="420" rx="20" fill="url(#grid)"/>
+
+  <!-- Left card - n8n -->
+  <rect x="40" y="60" width="320" height="300" rx="16" fill="white" stroke="rgba(234,75,113,0.2)" stroke-width="1.5"/>
+  <rect x="40" y="60" width="320" height="8" rx="8" fill="url(#n8nGrad)"/>
+
+  <!-- n8n logo area -->
+  <circle cx="100" cy="140" r="32" fill="#fef0f3" stroke="rgba(234,75,113,0.2)" stroke-width="1.5"/>
+  <text x="100" y="147" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="22" font-weight="800" fill="#ea4b71" text-anchor="middle">n8n</text>
+
+  <text x="155" y="128" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#141623">n8n</text>
+  <text x="155" y="148" font-family="system-ui, sans-serif" font-size="12" fill="#8896b8">Open-source · Self-hosted</text>
+
+  <!-- n8n features -->
+  <g transform="translate(60, 190)">
+    <circle cx="8" cy="8" r="6" fill="#fef0f3"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#ea4b71" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Własny serwer (bezpłatny)</text>
+  </g>
+  <g transform="translate(60, 220)">
+    <circle cx="8" cy="8" r="6" fill="#fef0f3"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#ea4b71" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Pełna kontrola nad danymi</text>
+  </g>
+  <g transform="translate(60, 250)">
+    <circle cx="8" cy="8" r="6" fill="#fef0f3"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#ea4b71" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">400+ integracji, JavaScript</text>
+  </g>
+  <g transform="translate(60, 280)">
+    <circle cx="8" cy="8" r="6" fill="#fef0f3"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#ea4b71" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Nieograniczone wykonania</text>
+  </g>
+  <g transform="translate(60, 310)">
+    <circle cx="8" cy="8" r="6" fill="#fff8e1"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#f59e0b" text-anchor="middle">!</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Wymaga wiedzy technicznej</text>
+  </g>
+
+  <!-- Right card - Make.com -->
+  <rect x="440" y="60" width="320" height="300" rx="16" fill="white" stroke="rgba(109,74,250,0.2)" stroke-width="1.5"/>
+  <rect x="440" y="60" width="320" height="8" rx="8" fill="url(#makeGrad)"/>
+
+  <!-- Make.com logo area -->
+  <circle cx="500" cy="140" r="32" fill="#f5f2ff" stroke="rgba(109,74,250,0.2)" stroke-width="1.5"/>
+  <text x="500" y="147" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="12" font-weight="800" fill="#6d4afa" text-anchor="middle">Make</text>
+
+  <text x="545" y="128" font-family="system-ui, sans-serif" font-size="20" font-weight="700" fill="#141623">Make.com</text>
+  <text x="545" y="148" font-family="system-ui, sans-serif" font-size="12" fill="#8896b8">Cloud · No-code</text>
+
+  <!-- Make.com features -->
+  <g transform="translate(460, 190)">
+    <circle cx="8" cy="8" r="6" fill="#f5f2ff"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#6d4afa" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Intuicyjny interfejs graficzny</text>
+  </g>
+  <g transform="translate(460, 220)">
+    <circle cx="8" cy="8" r="6" fill="#f5f2ff"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#6d4afa" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">1000+ gotowych modułów</text>
+  </g>
+  <g transform="translate(460, 250)">
+    <circle cx="8" cy="8" r="6" fill="#f5f2ff"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#6d4afa" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Szybki start bez VPS</text>
+  </g>
+  <g transform="translate(460, 280)">
+    <circle cx="8" cy="8" r="6" fill="#f5f2ff"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#6d4afa" text-anchor="middle">✓</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Wbudowane narzędzia AI</text>
+  </g>
+  <g transform="translate(460, 310)">
+    <circle cx="8" cy="8" r="6" fill="#fff8e1"/>
+    <text x="8" y="12" font-family="system-ui" font-size="9" fill="#f59e0b" text-anchor="middle">!</text>
+    <text x="24" y="12" font-family="system-ui, sans-serif" font-size="13" fill="#4a5577">Koszty rosną z ilością operacji</text>
+  </g>
+
+  <!-- VS badge in center -->
+  <circle cx="400" cy="210" r="36" fill="url(#limeGrad)" stroke="white" stroke-width="3"/>
+  <text x="400" y="218" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="18" font-weight="800" fill="#141623" text-anchor="middle">VS</text>
+
+  <!-- Bottom labels -->
+  <rect x="60" y="380" width="120" height="26" rx="13" fill="#fef0f3"/>
+  <text x="120" y="398" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#ea4b71" text-anchor="middle">Dla zaawansowanych</text>
+
+  <rect x="220" y="380" width="120" height="26" rx="13" fill="#e8f5e9"/>
+  <text x="280" y="398" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#2e7d32" text-anchor="middle">Self-hosted FREE</text>
+
+  <rect x="460" y="380" width="120" height="26" rx="13" fill="#f5f2ff"/>
+  <text x="520" y="398" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#6d4afa" text-anchor="middle">Dla startujących</text>
+
+  <rect x="600" y="380" width="140" height="26" rx="13" fill="#fff3e0"/>
+  <text x="670" y="398" font-family="system-ui, sans-serif" font-size="12" font-weight="600" fill="#e65100" text-anchor="middle">od 9 USD/mies.</text>
+
+  <!-- Integracje Biznesowe watermark -->
+  <text x="400" y="16" font-family="system-ui, sans-serif" font-size="11" fill="#8896b8" text-anchor="middle">integracjebiznesowe.pl</text>
+</svg>
