@@ -1,0 +1,33 @@
+Oto główne słowo kluczowe do wpisu: “ ”.
+Oto słowa kluczowe drugiego rzędu: “ ”.
+Tytuł wpisu napisz samodzielnie.
+Liczba słów artykułu docelowego: 900–1400.
+Liczba głównych rozdziałów: 6.
+
+Stwórz strukturę / outline wpisu blogowego zgodnego z SEO, AEO i GEO dla usługi wdrażania automatyzacji biznesowych z wykorzystaniem AI oraz narzędzi takich jak n8n, Make.com, integracje API, CRM, formularze, e-mail marketing, arkusze danych, systemy sprzedażowe i obsługa klienta.
+
+Struktura ma zawierać:
+
+H1 – angażujący nagłówek z główną frazą kluczową, użyty tylko 1 raz
+H2 – tytuły głównych rozdziałów
+H3 – nagłówki podrozdziałów pod każdym H2
+Wstęp – emocjonalny, odnoszący się do realnych problemów właścicieli firm, takich jak chaos w procesach, ręczne przepisywanie danych, opóźnienia w obsłudze klienta, brak czasu, rozproszone narzędzia i rosnące koszty pracy
+Sekcja edukacyjna – wyjaśniająca, czym są automatyzacje biznesowe, AI automation, workflow automation, n8n, Make.com i integracje między systemami
+Sekcja inspiracyjna – pokazująca przykłady zastosowań automatyzacji w firmie, np. obsługa leadów, CRM, faktury, e-commerce, raporty, powiadomienia, obsługa klienta, onboarding, marketing
+Sekcja praktyczna – pokazująca, jak wygląda proces wdrożenia automatyzacji krok po kroku
+Sekcja ekspercka – budująca zaufanie, pokazująca podejście strategiczne, bezpieczeństwo danych, skalowalność, optymalizację procesów i dobór odpowiednich narzędzi
+Podsumowanie + CTA – subtelnie zachęcające do kontaktu, konsultacji lub audytu procesów w firmie
+Sekcja FAQ – pytania i odpowiedzi przygotowane pod SEO, AEO i GEO, czyli tak, aby mogły być cytowane przez wyszukiwarki, AI Overviews i modele językowe
+
+Pamiętaj, aby naturalnie wykorzystać wszystkie słowa kluczowe podane wyżej. Jeśli jakiejś frazy nie da się umieścić w głównej treści artykułu, zaplanuj jej użycie w podsumowaniu, FAQ, CTA albo jako tag.
+
+Nie pisz ogólnikowo. Struktura ma być konkretna, biznesowa i dopasowana do firm, które chcą oszczędzać czas, ograniczać błędy, usprawniać procesy i wdrażać automatyzacje bez zatrudniania dużego zespołu IT.
+
+Dodaj także:
+
+* propozycję meta title,
+* meta description,
+* propozycję slug URL,
+* 5–8 tagów blogowych,
+* propozycje linkowania wewnętrznego,
+* krótką listę intencji użytkownika, na które odpowiada artykuł.

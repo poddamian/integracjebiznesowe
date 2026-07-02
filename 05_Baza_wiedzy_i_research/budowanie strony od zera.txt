@@ -1,0 +1,94 @@
+## 1. Przygotowanie projektu (zanim napiszesz pierwszy prompt)
+
+Zanim odpalisz `claude` w terminalu, stwórz w folderze projektu plik **`CLAUDE.md`** — to jest "pamięć" projektu, którą Claude Code automatycznie czyta na starcie.
+
+```
+project/
+  CLAUDE.md          ← brief projektu
+  README.md
+  index.html
+  ...
+```
+
+W `CLAUDE.md` wpisz:
+- czym jest strona (np. "strona-wizytówka dla fotografa ślubnego")
+- grupa docelowa
+- ton komunikacji (formalny / casualowy)
+- stack: czysty HTML/CSS/JS (bez frameworków, bo to działa na GitHub Pages + Cloudflare)
+- konwencje: nazwy plików, struktura folderów (np. `/assets`, `/css`, `/js`, `/images`)
+- czego NIE robić (np. "nie używaj jQuery", "nie zmieniaj struktury folderów bez pytania")
+
+To rozwiązuje punkt z maila "żeby Claude Code nie zgadywał".
+
+## 2. Kontekst projektu — brief i notatki
+
+Stwórz dodatkowo plik **`BRIEF.md`** lub sekcję w CLAUDE.md z:
+- listą podstron/sekcji (np. Hero, O mnie, Usługi, Portfolio, Kontakt)
+- treściami (albo placeholderami do uzupełnienia)
+- referencjami wizualnymi (linki do stron, które Ci się podobają — kolorystyka, styl)
+- danymi firmowymi (NIP, adres, social media — do stopki/SEO)
+
+To jest dokument, do którego wracasz przy każdej nowej sesji z Claude Code.
+
+## 3. Struktura strony — od pomysłu do sekcji
+
+Proces:
+1. Wypisz w punktach sekcje strony (np. Hero → Problem/Oferta → Social proof → CTA → Footer)
+2. Dla każdej sekcji napisz 1-2 zdania "co ma robić" (cel, nie wygląd)
+3. Poproś Claude Code: *"Na podstawie BRIEF.md zaproponuj strukturę sekcji w index.html z komentarzami, bez stylowania"*
+
+Najpierw szkielet HTML z komentarzami `<!-- Hero section -->`, dopiero potem styling.
+
+## 4. Budowanie pierwszej wersji z kontrolą
+
+- Buduj **sekcja po sekcji**, nie cały plik na raz jednym promptem
+- Po każdej sekcji: zatwierdź w git (patrz pkt 7) zanim przejdziesz dalej
+- Trzymaj CSS w osobnym pliku od początku (`styles.css`), nie inline
+
+## 5. Wygląd bez "AI slopu"
+
+To częsty problem — strony robione z AI mają charakterystyczny, generyczny wygląd (fiolet-niebieski gradient, te same fonty, te same karty z cieniem). Jak tego uniknąć:
+
+- **Fonty**: nie używaj domyślnych propozycji Claude (Inter + system-ui w kółko). Wybierz 1-2 fonty z Google Fonts świadomie, sprawdź na fontpair.co
+- **Kolory**: zdefiniuj paletę ZANIM zaczniesz kodować (3-4 kolory max), wpisz do CLAUDE.md jako zmienne CSS (`--color-primary` itd.)
+- **Spacing**: ustal jedną skalę odstępów (np. 8px, 16px, 24px, 48px, 96px) i trzymaj się jej konsekwentnie
+- **Unikaj domyślnych komponentów AI**: gradient tła hero, zaokrąglone karty 16px z `box-shadow: 0 4px 6px rgba(0,0,0,0.1)` — to sygnatura AI-slopu, świadomie poproś o coś innego
+- Warto rzucić okiem na `/mnt/skills/public/frontend-design` — to są zasady projektowe, które stosuję przy budowie UI, mogę z nich wyciągnąć konkretne wskazówki, jeśli chcesz
+
+## 6. Poprawki bez psucia tego, co działa
+
+To jest serce "bezpiecznego workflowu":
+
+- **Zawsze** pracuj na branchu, nie na `main` (patrz pkt 7)
+- Przy każdej poprawce mów Claude Code dokładnie co ma się zmienić, a nie "popraw stronę"
+- Po zmianie: sprawdź `git diff` zanim zatwierdzisz — zobacz CO faktycznie się zmieniło
+- Jeśli coś się zepsuje: `git checkout -- plik` (cofa niezatwierdzone zmiany) albo `git revert` (cofa commit)
+
+## 7. GitHub i bezpieczny proces zmian
+
+Skoro już masz repo, dodaj nawyk:
+
+```bash
+git checkout -b nazwa-funkcjonalnosci   # nowy branch na zmianę
+# pracujesz z Claude Code
+git add .
+git commit -m "opis zmiany"
+git checkout main
+git merge nazwa-funkcjonalnosci          # łączysz, gdy działa
+git push
+```
+
+Dzięki temu `main` jest zawsze "bezpieczną, działającą wersją", a eksperymenty robisz na boku.
+
+## 8. Publikacja — checklista finalna
+
+Masz już hosting (GitHub Pages/Cloudflare), więc sprawdź:
+
+- **Domena**: podłączona w Cloudflare DNS (CNAME/A record do GitHub Pages)
+- **HTTPS**: wymuszony (Cloudflare robi to automatycznie)
+- **SEO podstawowe**: meta title, meta description, favicon, Open Graph tags (do podglądu w social media)
+- **Analytics**: Cloudflare Web Analytics (darmowe, bez cookies) albo Plausible/GA4
+- **Responsywność**: testuj w DevTools (Ctrl+Shift+M) na 3 szerokościach: mobile (375px), tablet (768px), desktop
+- **Performance**: PageSpeed Insights — sprawdź czy obrazy są zoptymalizowane (WebP, lazy loading)
+- **robots.txt + sitemap.xml** — podstawa pod indeksowanie w Google
+

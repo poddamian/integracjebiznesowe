@@ -1,0 +1,25 @@
+Strony developerskie, takie jak developers.openai.com, są projektowane z myślą o maksymalnej przejrzystości, dostępności dokumentacji technicznej i szybkiej integracji API. Ich budowa opiera się na nowoczesnych technologiach frontendowych (tzw. Jamstack) oraz dedykowanych rozwiązaniach dla dokumentacji.
+Oto kluczowe elementy ich struktury:
+1. Architektura Jamstack (JavaScript, API, Markup)
+Generatory stron statycznych (SSG): Strony te są często budowane przy użyciu frameworków takich jak Next.js (oparty na React), Gatsby lub Hugo. Dzięki temu są niesamowicie szybkie, bezpieczne i łatwe do indeksowania przez wyszukiwarki.
+Treść w Markdown: Dokumentacja techniczna jest zazwyczaj pisana w plikach Markdown (.md lub .mdx), co ułatwia zarządzanie wersjami (np. przez Git) i szybkie aktualizowanie poradników bez konieczności ingerencji w kod strony.
+CDN (Content Delivery Network): Treści są serwowane z globalnych sieci serwerów, co gwarantuje niskie opóźnienia dla programistów z całego świata. 
+OpenAI Developers
+OpenAI Developers
+ +2
+2. Elementy interfejsu (UI) i funkcjonalność
+Struktura nawigacji: Zazwyczaj składa się z trzech kolumn: boczny panel z menu dokumentacji, centralna część z treścią oraz prawy panel z nawigacją wewnątrz strony (spis treści).
+Interaktywna dokumentacja API: Przykłady kodu (w Python, JavaScript, cURL) są często interaktywne. Programista może testować zapytania API bezpośrednio na stronie.
+Wyszukiwarka: Kluczowy element strony deweloperskiej. Szybka, inteligentna wyszukiwarka (np. Algolia), pozwalająca błyskawicznie znaleźć endpoint, poradnik lub kod błędu.
+Przełączniki wersji: Obsługa wersji API (np. v1, v2), co pozwala programistom sprawdzać dokumentację dla starszych wersji aplikacji. 
+OpenAI Developers
+OpenAI Developers
+ +3
+3. Komponenty techniczne
+Code Highlighting: Specjalne formatowanie bloków kodu, ułatwiające ich czytanie i kopiowanie.
+OpenAPI/Swagger: Dokumentacja API jest często generowana automatycznie na podstawie definicji OpenAPI, co gwarantuje, że przykłady są zawsze aktualne.
+Tryb ciemny/jasny: Standardowy element nowoczesnych stron IT, zwiększający komfort pracy programistów. 
+OpenAI Developers
+OpenAI Developers
+Strony te (np. OpenAI Developers) stawiają na "developer experience" (DX), czyli łatwość, z jaką deweloper może zrozumieć dokumentację i wdrożyć rozwiązanie
+
