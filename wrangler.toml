@@ -1,6 +1,5 @@
 name = "integracjebiznesowe"
 compatibility_date = "2026-06-27"
-compatibility_flags = ["nodejs_compat"]
 
 [assets]
 directory = "./assets"
