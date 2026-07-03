@@ -70,6 +70,17 @@ nav{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,0.
 
 /* TIMELINE */
 .timeline{margin-bottom:36px}
+.costs-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--rsm);margin-bottom:14px}
+.costs-table{width:100%;border-collapse:collapse;font-size:13.5px;background:var(--surface)}
+.costs-table th{text-align:left;padding:12px 14px;color:var(--text2);font-weight:700;border-bottom:1px solid var(--border);white-space:nowrap}
+.costs-table td{padding:11px 14px;border-bottom:1px solid var(--border);color:var(--text2);vertical-align:top}
+.costs-table td:first-child{color:var(--text3)}
+.costs-table tr:last-child td{border-bottom:none}
+.costs-table tr.costs-total td{font-weight:800;color:var(--lime);background:rgba(200,241,53,.05)}
+.costs-table tr.costs-total td:first-child{color:var(--text2)}
+.costs-notes{list-style:none;padding:0;margin:0 0 36px}
+.costs-notes li{font-size:12.5px;color:var(--text3);line-height:1.6;padding-left:16px;position:relative;margin-bottom:5px}
+.costs-notes li::before{content:'·';position:absolute;left:4px;color:var(--lime);font-weight:900}
 .tl-item{display:flex;gap:16px;padding-bottom:24px;position:relative}
 .tl-item:not(:last-child)::after{content:'';position:absolute;left:15px;top:32px;bottom:0;width:2px;background:var(--border2)}
 .tl-num{width:32px;height:32px;border-radius:50%;background:var(--lime-dim);border:2px solid var(--lime-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--fd);font-size:12px;font-weight:700;color:var(--lime-text)}
@@ -170,6 +181,12 @@ nav{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,0.
         <h2 class="section-title">Stack techniczny</h2>
         <div class="tech-row" id="svcStack"></div>
 
+        <div id="svcCostsSection" style="display:none">
+          <h2 class="section-title">Koszty miesięczne utrzymania</h2>
+          <div class="costs-wrap"><table class="costs-table" id="svcCostsTable"></table></div>
+          <ul class="costs-notes" id="svcCostsNotes"></ul>
+        </div>
+
         <p style="font-size:13px;color:var(--text3);line-height:1.6;padding:16px;background:var(--surface);border-radius:var(--rsm);border:1px solid var(--border)">
           <strong style="color:var(--text2)">Zadatek 30%</strong> uruchamia prace. Pozostałe <strong style="color:var(--text2)">70%</strong> płacisz po odbiorze i zatwierdzeniu wdrożenia. Brak ukrytych kosztów.
         </p>
@@ -234,6 +251,24 @@ var SERVICES = {
       { num: '04', title: 'Odbiór i dokumentacja', desc: 'Protokół odbioru, instrukcja, 30-dniowy support start', time: 'dzień 9–14' },
     ],
     stack: ['n8n (self-hosted)', 'OpenAI GPT-4o', 'Twilio WhatsApp', 'Twilio SMS', 'Airtable CRM', 'Google Calendar'],
+    monthlyCosts: {
+      scenarios: ['Mały ruch (~300 wiad./mies.)', 'Większy ruch (~2000 wiad./mies.)'],
+      rows: [
+        { name: 'Hosting n8n (VPS)', low: '20–40 zł', high: '40–80 zł' },
+        { name: 'OpenAI GPT-4o (~1,5 gr / wiadomość)', low: '5–15 zł', high: '30–80 zł' },
+        { name: 'Numer telefonu Twilio', low: '10–30 zł', high: '10–30 zł' },
+        { name: 'WhatsApp (odpowiedzi w oknie 24h — bez opłat Meta)', low: '5–10 zł', high: '20–40 zł' },
+        { name: 'SMS wychodzące (~0,25–0,35 zł/szt., w tym alerty)', low: '10–30 zł', high: '50–150 zł' },
+        { name: 'Airtable CRM (plan Free do 1000 rekordów)', low: '0 zł', high: '0–85 zł' },
+        { name: 'Google Calendar', low: '0 zł', high: '0 zł' },
+      ],
+      total: ['~50–120 zł/mies.', '~150–400 zł/mies.'],
+      notes: [
+        'Największa zmienna to SMS — jeśli klienci piszą głównie na WhatsApp, koszty wyraźnie spadają.',
+        'Zamiana GPT-4o na GPT-4o-mini obniża koszt AI ok. 15-krotnie (do groszy miesięcznie) kosztem jakości rozmowy.',
+        'Kwoty orientacyjne wg cenników dostawców (kurs ~4 zł/USD); nie obejmują wdrożenia ani abonamentu serwisowego.',
+      ],
+    },
     stripeLink: 'STRIPE_LINK_AGENT_24_7',
   },
   'audytor-stron': {
@@ -435,6 +470,25 @@ var SERVICES = {
     span.textContent = tag;
     sr.appendChild(span);
   });
+
+  /* Monthly costs */
+  if (svc.monthlyCosts) {
+    var mc = svc.monthlyCosts;
+    var table = document.getElementById('svcCostsTable');
+    var html = '<thead><tr><th>Pozycja</th><th>' + mc.scenarios[0] + '</th><th>' + mc.scenarios[1] + '</th></tr></thead><tbody>';
+    mc.rows.forEach(function(row) {
+      html += '<tr><td>' + row.name + '</td><td>' + row.low + '</td><td>' + row.high + '</td></tr>';
+    });
+    html += '<tr class="costs-total"><td>Razem (orientacyjnie)</td><td>' + mc.total[0] + '</td><td>' + mc.total[1] + '</td></tr></tbody>';
+    table.innerHTML = html;
+    var notesUl = document.getElementById('svcCostsNotes');
+    mc.notes.forEach(function(note) {
+      var li = document.createElement('li');
+      li.textContent = note;
+      notesUl.appendChild(li);
+    });
+    document.getElementById('svcCostsSection').style.display = 'block';
+  }
 
   /* Pay buttons */
   var stripeBtn = document.getElementById('payBtnStripe');
