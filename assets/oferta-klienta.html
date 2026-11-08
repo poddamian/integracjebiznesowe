@@ -230,6 +230,7 @@ nav{position:sticky;top:0;z-index:100;height:64px;background:rgba(255,255,255,0.
 /* ── SERVICES DATA ── */
 var SERVICES = {
   'agent-24-7': {
+    hidden: true, // ponytail: tymczasowo ukryta — usuń tę linię, żeby przywrócić
     emoji: '💬',
     name: 'System Agentów 24/7',
     flagowy: true,
@@ -319,26 +320,41 @@ var SERVICES = {
     emoji: '📑',
     name: 'KSeF — Faktury Kosztowe',
     flagowy: true,
-    desc: 'Zaciąga faktury z państwowego Krajowego Systemu e-Faktur, sprawdza je pod kątem ryzyka — Biała Lista VAT, duplikaty, nietypowe kwoty. Nadaje kolor: zielony / żółty / czerwony. Zgodne z obowiązkowymi wymogami KSeF dla firm w Polsce.',
+    desc: 'Co 6 godzin pobiera nowe faktury zakupowe z Krajowego Systemu e-Faktur (API 2.0), sprawdza każdego sprzedawcę na Białej Liście VAT i nadaje fakturze kolor ryzyka: zielony / żółty / czerwony. Dostajesz e-mail z podsumowaniem i plikiem CSV gotowym do Excela lub importu do programu księgowego.',
     priceMin: 4000, priceMax: 6000,
     includes: [
-      { text: 'Integracja z API KSeF MF (środowisko testowe + produkcyjne)', note: 'wymaga certyfikatu kwalifikowanego lub tokenu API MF' },
-      { text: 'Automatyczne pobieranie faktur kosztowych z KSeF' },
-      { text: 'Weryfikacja kontrahenta na Białej Liście VAT (API MF)' },
-      { text: 'Detekcja duplikatów i anomalii kwotowych' },
-      { text: 'Kolor ryzyka: zielony (OK) / żółty (uwaga) / czerwony (blokuj)' },
-      { text: 'Zapis do Google Sheets: NIP, kwoty, stawka VAT, status ryzyka' },
-      { text: 'Alert na Slack / Telegram dla faktur z ryzykiem' },
-      { text: '30 dni wsparcia powdrożeniowego' },
+      { text: 'Integracja z KSeF API 2.0 — najpierw środowisko testowe, potem produkcja', note: 'logowanie tokenem KSeF z uprawnieniem do odczytu faktur (generujesz go w Aplikacji Podatnika KSeF)' },
+      { text: 'Automatyczne pobieranie faktur kosztowych co 6 godzin', note: 'tylko nowe faktury — bez dubli między uruchomieniami' },
+      { text: 'Weryfikacja każdego sprzedawcy na Białej Liście VAT (API MF): status VAT, wykreślenia, rachunki bankowe' },
+      { text: 'Ocena ryzyka z powodem: 🟢 OK / 🟡 do sprawdzenia / 🔴 krytyczne', note: 'w tym alert dla kwot powyżej progu (domyślnie 15 000 zł) i możliwych duplikatów' },
+      { text: 'Plik CSV dla księgowości — otwiera się w Excelu i LibreOffice, nadaje się do importu do ERP', note: 'nr KSeF, sprzedawca, NIP, nr faktury, data, netto, VAT, brutto, waluta, ocena ryzyka' },
+      { text: 'Zapis pliku na serwerze lub na Twoim NAS / serwerze plików (SFTP)' },
+      { text: 'E-mail z podsumowaniem, tabelą faktur wymagających uwagi i załączonym CSV', note: 'opcjonalnie tylko wtedy, gdy jest coś do sprawdzenia' },
+      { text: 'Dokumentacja konfiguracji + 30 dni wsparcia powdrożeniowego' },
     ],
     timeline: [
-      { num: '01', title: 'Autoryzacja KSeF', desc: 'Konfiguracja certyfikatu / tokenu API MF, testy na środowisku testowym', time: 'dzień 1–3' },
-      { num: '02', title: 'Integracja i pobieranie', desc: 'Workflow pobierający faktury, parsowanie XML', time: 'dzień 4–7' },
-      { num: '03', title: 'Logika ryzyka', desc: 'Biała Lista, duplikaty, anomalie kwotowe, routing kolorów', time: 'dzień 8–12' },
-      { num: '04', title: 'Google Sheets + alerty', desc: 'Arkusz z wynikami, Slack / Telegram powiadomienia', time: 'dzień 13–16' },
-      { num: '05', title: 'Odbiór i dokumentacja', desc: 'Testy z realnymi fakturami, protokół odbioru', time: 'dzień 17–21' },
+      { num: '01', title: 'Token KSeF i konfiguracja', desc: 'Generujesz token, ja ustawiam NIP, próg kwotowy i odbiorców e-maili', time: 'dzień 1–2' },
+      { num: '02', title: 'Testy na środowisku testowym KSeF', desc: 'Logowanie, pobieranie faktur, Biała Lista, ocena ryzyka', time: 'dzień 3–5' },
+      { num: '03', title: 'Plik CSV i e-mail', desc: 'Format pod Twój Excel / program księgowy, zapis na dysk lub NAS', time: 'dzień 6–8' },
+      { num: '04', title: 'Produkcja i odbiór', desc: 'Pierwsze realne faktury, protokół odbioru, start 30-dniowego wsparcia', time: 'dzień 9–14' },
     ],
-    stack: ['n8n (self-hosted)', 'KSeF API MF', 'Biała Lista VAT API', 'Google Sheets', 'Slack / Telegram'],
+    stack: ['n8n (self-hosted)', 'KSeF API 2.0 (MF)', 'Biała Lista VAT API (MF)', 'CSV (Excel / ERP)', 'E-mail SMTP', 'SFTP / NAS'],
+    monthlyCosts: {
+      scenarios: ['Mała firma (~50 faktur/mies.)', 'Większa firma (~1000 faktur/mies.)'],
+      rows: [
+        { name: 'Hosting n8n (VPS)', low: '20–40 zł', high: '40–80 zł' },
+        { name: 'KSeF API (MF)', low: '0 zł', high: '0 zł' },
+        { name: 'Biała Lista VAT API (MF)', low: '0 zł', high: '0 zł' },
+        { name: 'E-mail SMTP (istniejąca skrzynka firmowa)', low: '0 zł', high: '0 zł' },
+        { name: 'SFTP / NAS (opcjonalnie, własny serwer)', low: '0 zł', high: '0 zł' },
+      ],
+      total: ['~20–40 zł/mies.', '~40–80 zł/mies.'],
+      notes: [
+        'Brak kosztów AI i SMS — workflow korzysta wyłącznie z bezpłatnych API Ministerstwa Finansów.',
+        'Jeśli masz już serwer z n8n, koszt utrzymania jest praktycznie zerowy.',
+        'Kwoty orientacyjne; nie obejmują wdrożenia ani abonamentu serwisowego.',
+      ],
+    },
     stripeLink: 'STRIPE_LINK_KSEF',
   },
   'weryfikacja-nip': {
@@ -418,6 +434,11 @@ var SERVICES = {
   var params = new URLSearchParams(window.location.search);
   var serviceKey = params.get('service');
   var svc = serviceKey ? SERVICES[serviceKey] : null;
+
+  if (svc && svc.hidden) {
+    window.location.replace('index.html');
+    return;
+  }
 
   if (!svc) {
     document.getElementById('notFound').style.display = 'block';

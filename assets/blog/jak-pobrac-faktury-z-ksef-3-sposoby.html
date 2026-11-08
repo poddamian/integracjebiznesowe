@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Jak pobrać faktury zakupowe z KSeF? Trzy sposoby: ręcznie w Aplikacji Podatnika KSeF 2.0, przez program księgowy z integracją albo automatycznie przez API KSeF. Plusy, minusy i instrukcja.">
+<meta name="keywords" content="jak pobrać faktury z ksef, pobieranie faktur z ksef, ksef pobieranie faktur, jak odbierać faktury z ksef, ksef faktury zakupowe, ksef api">
+<meta property="og:title" content="Jak pobrać faktury z KSeF – 3 sposoby">
+<meta property="og:description" content="Ręcznie w Aplikacji Podatnika, przez program księgowy albo automatycznie przez API KSeF 2.0. Który sposób wybrać i jak to zrobić.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby.html">
+<link rel="canonical" href="https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Jak pobrać faktury z KSeF – 3 sposoby",
+  "description": "Trzy sposoby pobierania faktur zakupowych z KSeF: Aplikacja Podatnika KSeF 2.0, program księgowy z integracją i automatyczne pobieranie przez API KSeF.",
+  "datePublished": "2026-11-08",
+  "dateModified": "2026-11-08",
+  "author": {"@type": "Person", "name": "Integracje Biznesowe"},
+  "publisher": {"@type": "Organization", "name": "Integracje Biznesowe"},
+  "mainEntityOfPage": "https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby.html",
+  "keywords": "jak pobrać faktury z ksef, pobieranie faktur z ksef, ksef faktury zakupowe, ksef api",
+  "inLanguage": "pl-PL"
+}
+</script>
+<title>Jak pobrać faktury z KSeF – 3 sposoby | Integracje Biznesowe</title>
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f4f6fb;--surface:#f0f3fa;--surface2:#e8edf7;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.13);
+  --lime:#c8f135;--lime-dim:rgba(200,241,53,0.28);--lime-text:#4d6a00;
+  --text:#141623;--text2:#4a5577;--text3:#8896b8;
+  --radius:14px;--radius-sm:8px;--radius-lg:20px;
+  --font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg2);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:80px 80px;-webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent);mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent)}
+section{position:relative;z-index:1}
+.container{max-width:760px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1000px)/2));transition:background .3s}
+nav.scrolled{background:rgba(255,255,255,.98)}
+.nav-logo{font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}
+.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-logo span{color:var(--lime-text)}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all .2s}
+.nav-link:hover{color:var(--text);background:var(--surface2)}
+.btn-nav{background:var(--lime);color:#141623;border:none;border-radius:var(--radius-sm);padding:10px 22px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;margin-left:auto;white-space:nowrap}
+.btn-nav:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(200,241,53,.3)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:999;padding:32px 24px;flex-direction:column;gap:8px}
+.mobile-menu.open{display:flex}
+.mobile-link{color:var(--text2);text-decoration:none;font-size:17px;font-weight:500;padding:12px 16px;border-radius:var(--radius);transition:all .2s}
+.mobile-link:hover{color:var(--text);background:var(--surface2)}
+@media(max-width:760px){.nav-links{display:none}.hamburger{display:flex}.btn-nav{display:none}}
+.article-header{padding:150px 0 40px;background:var(--bg);position:relative;z-index:1}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--text2);text-decoration:none;font-size:13px;font-weight:600;margin-bottom:28px;transition:color .2s}
+.back-link:hover{color:var(--lime-text)}
+.article-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:20px}
+.article-title{font-family:var(--font-display);font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:18px;color:var(--text)}
+.article-meta{font-size:13px;color:var(--text3)}
+article.article-body{background:var(--bg);position:relative;z-index:1}
+.article-body{padding:40px 0 80px;font-size:16px;line-height:1.85;color:var(--text2)}
+.article-body h2{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--text);letter-spacing:-.01em;margin:48px 0 18px}
+.article-body h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--text);margin:32px 0 12px}
+.article-body p{margin-bottom:18px}
+.article-body ul,.article-body ol{margin:0 0 18px 22px}
+.article-body li{margin-bottom:8px}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body a{color:var(--lime-text);text-decoration:none;border-bottom:1px solid rgba(77,106,0,.3)}
+.article-body a:hover{border-color:var(--lime-text)}
+.article-body a.btn-primary{border-bottom:none}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:var(--radius);padding:20px 24px;margin:28px 0;font-size:15px}
+.callout strong{color:var(--lime-text)}
+.divider{border:none;border-top:1px solid var(--border);margin:40px 0}
+.faq-section{margin-top:48px}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:12px;background:var(--bg)}
+.faq-q{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text);margin-bottom:10px}
+.faq-a{font-size:15px;color:var(--text2);line-height:1.75}
+.cta-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;text-align:center;margin-top:20px}
+.cta-box h3{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--text);margin-bottom:10px}
+.cta-box p{color:var(--text2);font-size:14px;margin-bottom:22px}
+.btn-primary{background:var(--lime);color:#141623;border:none;border-radius:var(--radius);padding:14px 28px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,241,53,.3)}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;position:relative;z-index:1}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:0 24px}
+.footer-logo-sm{font-family:var(--font-display);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px;color:var(--text)}
+.footer-logo-sm span{color:var(--lime-text)}
+.footer-links-sm{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
+.footer-links-sm a:hover{color:var(--lime-text)}
+.footer-cr{font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<nav id="navbar">
+  <a href="../index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+  <div class="nav-links">
+    <a href="../index.html#usługi" class="nav-link">Usługi</a>
+    <a href="../index.html#jak-dziala" class="nav-link">Jak działam</a>
+    <a href="../blog.html" class="nav-link">Blog</a>
+    <a href="../index.html#kontakt" class="nav-link">Kontakt</a>
+  </div>
+  <a href="../index.html#kontakt" class="btn-nav">Napisz do mnie</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../index.html#usługi" class="mobile-link">Usługi</a>
+  <a href="../index.html#jak-dziala" class="mobile-link">Jak działam</a>
+  <a href="../blog.html" class="mobile-link">Blog</a>
+  <a href="../index.html#kontakt" class="mobile-link">Kontakt</a>
+</div>
+
+<header class="article-header">
+  <div class="container">
+    <a href="../blog.html" class="back-link">← Wróć do bloga</a>
+    <div class="article-tag">KSeF</div>
+    <h1 class="article-title">Jak pobrać faktury z KSeF – 3 sposoby</h1>
+    <div class="article-meta">8 listopada 2026 · 7 min czytania · <a href="../index.html" style="color:inherit;border:none">Integracje Biznesowe</a></div>
+  </div>
+</header>
+
+<article class="article-body">
+  <div class="container">
+
+    <p>Od 1 lutego 2026 każda firma w Polsce odbiera faktury od krajowych kontrahentów przez Krajowy System e-Faktur. Obowiązek wystawiania faktur w KSeF wchodził etapami: od 1 lutego 2026 dla największych firm, od 1 kwietnia 2026 dla pozostałych, a od 1 stycznia 2027 obejmie najmniejszych podatników (sprzedaż do 10 000 zł brutto miesięcznie). Faktury już tam są – pytanie tylko, jak je stamtąd wyciągnąć.</p>
+
+    <p>Poniżej trzy sposoby na <strong>pobieranie faktur z KSeF</strong>, od najprostszego do najbardziej zautomatyzowanego.</p>
+
+    <h2>Gdzie są faktury w KSeF</h2>
+
+    <p>W KSeF każda faktura ma dwie strony: sprzedawcę i nabywcę. <strong>Faktury zakupowe (kosztowe)</strong> to te, w których Twoja firma występuje jako nabywca. W interfejsie API Ministerstwa Finansów ta rola nazywa się <em>Subject2</em>.</p>
+
+    <p>Faktura w KSeF to plik <strong>XML</strong> – i to on ma moc prawną. PDF to tylko wizualizacja danych z XML-a, wygodna do czytania i drukowania. Każda faktura dostaje też <strong>numer KSeF</strong>, nadawany automatycznie w chwili przyjęcia do systemu. Faktura jest uznana za otrzymaną właśnie w dniu nadania tego numeru – niezależnie od tego, kiedy ją pobierzesz.</p>
+
+    <div class="callout">
+      <strong>W skrócie:</strong> faktury nie przychodzą same na Twój e-mail. Leżą w KSeF i trzeba je pobrać – ręcznie, przez program albo automatycznie przez API.
+    </div>
+
+    <h2>Sposób 1: ręcznie w Aplikacji Podatnika KSeF 2.0</h2>
+
+    <p>Aplikacja Podatnika KSeF 2.0 to bezpłatna aplikacja Ministerstwa Finansów dostępna pod adresem <strong>ap.ksef.mf.gov.pl</strong>. Nie trzeba niczego instalować.</p>
+
+    <ol>
+      <li><strong>Zaloguj się</strong> – przez login.gov.pl (Profil Zaufany, e-dowód, bankowość), podpisem lub pieczęcią kwalifikowaną.</li>
+      <li>Przejdź do <strong>listy faktur</strong>.</li>
+      <li>Ustaw filtry: <strong>faktury zakupowe</strong> (te, w których jesteś nabywcą) i <strong>zakres dat</strong>.</li>
+      <li>Zaznacz faktury i użyj przycisku pobierania.</li>
+      <li>Wybierz format: <strong>XML</strong> (do programu księgowego i archiwum) albo <strong>PDF</strong> (do podglądu i wydruku).</li>
+    </ol>
+
+    <p><strong>Plusy:</strong> darmowe, działa od razu, nie wymaga żadnej integracji.<br>
+    <strong>Minusy:</strong> trzeba pamiętać o logowaniu, ręcznie przekazywać pliki księgowej, a przy kilkudziesięciu fakturach miesięcznie zajmuje to sporo czasu. Aplikacja nie sprawdza też kontrahenta na Białej Liście VAT.</p>
+
+    <h2>Sposób 2: przez program księgowy, do fakturowania albo bank</h2>
+
+    <p>Większość programów do fakturowania i księgowości, a także część bankowości firmowych, ma wbudowaną integrację z KSeF. Konfigurujesz ją raz – zwykle podając token KSeF albo wgrywając certyfikat KSeF – a program sam pobiera faktury zakupowe, najczęściej raz na dobę.</p>
+
+    <ol>
+      <li>Wygeneruj token KSeF z uprawnieniem do przeglądania faktur (instrukcja: <a href="jak-wygenerowac-token-ksef-krok-po-kroku.html">jak wygenerować token KSeF krok po kroku</a>).</li>
+      <li>Wklej go w ustawieniach integracji KSeF w swoim programie.</li>
+      <li>Włącz automatyczne pobieranie faktur kosztowych, jeśli program ma taką opcję.</li>
+    </ol>
+
+    <p><strong>Plusy:</strong> faktury trafiają od razu tam, gdzie je księgujesz.<br>
+    <strong>Minusy:</strong> działa tylko w ramach tego jednego programu, często w wyższym pakiecie. Jeśli faktury mają trafić do kilku miejsc (np. do księgowej, działu zakupów i arkusza budżetu) albo chcesz własnych reguł kontroli, program zwykle tego nie zrobi.</p>
+
+    <h2>Sposób 3: automatycznie przez API KSeF 2.0</h2>
+
+    <p>KSeF udostępnia publiczne API, z którego korzystają też programy księgowe. Możesz podłączyć się do niego bezpośrednio – na przykład przez narzędzie do automatyzacji <strong>n8n</strong> – i samodzielnie zdecydować, co dzieje się z każdą fakturą.</p>
+
+    <h3>Jak to wygląda technicznie</h3>
+    <ol>
+      <li><strong>Uwierzytelnienie:</strong> pobranie klucza publicznego MF, zaszyfrowanie tokena KSeF, a następnie wymiana go na krótkotrwały token dostępowy.</li>
+      <li><strong>Zapytanie o metadane faktur</strong>, w których firma jest nabywcą (Subject2), od daty ostatniego pobrania. Odpowiedź zawiera numer KSeF, sprzedawcę, NIP, daty i kwoty.</li>
+      <li><strong>Opcjonalnie pobranie XML</strong> konkretnych faktur po numerze KSeF, jeśli potrzebne są pozycje i stawki VAT.</li>
+      <li><strong>Dalsza obróbka:</strong> weryfikacja sprzedawcy na Białej Liście VAT, plik CSV, e-mail, arkusz, zapis na serwer plików.</li>
+    </ol>
+
+    <p>Integrację najpierw testuje się na <strong>środowisku testowym KSeF</strong> (api-test.ksef.mf.gov.pl), a dopiero potem przełącza na produkcję. Token z jednego środowiska nie działa w drugim.</p>
+
+    <p><strong>Plusy:</strong> pełna kontrola – faktury trafiają tam, gdzie chcesz, z Twoimi regułami, kilka razy dziennie i bez logowania.<br>
+    <strong>Minusy:</strong> trzeba to zbudować i utrzymać. Samo uwierzytelnienie w API 2.0 wymaga szyfrowania RSA, więc nie jest to integracja „na kliknięcie”.</p>
+
+    <h2>Który sposób wybrać</h2>
+    <ul>
+      <li><strong>Kilka faktur miesięcznie</strong> – Aplikacja Podatnika w zupełności wystarczy.</li>
+      <li><strong>Księgujesz w programie z integracją KSeF</strong> – włącz automatyczne pobieranie w programie.</li>
+      <li><strong>Dużo faktur, kilka miejsc docelowych albo chcesz od razu kontrolować kontrahentów</strong> – automatyczne pobieranie przez API.</li>
+    </ul>
+
+    <hr class="divider">
+
+    <h2>Podsumowanie</h2>
+    <p>Faktury zakupowe w KSeF możesz pobierać ręcznie w Aplikacji Podatnika, przez program księgowy albo automatycznie przez API KSeF 2.0. Im więcej faktur i im więcej osób ma je dostać, tym bardziej opłaca się automatyzacja. Gotowe wdrożenie, które co 6 godzin pobiera faktury, sprawdza sprzedawców na Białej Liście VAT i wysyła plik CSV na e-mail, opisuję na stronie <a href="../ksef.html">automatyczne pobieranie faktur zakupowych z KSeF</a>.</p>
+
+    <div class="cta-box">
+      <h3>Nie chcesz pamiętać o logowaniu do KSeF?</h3>
+      <p>Faktury zakupowe mogą przychodzić same – sprawdzone na Białej Liście VAT, w pliku CSV dla księgowości.</p>
+      <a href="../ksef.html" class="btn-primary">Zobacz, jak to działa →</a>
+    </div>
+
+    <div class="faq-section">
+      <h2>FAQ — najczęstsze pytania</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">Gdzie są faktury zakupowe w KSeF?</div>
+        <div class="faq-a">W Aplikacji Podatnika KSeF 2.0 (ap.ksef.mf.gov.pl), na liście faktur, po ustawieniu filtra na faktury zakupowe – czyli te, w których Twoja firma jest nabywcą.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy faktura z KSeF przyjdzie mi na e-mail?</div>
+        <div class="faq-a">Nie automatycznie. Sprzedawca może dodatkowo wysłać wizualizację PDF, ale obowiązującą fakturą jest XML w KSeF. Żeby faktury przychodziły na e-mail, trzeba ustawić ich automatyczne pobieranie przez program albo API.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Kiedy faktura z KSeF jest uznana za otrzymaną?</div>
+        <div class="faq-a">W dniu nadania jej numeru KSeF, a nie w dniu, w którym ją pobierzesz. Dlatego warto pobierać faktury regularnie.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy w KSeF są faktury od zagranicznych dostawców?</div>
+        <div class="faq-a">Zazwyczaj nie. Firmy bez siedziby ani stałego miejsca działalności w Polsce nie muszą korzystać z KSeF, więc ich faktury nadal przychodzą e-mailem lub papierowo.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy do pobierania faktur przez API potrzebny jest certyfikat?</div>
+        <div class="faq-a">Nie. Wystarczy token KSeF z uprawnieniem do przeglądania faktur. Ministerstwo Finansów zdecydowało, że tokeny zostaną utrzymane bezterminowo.</div>
+      </div>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-links-sm">
+      <a href="../index.html">Strona główna</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../regulamin.html">Regulamin</a>
+      <a href="../polityka-prywatnosci.html">Polityka Prywatności</a>
+    </div>
+    <div class="footer-cr">© 2026 Integracje Biznesowe</div>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }));
+</script>
+</body>
+</html>

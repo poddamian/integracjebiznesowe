@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Automatyczne pobieranie faktur zakupowych z KSeF przez API 2.0: co 6 godzin nowe faktury kosztowe, weryfikacja sprzedawcy na Białej Liście VAT, ocena ryzyka i plik CSV dla księgowości na e-mail.">
+<meta name="keywords" content="pobieranie faktur z ksef, ksef faktury zakupowe, ksef api, ksef pobieranie faktur, integracja z ksef, biała lista vat">
+<meta property="og:title" content="Automatyczne pobieranie faktur zakupowych z KSeF">
+<meta property="og:description" content="Nowe faktury kosztowe z KSeF co 6 godzin, sprawdzone na Białej Liście VAT i oznaczone kolorem ryzyka. Plik CSV dla księgowości prosto na e-mail.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://integracjebiznesowe.pl/ksef.html">
+<link rel="canonical" href="https://integracjebiznesowe.pl/ksef.html">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Service",
+      "name": "Automatyczne pobieranie faktur zakupowych z KSeF",
+      "serviceType": "Integracja z KSeF API 2.0",
+      "description": "Co 6 godzin pobiera nowe faktury kosztowe z KSeF, sprawdza sprzedawcę na Białej Liście VAT, ocenia ryzyko i wysyła plik CSV dla księgowości na e-mail.",
+      "provider": {"@type": "Organization", "name": "Integracje Biznesowe", "url": "https://integracjebiznesowe.pl/", "email": "biuro@integracjebiznesowe.pl"},
+      "areaServed": {"@type": "Country", "name": "Polska"},
+      "url": "https://integracjebiznesowe.pl/ksef.html",
+      "offers": {"@type": "Offer", "priceCurrency": "PLN", "price": "4000", "priceSpecification": {"@type": "PriceSpecification", "minPrice": "4000", "maxPrice": "6000", "priceCurrency": "PLN", "valueAddedTaxIncluded": false}}
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {"@type": "Question", "name": "Czy do automatycznego pobierania faktur z KSeF potrzebny jest certyfikat?", "acceptedAnswer": {"@type": "Answer", "text": "Nie. Wystarczy token KSeF z uprawnieniem do przeglądania faktur, wygenerowany w Aplikacji Podatnika KSeF. Ministerstwo Finansów zdecydowało, że tokeny zostaną utrzymane bezterminowo."}},
+        {"@type": "Question", "name": "Jak często pobierane są faktury?", "acceptedAnswer": {"@type": "Answer", "text": "Domyślnie co 6 godzin. Każde uruchomienie pobiera tylko faktury, których jeszcze nie było, więc w pliku nie ma dubli."}},
+        {"@type": "Question", "name": "Czy to działa z Comarch Optima, Enova albo SAP?", "acceptedAnswer": {"@type": "Answer", "text": "Plik CSV da się zaimportować do większości programów księgowych. Bezpośredni import do Comarch Optima, Comarch ERP XL, SAP lub Enova ustalamy osobno, przez plik albo API systemu."}},
+        {"@type": "Question", "name": "Czy usługa księguje faktury?", "acceptedAnswer": {"@type": "Answer", "text": "Nie. Usługa pobiera faktury, sprawdza sprzedawcę i oznacza ryzyko. Decyzję o płatności i księgowaniu podejmuje księgowa lub osoba odpowiedzialna w firmie."}}
+      ]
+    }
+  ]
+}
+</script>
+<title>Automatyczne pobieranie faktur zakupowych z KSeF | Integracje Biznesowe</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#ffffff;--bg2:#f4f6fb;--surface:#f0f3fa;--surface2:#e8edf7;
+  --border:rgba(0,0,0,0.08);--border2:rgba(0,0,0,0.13);
+  --lime:#c8f135;--lime-dim:rgba(200,241,53,0.28);--lime-text:#4d6a00;
+  --text:#141623;--text2:#4a5577;--text3:#8896b8;
+  --radius:14px;--radius-sm:8px;--radius-lg:20px;
+  --font-display:'Plus Jakarta Sans',sans-serif;--font-body:'Inter',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg2);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.bg-grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,0,0,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,0,0,0.04) 1px,transparent 1px);background-size:80px 80px;-webkit-mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent);mask-image:radial-gradient(ellipse 100% 60% at 50% 0%,black,transparent)}
+section{position:relative;z-index:1}
+.container{max-width:760px;margin:0 auto;padding:0 24px}
+nav{position:fixed;top:0;left:0;right:0;z-index:1000;height:68px;background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(20px) saturate(180%);backdrop-filter:blur(20px) saturate(180%);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 max(24px,calc((100vw - 1000px)/2));transition:background .3s}
+nav.scrolled{background:rgba(255,255,255,.98)}
+.nav-logo{font-family:var(--font-display);font-size:19px;font-weight:700;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px;margin-right:32px;flex-shrink:0}
+.nav-logo-dot{width:28px;height:28px;border-radius:8px;background:var(--lime);display:flex;align-items:center;justify-content:center;font-size:15px}
+.nav-logo span{color:var(--lime-text)}
+.nav-links{display:flex;align-items:center;gap:4px;flex:1}
+.nav-link{color:var(--text2);text-decoration:none;font-size:14px;font-weight:500;padding:8px 14px;border-radius:var(--radius-sm);transition:all .2s}
+.nav-link:hover{color:var(--text);background:var(--surface2)}
+.btn-nav{background:var(--lime);color:#141623;border:none;border-radius:var(--radius-sm);padding:10px 22px;font-family:var(--font-body);font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;text-decoration:none;margin-left:auto;white-space:nowrap}
+.btn-nav:hover{transform:translateY(-1px);box-shadow:0 0 30px rgba(200,241,53,.3)}
+.hamburger{display:none;background:none;border:none;cursor:pointer;padding:8px;flex-direction:column;gap:5px;margin-left:auto}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{display:none;position:fixed;top:68px;left:0;right:0;bottom:0;background:rgba(255,255,255,.98);backdrop-filter:blur(20px);z-index:999;padding:32px 24px;flex-direction:column;gap:8px}
+.mobile-menu.open{display:flex}
+.mobile-link{color:var(--text2);text-decoration:none;font-size:17px;font-weight:500;padding:12px 16px;border-radius:var(--radius);transition:all .2s}
+.mobile-link:hover{color:var(--text);background:var(--surface2)}
+@media(max-width:760px){.nav-links{display:none}.hamburger{display:flex}.btn-nav{display:none}}
+.article-header{padding:150px 0 40px;background:var(--bg);position:relative;z-index:1}
+.article-tag{display:inline-flex;align-items:center;gap:6px;background:var(--lime-dim);border:1px solid rgba(200,241,53,.2);color:var(--lime-text);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:5px 14px;border-radius:100px;margin-bottom:20px}
+.article-title{font-family:var(--font-display);font-size:clamp(28px,5vw,46px);font-weight:700;letter-spacing:-.02em;line-height:1.15;margin-bottom:18px;color:var(--text)}
+.lead{font-size:18px;line-height:1.7;color:var(--text2);margin-bottom:28px}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px}
+.hero-facts{display:flex;gap:8px 20px;flex-wrap:wrap;font-size:13px;color:var(--text3)}
+.hero-facts strong{color:var(--text2)}
+article.article-body{background:var(--bg);position:relative;z-index:1}
+.article-body{padding:40px 0 80px;font-size:16px;line-height:1.85;color:var(--text2)}
+.article-body h2{font-family:var(--font-display);font-size:26px;font-weight:600;color:var(--text);letter-spacing:-.01em;margin:48px 0 18px;scroll-margin-top:90px}
+.article-body h3{font-family:var(--font-display);font-size:19px;font-weight:600;color:var(--text);margin:32px 0 12px}
+.article-body p{margin-bottom:18px}
+.article-body ul,.article-body ol{margin:0 0 18px 22px}
+.article-body li{margin-bottom:8px}
+.article-body strong{color:var(--text);font-weight:600}
+.article-body a{color:var(--lime-text);text-decoration:none;border-bottom:1px solid rgba(77,106,0,.3)}
+.article-body a:hover{border-color:var(--lime-text)}
+.article-body a.btn-primary,.article-body a.btn-ghost{border-bottom:none}
+.callout{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--lime);border-radius:var(--radius);padding:20px 24px;margin:28px 0;font-size:15px}
+.callout strong{color:var(--lime-text)}
+.risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:24px 0}
+@media(max-width:640px){.risk-grid{grid-template-columns:1fr}}
+.risk{border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;background:var(--bg);font-size:14px;line-height:1.6}
+.risk b{display:block;font-family:var(--font-display);font-size:16px;color:var(--text);margin-bottom:4px}
+.price-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:28px;margin:24px 0}
+.price-box .price{font-family:var(--font-display);font-size:34px;font-weight:700;color:var(--text);line-height:1.2}
+.price-box .price small{font-size:15px;font-weight:500;color:var(--text3)}
+.price-box ul{margin:16px 0 20px 22px}
+.divider{border:none;border-top:1px solid var(--border);margin:40px 0}
+.faq-section{margin-top:48px}
+.faq-item{border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:12px;background:var(--bg)}
+.faq-q{font-family:var(--font-display);font-size:16px;font-weight:600;color:var(--text);margin-bottom:10px}
+.faq-a{font-size:15px;color:var(--text2);line-height:1.75}
+.cta-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:36px;text-align:center;margin-top:20px}
+.cta-box h3{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--text);margin-bottom:10px}
+.cta-box p{color:var(--text2);font-size:14px;margin-bottom:22px}
+.btn-primary{background:var(--lime);color:#141623;border:none;border-radius:var(--radius);padding:14px 28px;font-family:var(--font-body);font-size:14px;font-weight:700;cursor:pointer;transition:all .25s;display:inline-flex;align-items:center;gap:8px;text-decoration:none}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(200,241,53,.3)}
+.btn-ghost{background:var(--bg);color:var(--text);border:1px solid var(--border2);border-radius:var(--radius);padding:14px 28px;font-size:14px;font-weight:700;display:inline-flex;align-items:center;gap:8px;text-decoration:none;transition:all .25s}
+.btn-ghost:hover{border-color:var(--lime-text);color:var(--lime-text)}
+footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;position:relative;z-index:1}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:0 24px}
+.footer-logo-sm{font-family:var(--font-display);font-size:15px;font-weight:700;display:flex;align-items:center;gap:7px;color:var(--text)}
+.footer-logo-sm span{color:var(--lime-text)}
+.footer-links-sm{display:flex;gap:20px;flex-wrap:wrap}
+.footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
+.footer-links-sm a:hover{color:var(--lime-text)}
+.footer-cr{font-size:12px;color:var(--text3)}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+
+<nav id="navbar">
+  <a href="index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+  <div class="nav-links">
+    <a href="index.html#oferta" class="nav-link">Oferta</a>
+    <a href="index.html#jak-dziala" class="nav-link">Jak działam</a>
+    <a href="blog.html" class="nav-link">Blog</a>
+    <a href="index.html#kontakt" class="nav-link">Kontakt</a>
+  </div>
+  <a href="oferta-klienta.html?service=ksef" class="btn-nav">Zamów wdrożenie</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="index.html#oferta" class="mobile-link">Oferta</a>
+  <a href="index.html#jak-dziala" class="mobile-link">Jak działam</a>
+  <a href="blog.html" class="mobile-link">Blog</a>
+  <a href="index.html#kontakt" class="mobile-link">Kontakt</a>
+  <a href="oferta-klienta.html?service=ksef" class="mobile-link">Zamów wdrożenie</a>
+</div>
+
+<header class="article-header">
+  <div class="container">
+    <div class="article-tag">KSeF · faktury kosztowe</div>
+    <h1 class="article-title">Automatyczne pobieranie faktur zakupowych z KSeF</h1>
+    <p class="lead">Co 6 godzin system loguje się do KSeF przez API 2.0, pobiera nowe faktury, w których Twoja firma jest nabywcą, sprawdza każdego sprzedawcę na Białej Liście VAT i oznacza fakturę kolorem ryzyka. Ty albo księgowa dostajecie e-mail z podsumowaniem i plikiem CSV.</p>
+    <div class="hero-ctas">
+      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
+      <a href="index.html#kontakt" class="btn-ghost">Zadaj pytanie</a>
+    </div>
+    <div class="hero-facts">
+      <span><strong>4 000–6 000 zł</strong> netto jednorazowo</span>
+      <span><strong>ok. 14 dni</strong> do uruchomienia</span>
+      <span><strong>20–80 zł/mies.</strong> utrzymania serwera</span>
+    </div>
+  </div>
+</header>
+
+<article class="article-body">
+  <div class="container">
+
+    <h2 id="problem">Po co to komu</h2>
+    <p>Od 1 lutego 2026 faktury od polskich kontrahentów trafiają do Krajowego Systemu e-Faktur. Żeby je zobaczyć, ktoś musi zalogować się do Aplikacji Podatnika, ustawić filtry, pobrać pliki i przekazać je dalej. Do tego przy większych przelewach trzeba sprawdzić, czy rachunek sprzedawcy jest na Białej Liście VAT. To kilka kliknięć przy każdej fakturze, które łatwo odłożyć na później albo pominąć.</p>
+    <p>Ta automatyzacja robi to za Ciebie, w tle, kilka razy dziennie. Nie zmieniasz programu księgowego i nie instalujesz niczego na komputerze.</p>
+
+    <h2 id="jak-dziala">Jak działa pobieranie faktur z KSeF</h2>
+    <ol>
+      <li><strong>Logowanie do KSeF API 2.0</strong> tokenem KSeF z uprawnieniem do przeglądania faktur. Token jest szyfrowany kluczem publicznym Ministerstwa Finansów, tak jak wymaga tego API.</li>
+      <li><strong>Pobranie nowych faktur zakupowych</strong>, czyli tych, w których Twoja firma jest nabywcą. System pamięta, gdzie skończył, więc każda faktura trafia do Ciebie tylko raz.</li>
+      <li><strong>Sprawdzenie sprzedawcy na Białej Liście VAT</strong> przez bezpłatne API Ministerstwa Finansów: status VAT, wykreślenie z rejestru, rachunki bankowe.</li>
+      <li><strong>Ocena ryzyka</strong> każdej faktury osobno, z opisem powodu.</li>
+      <li><strong>Plik CSV i e-mail</strong> z podsumowaniem, tabelą faktur do sprawdzenia i plikiem w załączniku.</li>
+    </ol>
+
+    <h2 id="kontrola">Co sprawdzamy na każdej fakturze</h2>
+    <ul>
+      <li>czy sprzedawca jest na Białej Liście VAT i ma status <strong>czynny</strong>,</li>
+      <li>czy nie został wykreślony z rejestru VAT albo nie odmówiono mu rejestracji,</li>
+      <li>czy ma na Białej Liście choć jeden rachunek bankowy,</li>
+      <li>czy kwota brutto przekracza próg (domyślnie <strong>15 000 zł</strong>, możesz go zmienić) – wtedy płać wyłącznie na rachunek z Białej Listy,</li>
+      <li>czy w tej samej partii nie ma dwóch faktur z tym samym NIP-em i numerem (możliwy duplikat).</li>
+    </ul>
+    <div class="risk-grid">
+      <div class="risk"><b>🟢 Zielony</b>Wszystko w porządku, faktura gotowa do dalszej obsługi.</div>
+      <div class="risk"><b>🟡 Żółty</b>Do sprawdzenia: wysoka kwota, brak rachunku na Białej Liście, możliwy duplikat.</div>
+      <div class="risk"><b>🔴 Czerwony</b>Krytyczne: sprzedawca nieczynny, wykreślony albo nieobecny na Białej Liście.</div>
+    </div>
+    <p>Więcej o samej weryfikacji przeczytasz w poradniku <a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html">jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a>.</p>
+
+    <h2 id="wyniki">Gdzie trafiają wyniki</h2>
+    <p>Domyślnie dostajesz <strong>e-mail z plikiem CSV</strong> na wskazany adres, np. swój albo biura rachunkowego. Plik ma kodowanie UTF-8, separator „;” i kwoty z przecinkiem, więc otwiera się poprawnie w Excelu i LibreOffice. Kolumny:</p>
+    <p>nr KSeF · NIP sprzedawcy · sprzedawca · nr faktury · data wystawienia · netto · VAT · brutto · waluta · typ · ocena ryzyka · powód · data weryfikacji</p>
+    <p>Zamiast albo obok e-maila wynik może trafić:</p>
+    <ul>
+      <li>do arkusza Google (każda faktura jako nowy wiersz),</li>
+      <li>do folderu synchronizowanego z OneDrive lub Google Drive,</li>
+      <li>na serwer plików lub NAS przez SFTP – stąd plik może zaciągać program księgowy.</li>
+    </ul>
+    <p>Możesz też ustawić, żeby e-mail przychodził tylko wtedy, gdy jest coś do sprawdzenia.</p>
+
+    <h2 id="wdrozenie">Jak wygląda wdrożenie</h2>
+    <p><strong>Ty przygotowujesz trzy rzeczy:</strong> token KSeF z uprawnieniem „przeglądanie faktur”, NIP firmy i adres e-mail odbiorcy. Jak wygenerować token, pokazuję w poradniku <a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku.html">jak wygenerować token KSeF krok po kroku</a>. Token jest widoczny tylko raz, więc przekazujemy go bezpiecznym kanałem, nie zwykłym e-mailem.</p>
+    <ol>
+      <li><strong>Dzień 1–2:</strong> konfiguracja n8n, NIP-u, progu kwotowego i odbiorców.</li>
+      <li><strong>Dzień 3–5:</strong> testy na środowisku testowym KSeF: logowanie, pobieranie, Biała Lista, ocena ryzyka.</li>
+      <li><strong>Dzień 6–8:</strong> dopasowanie pliku CSV do Twojego Excela lub programu księgowego, wybór miejsca zapisu.</li>
+      <li><strong>Dzień 9–14:</strong> przełączenie na produkcję, pierwsze realne faktury, protokół odbioru i 30 dni wsparcia.</li>
+    </ol>
+    <p>Wszystko odbywa się zdalnie. Automatyzacja działa w n8n na serwerze, nad którym masz kontrolę – Twoim albo wynajętym VPS-ie.</p>
+
+    <div class="callout">
+      <strong>Czego usługa nie robi:</strong> nie wystawia faktur, nie księguje ich w systemie ERP i nie zastępuje decyzji księgowej. Pobiera metadane faktur (sprzedawca, numer, daty, kwoty netto, VAT i brutto). Pełne pliki XML z pozycjami i stawkami VAT oraz bezpośredni import do Comarch Optima, Comarch ERP XL, SAP lub Enova ustalamy osobno.
+    </div>
+
+    <h2 id="cena">Cena</h2>
+    <div class="price-box">
+      <div class="price">4 000–6 000 zł <small>netto, jednorazowo</small></div>
+      <ul>
+        <li>konfiguracja i testy na środowisku testowym i produkcyjnym KSeF,</li>
+        <li>wybrany sposób dostarczania wyników (e-mail, arkusz, folder, SFTP),</li>
+        <li>dokumentacja i 30 dni wsparcia po wdrożeniu.</li>
+      </ul>
+      <p>Cena zależy głównie od tego, gdzie mają trafiać wyniki i czy potrzebny jest import do programu księgowego. Zadatek 30% uruchamia prace, resztę płacisz po odbiorze. Utrzymanie to tylko serwer n8n: ok. 20–80 zł miesięcznie. API KSeF i Białej Listy są bezpłatne.</p>
+      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zobacz szczegóły i zamów →</a>
+    </div>
+
+    <h2 id="poradniki">Poradniki</h2>
+    <ul>
+      <li><a href="blog/jak-pobrac-faktury-z-ksef-3-sposoby.html">Jak pobrać faktury z KSeF – 3 sposoby</a></li>
+      <li><a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku.html">Jak wygenerować token KSeF krok po kroku</a></li>
+      <li><a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html">Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a></li>
+    </ul>
+
+    <div class="faq-section">
+      <h2 id="faq">FAQ</h2>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy potrzebuję certyfikatu KSeF albo podpisu kwalifikowanego?</div>
+        <div class="faq-a">Nie. Wystarczy token KSeF z uprawnieniem do przeglądania faktur. Ministerstwo Finansów pierwotnie planowało wycofanie tokenów z końcem 2026 roku, ale zdecydowało, że zostaną utrzymane bezterminowo.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Jak często pobierane są faktury?</div>
+        <div class="faq-a">Domyślnie co 6 godzin. Częstotliwość można zmienić. Każde uruchomienie pobiera tylko faktury, których jeszcze nie było, więc nie ma dubli.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy to zadziała z moim programem księgowym?</div>
+        <div class="faq-a">Plik CSV da się zaimportować do większości programów księgowych i do Excela. Bezpośredni import do Comarch Optima, Comarch ERP XL, SAP lub Enova ustalamy osobno, przez plik albo API systemu.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Co z fakturami od zagranicznych dostawców?</div>
+        <div class="faq-a">Firmy bez siedziby w Polsce nie wystawiają faktur w KSeF, więc takich faktur system nie pobierze. Nadal przychodzą e-mailem lub papierowo.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy moje dane są bezpieczne?</div>
+        <div class="faq-a">Automatyzacja działa w n8n na serwerze, nad którym masz kontrolę. Token jest zapisany tylko tam i ma wyłącznie uprawnienie do odczytu faktur, więc nie pozwala niczego wystawić. W każdej chwili możesz go unieważnić w Aplikacji Podatnika KSeF.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Czy usługa zastępuje księgową?</div>
+        <div class="faq-a">Nie. Oszczędza czas na pobieraniu faktur i sprawdzaniu kontrahentów, ale decyzję o płatności i księgowaniu podejmuje księgowa lub osoba odpowiedzialna w firmie.</div>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <h3>Chcesz, żeby faktury z KSeF przychodziły same?</h3>
+      <p>Napisz, z jakiego programu księgowego korzystasz i gdzie mają trafiać faktury – odpowiem, jak wyglądałoby wdrożenie u Ciebie.</p>
+      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
+    </div>
+
+  </div>
+</article>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-links-sm">
+      <a href="index.html">Strona główna</a>
+      <a href="blog.html">Blog</a>
+      <a href="regulamin.html">Regulamin</a>
+      <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
+    </div>
+    <div class="footer-cr">© 2026 Integracje Biznesowe</div>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('navbar');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50));
+const hamburger = document.getElementById('hamburger');
+const mobileMenu = document.getElementById('mobileMenu');
+hamburger.addEventListener('click', () => { hamburger.classList.toggle('open'); mobileMenu.classList.toggle('open'); });
+document.querySelectorAll('.mobile-link').forEach(a => a.addEventListener('click', () => { hamburger.classList.remove('open'); mobileMenu.classList.remove('open'); }));
+</script>
+</body>
+</html>

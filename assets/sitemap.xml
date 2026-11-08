@@ -9,6 +9,34 @@
   </url>
 
   <url>
+    <loc>https://integracjebiznesowe.pl/ksef.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <url>
+    <loc>https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://integracjebiznesowe.pl/blog/jak-wygenerowac-token-ksef-krok-po-kroku.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
+    <loc>https://integracjebiznesowe.pl/blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html</loc>
+    <lastmod>2026-11-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <url>
     <loc>https://integracjebiznesowe.pl/audyt-potencjalu-ai.html</loc>
     <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
