@@ -177,7 +177,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 
 <!-- NAV -->
 <nav id="navbar">
-  <a href="index.html" class="nav-logo" aria-label="Integracje Biznesowe — strona główna">
+  <a href="./" class="nav-logo" aria-label="Integracje Biznesowe — strona główna">
     <div class="nav-logo-dot" aria-hidden="true">
       <svg width="16" height="16" viewBox="0 0 32 32" fill="none">
         <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
@@ -192,7 +192,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
     Integracje <span>Biznesowe</span>
   </a>
   <div class="nav-spacer"></div>
-  <a href="index.html" class="nav-back">
+  <a href="./" class="nav-back">
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
     <span data-i18n="nav_back">Strona główna</span>
   </a>
@@ -457,7 +457,7 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
 <footer class="page-footer">
   <div class="container">
     <div class="pf-inner">
-      <a href="index.html" class="pf-logo">
+      <a href="./" class="pf-logo">
         <div class="pf-logo-dot" aria-hidden="true">
           <svg width="14" height="14" viewBox="0 0 32 32" fill="none">
             <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
@@ -472,11 +472,11 @@ input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;bac
         Integracje <span>Biznesowe</span>
       </a>
       <div class="pf-links">
-        <a href="index.html">Strona główna</a>
-        <a href="audyt-potencjalu-ai.html">Audyt AI</a>
-        <a href="blog.html">Blog</a>
-        <a href="regulamin.html">Regulamin</a>
-        <a href="polityka-prywatnosci.html">Prywatność</a>
+        <a href="./">Strona główna</a>
+        <a href="audyt-potencjalu-ai">Audyt AI</a>
+        <a href="blog">Blog</a>
+        <a href="regulamin">Regulamin</a>
+        <a href="polityka-prywatnosci">Prywatność</a>
       </div>
       <div class="pf-cr">© 2026 Integracje Biznesowe</div>
     </div>
@@ -931,7 +931,7 @@ ${t('copy_h')}: ${d.horizon} ${t('copy_mos')}
 ⚠️  ${t('copy_op')}: ${d.oppCost?.toLocaleString('pl-PL')} zł
 
 ${new Date().toLocaleDateString('pl-PL')}
-integracjebiznesowe.pl/kalkulator-roi.html`;
+integracjebiznesowe.pl/kalkulator-roi`;
 
   navigator.clipboard.writeText(text).then(()=>{
     const btn=e.currentTarget;

@@ -130,22 +130,22 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 <div class="bg-grid"></div>
 
 <nav id="navbar">
-  <a href="index.html" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+  <a href="./" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
   <div class="nav-links">
-    <a href="index.html#oferta" class="nav-link">Oferta</a>
-    <a href="index.html#jak-dziala" class="nav-link">Jak działam</a>
-    <a href="blog.html" class="nav-link">Blog</a>
-    <a href="index.html#kontakt" class="nav-link">Kontakt</a>
+    <a href="./#oferta" class="nav-link">Oferta</a>
+    <a href="./#jak-dziala" class="nav-link">Jak działam</a>
+    <a href="blog" class="nav-link">Blog</a>
+    <a href="./#kontakt" class="nav-link">Kontakt</a>
   </div>
-  <a href="oferta-klienta.html?service=ksef" class="btn-nav">Zamów wdrożenie</a>
+  <a href="oferta-klienta?service=ksef" class="btn-nav">Zamów wdrożenie</a>
   <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
-  <a href="index.html#oferta" class="mobile-link">Oferta</a>
-  <a href="index.html#jak-dziala" class="mobile-link">Jak działam</a>
-  <a href="blog.html" class="mobile-link">Blog</a>
-  <a href="index.html#kontakt" class="mobile-link">Kontakt</a>
-  <a href="oferta-klienta.html?service=ksef" class="mobile-link">Zamów wdrożenie</a>
+  <a href="./#oferta" class="mobile-link">Oferta</a>
+  <a href="./#jak-dziala" class="mobile-link">Jak działam</a>
+  <a href="blog" class="mobile-link">Blog</a>
+  <a href="./#kontakt" class="mobile-link">Kontakt</a>
+  <a href="oferta-klienta?service=ksef" class="mobile-link">Zamów wdrożenie</a>
 </div>
 
 <header class="article-header">
@@ -154,8 +154,8 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <h1 class="article-title">Automatyczne pobieranie faktur zakupowych z KSeF</h1>
     <p class="lead">Co 6 godzin system loguje się do KSeF przez API 2.0, pobiera nowe faktury, w których Twoja firma jest nabywcą, sprawdza każdego sprzedawcę na Białej Liście VAT i oznacza fakturę kolorem ryzyka. Ty albo księgowa dostajecie e-mail z podsumowaniem i plikiem CSV.</p>
     <div class="hero-ctas">
-      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
-      <a href="index.html#kontakt" class="btn-ghost">Zadaj pytanie</a>
+      <a href="oferta-klienta?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
+      <a href="./#kontakt" class="btn-ghost">Zadaj pytanie</a>
     </div>
     <div class="hero-facts">
       <span><strong>4 000–6 000 zł</strong> netto jednorazowo</span>
@@ -194,7 +194,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
       <div class="risk"><b>🟡 Żółty</b>Do sprawdzenia: wysoka kwota, brak rachunku na Białej Liście, możliwy duplikat.</div>
       <div class="risk"><b>🔴 Czerwony</b>Krytyczne: sprzedawca nieczynny, wykreślony albo nieobecny na Białej Liście.</div>
     </div>
-    <p>Więcej o samej weryfikacji przeczytasz w poradniku <a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html">jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a>.</p>
+    <p>Więcej o samej weryfikacji przeczytasz w poradniku <a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie">jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a>.</p>
 
     <h2 id="wyniki">Gdzie trafiają wyniki</h2>
     <p>Domyślnie dostajesz <strong>e-mail z plikiem CSV</strong> na wskazany adres, np. swój albo biura rachunkowego. Plik ma kodowanie UTF-8, separator „;” i kwoty z przecinkiem, więc otwiera się poprawnie w Excelu i LibreOffice. Kolumny:</p>
@@ -208,7 +208,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <p>Możesz też ustawić, żeby e-mail przychodził tylko wtedy, gdy jest coś do sprawdzenia.</p>
 
     <h2 id="wdrozenie">Jak wygląda wdrożenie</h2>
-    <p><strong>Ty przygotowujesz trzy rzeczy:</strong> token KSeF z uprawnieniem „przeglądanie faktur”, NIP firmy i adres e-mail odbiorcy. Jak wygenerować token, pokazuję w poradniku <a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku.html">jak wygenerować token KSeF krok po kroku</a>. Token jest widoczny tylko raz, więc przekazujemy go bezpiecznym kanałem, nie zwykłym e-mailem.</p>
+    <p><strong>Ty przygotowujesz trzy rzeczy:</strong> token KSeF z uprawnieniem „przeglądanie faktur”, NIP firmy i adres e-mail odbiorcy. Jak wygenerować token, pokazuję w poradniku <a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku">jak wygenerować token KSeF krok po kroku</a>. Token jest widoczny tylko raz, więc przekazujemy go bezpiecznym kanałem, nie zwykłym e-mailem.</p>
     <ol>
       <li><strong>Dzień 1–2:</strong> konfiguracja n8n, NIP-u, progu kwotowego i odbiorców.</li>
       <li><strong>Dzień 3–5:</strong> testy na środowisku testowym KSeF: logowanie, pobieranie, Biała Lista, ocena ryzyka.</li>
@@ -230,14 +230,14 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
         <li>dokumentacja i 30 dni wsparcia po wdrożeniu.</li>
       </ul>
       <p>Cena zależy głównie od tego, gdzie mają trafiać wyniki i czy potrzebny jest import do programu księgowego. Zadatek 30% uruchamia prace, resztę płacisz po odbiorze. Utrzymanie to tylko serwer n8n: ok. 20–80 zł miesięcznie. API KSeF i Białej Listy są bezpłatne.</p>
-      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zobacz szczegóły i zamów →</a>
+      <a href="oferta-klienta?service=ksef" class="btn-primary">Zobacz szczegóły i zamów →</a>
     </div>
 
     <h2 id="poradniki">Poradniki</h2>
     <ul>
-      <li><a href="blog/jak-pobrac-faktury-z-ksef-3-sposoby.html">Jak pobrać faktury z KSeF – 3 sposoby</a></li>
-      <li><a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku.html">Jak wygenerować token KSeF krok po kroku</a></li>
-      <li><a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html">Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a></li>
+      <li><a href="blog/jak-pobrac-faktury-z-ksef-3-sposoby">Jak pobrać faktury z KSeF – 3 sposoby</a></li>
+      <li><a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku">Jak wygenerować token KSeF krok po kroku</a></li>
+      <li><a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie">Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</a></li>
     </ul>
 
     <div class="faq-section">
@@ -277,7 +277,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <div class="cta-box">
       <h3>Chcesz, żeby faktury z KSeF przychodziły same?</h3>
       <p>Napisz, z jakiego programu księgowego korzystasz i gdzie mają trafiać faktury – odpowiem, jak wyglądałoby wdrożenie u Ciebie.</p>
-      <a href="oferta-klienta.html?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
+      <a href="oferta-klienta?service=ksef" class="btn-primary">Zamów wdrożenie →</a>
     </div>
 
   </div>
@@ -287,10 +287,10 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
   <div class="footer-inner">
     <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
     <div class="footer-links-sm">
-      <a href="index.html">Strona główna</a>
-      <a href="blog.html">Blog</a>
-      <a href="regulamin.html">Regulamin</a>
-      <a href="polityka-prywatnosci.html">Polityka Prywatności</a>
+      <a href="./">Strona główna</a>
+      <a href="blog">Blog</a>
+      <a href="regulamin">Regulamin</a>
+      <a href="polityka-prywatnosci">Polityka Prywatności</a>
     </div>
     <div class="footer-cr">© 2026 Integracje Biznesowe</div>
   </div>
