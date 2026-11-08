@@ -6,18 +6,18 @@ Wszystkie ceny są cenami netto (do ceny dodajemy VAT). Obsługujemy klientów w
 
 ## Automatyzacja KSeF: faktury zakupowe
 
-- [Automatyczne pobieranie faktur zakupowych z KSeF](https://integracjebiznesowe.pl/ksef.html): Co robi usługa: co 6 godzin loguje się do API KSeF 2.0 (token KSeF z uprawnieniem do odczytu faktur), pobiera nowe faktury kosztowe (te, w których firma jest nabywcą), sprawdza sprzedawcę w Białej Liście VAT i oznacza fakturę kolorem (zielony, żółty, czerwony).
-- [Co sprawdzamy na fakturze](https://integracjebiznesowe.pl/ksef.html#kontrola): status VAT sprzedawcy, wykreślenie z rejestru VAT, brak rachunku bankowego na Białej Liście, kwota brutto powyżej progu 15 000 zł (próg ustawiany przez klienta), możliwy duplikat faktury.
-- [Gdzie trafiają wyniki](https://integracjebiznesowe.pl/ksef.html#wyniki): plik CSV (kodowanie UTF-8, otwiera się w Excelu i LibreOffice) wysyłany jako załącznik e-maila na adres w domenie klienta albo wpis do arkusza. Możliwe też zapisy do folderu synchronizowanego (OneDrive, Google Drive) lub na serwer SFTP.
-- [Jak wygląda wdrożenie](https://integracjebiznesowe.pl/ksef.html#wdrozenie): Klient generuje token w aplikacji KSeF Ministerstwa Finansów (token widoczny tylko raz), podaje NIP i adres e-mail odbiorcy; my konfigurujemy workflow, testujemy na środowisku testowym KSeF i przełączamy na produkcję. Czas wdrożenia: około 14 dni.
-- [Cena](https://integracjebiznesowe.pl/ksef.html#cena): 4 000–6 000 zł netto jednorazowo (zadatek 30%, reszta po odbiorze), 30 dni wsparcia. Utrzymanie: tylko serwer n8n, około 20–80 zł miesięcznie; API KSeF i Białej Listy VAT są bezpłatne.
+- [Automatyczne pobieranie faktur zakupowych z KSeF](https://integracjebiznesowe.pl/ksef): Co robi usługa: co 6 godzin loguje się do API KSeF 2.0 (token KSeF z uprawnieniem do odczytu faktur), pobiera nowe faktury kosztowe (te, w których firma jest nabywcą), sprawdza sprzedawcę w Białej Liście VAT i oznacza fakturę kolorem (zielony, żółty, czerwony).
+- [Co sprawdzamy na fakturze](https://integracjebiznesowe.pl/ksef#kontrola): status VAT sprzedawcy, wykreślenie z rejestru VAT, brak rachunku bankowego na Białej Liście, kwota brutto powyżej progu 15 000 zł (próg ustawiany przez klienta), możliwy duplikat faktury.
+- [Gdzie trafiają wyniki](https://integracjebiznesowe.pl/ksef#wyniki): plik CSV (kodowanie UTF-8, otwiera się w Excelu i LibreOffice) wysyłany jako załącznik e-maila na adres w domenie klienta albo wpis do arkusza. Możliwe też zapisy do folderu synchronizowanego (OneDrive, Google Drive) lub na serwer SFTP.
+- [Jak wygląda wdrożenie](https://integracjebiznesowe.pl/ksef#wdrozenie): Klient generuje token w aplikacji KSeF Ministerstwa Finansów (token widoczny tylko raz), podaje NIP i adres e-mail odbiorcy; my konfigurujemy workflow, testujemy na środowisku testowym KSeF i przełączamy na produkcję. Czas wdrożenia: około 14 dni.
+- [Cena](https://integracjebiznesowe.pl/ksef#cena): 4 000–6 000 zł netto jednorazowo (zadatek 30%, reszta po odbiorze), 30 dni wsparcia. Utrzymanie: tylko serwer n8n, około 20–80 zł miesięcznie; API KSeF i Białej Listy VAT są bezpłatne.
 - Czego usługa nie robi: nie wystawia faktur, nie księguje w systemie ERP i nie zastępuje decyzji księgowej. Import do Comarch Optima, Comarch ERP XL, SAP lub Enova ustalamy osobno, najczęściej przez plik CSV albo API systemu.
 
 ## Poradniki KSeF
 
-- [Jak pobrać faktury z KSeF – 3 sposoby](https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby.html): Aplikacja Podatnika KSeF 2.0, program księgowy z integracją, automatyczne pobieranie przez API KSeF 2.0.
-- [Jak wygenerować token KSeF krok po kroku](https://integracjebiznesowe.pl/blog/jak-wygenerowac-token-ksef-krok-po-kroku.html): Tokeny → Generuj token, wybór uprawnień, bezpieczeństwo, token a certyfikat KSeF. Tokeny zostają utrzymane bezterminowo (decyzja MF).
-- [Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie](https://integracjebiznesowe.pl/blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie.html): bezpłatne API wl-api.mf.gov.pl, przykłady zapytań, limity (search: 100 zapytań dziennie po maks. 30 podmiotów).
+- [Jak pobrać faktury z KSeF – 3 sposoby](https://integracjebiznesowe.pl/blog/jak-pobrac-faktury-z-ksef-3-sposoby): Aplikacja Podatnika KSeF 2.0, program księgowy z integracją, automatyczne pobieranie przez API KSeF 2.0.
+- [Jak wygenerować token KSeF krok po kroku](https://integracjebiznesowe.pl/blog/jak-wygenerowac-token-ksef-krok-po-kroku): Tokeny → Generuj token, wybór uprawnień, bezpieczeństwo, token a certyfikat KSeF. Tokeny zostają utrzymane bezterminowo (decyzja MF).
+- [Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie](https://integracjebiznesowe.pl/blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie): bezpłatne API wl-api.mf.gov.pl, przykłady zapytań, limity (search: 100 zapytań dziennie po maks. 30 podmiotów).
 
 ## Oferta i cennik
 
@@ -25,20 +25,20 @@ Wszystkie ceny są cenami netto (do ceny dodajemy VAT). Obsługujemy klientów w
 
 ## Narzędzia
 
-- [Audyt Potencjału AI](https://integracjebiznesowe.pl/audyt-potencjalu-ai.html): krótki audyt, które procesy w firmie opłaca się zautomatyzować.
-- [Kalkulator ROI](https://integracjebiznesowe.pl/kalkulator-roi.html): szacowanie zwrotu z automatyzacji.
+- [Audyt Potencjału AI](https://integracjebiznesowe.pl/audyt-potencjalu-ai): krótki audyt, które procesy w firmie opłaca się zautomatyzować.
+- [Kalkulator ROI](https://integracjebiznesowe.pl/kalkulator-roi): szacowanie zwrotu z automatyzacji.
 
 ## Blog
 
-- [Blog](https://integracjebiznesowe.pl/blog.html)
-- [n8n vs Make.com: które narzędzie wybrać do automatyzacji](https://integracjebiznesowe.pl/blog/n8n-vs-makecom-2025-ktore-narzedzie-wybrac-do-automatyzacji.html)
-- [Czym jest agent AI dla firmy: definicja, typy i zastosowania w MŚP](https://integracjebiznesowe.pl/blog/czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp.html)
-- [Automatyzacja procesów biznesowych: od czego zacząć](https://integracjebiznesowe.pl/blog/automatyzacja-procesow-biznesowych-od-czego-zaczac.html)
+- [Blog](https://integracjebiznesowe.pl/blog)
+- [n8n vs Make.com: które narzędzie wybrać do automatyzacji](https://integracjebiznesowe.pl/blog/n8n-vs-makecom-2025-ktore-narzedzie-wybrac-do-automatyzacji)
+- [Czym jest agent AI dla firmy: definicja, typy i zastosowania w MŚP](https://integracjebiznesowe.pl/blog/czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp)
+- [Automatyzacja procesów biznesowych: od czego zacząć](https://integracjebiznesowe.pl/blog/automatyzacja-procesow-biznesowych-od-czego-zaczac)
 
 ## Informacje prawne
 
-- [Regulamin](https://integracjebiznesowe.pl/regulamin.html)
-- [Polityka prywatności](https://integracjebiznesowe.pl/polityka-prywatnosci.html)
+- [Regulamin](https://integracjebiznesowe.pl/regulamin)
+- [Polityka prywatności](https://integracjebiznesowe.pl/polityka-prywatnosci)
 
 ## Optional
 
