@@ -125,13 +125,14 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .btn-secondary:hover{border-color:var(--lime-border);background:var(--surface);transform:translateY(-1px)}
 /* hero visual */
 .hero-visual{position:relative;height:360px}
-.fcard{position:absolute;background:#fff;border:1px solid var(--border2);border-radius:var(--rlg);padding:18px 22px;box-shadow:var(--sh-md);min-width:200px}
+.hero-visual{will-change:transform;transform:translate3d(0,0,0)}
+.fcard{position:absolute;background:#fff;border:1px solid var(--border2);border-radius:var(--rlg);padding:18px 22px;box-shadow:var(--sh-md);min-width:200px;will-change:transform;backface-visibility:hidden}
 .fcard-1{top:10px;left:0;z-index:3;animation:fl1 5s ease-in-out infinite}
 .fcard-2{top:120px;right:10px;z-index:2;animation:fl2 6s ease-in-out infinite}
 .fcard-3{bottom:20px;left:30px;z-index:1;animation:fl3 4.5s ease-in-out infinite}
-@keyframes fl1{0%,100%{transform:none}50%{transform:translateY(-8px)}}
-@keyframes fl2{0%,100%{transform:rotate(1.5deg)}50%{transform:translateY(-6px) rotate(1.5deg)}}
-@keyframes fl3{0%,100%{transform:rotate(-1deg)}50%{transform:translateY(-5px) rotate(-1deg)}}
+@keyframes fl1{0%,100%{transform:translate3d(0,0,0) rotate(0deg)}50%{transform:translate3d(0,-8px,0) rotate(0deg)}}
+@keyframes fl2{0%,100%{transform:translate3d(0,0,0) rotate(1.5deg)}50%{transform:translate3d(0,-6px,0) rotate(1.5deg)}}
+@keyframes fl3{0%,100%{transform:translate3d(0,0,0) rotate(-1deg)}50%{transform:translate3d(0,-5px,0) rotate(-1deg)}}
 .fcard-icon{width:34px;height:34px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
 .fcard-icon.lime{background:var(--lime-dim)}.fcard-icon.blue{background:rgba(59,130,246,.1)}.fcard-icon.purple{background:rgba(139,92,246,.1)}
 .fcard-label{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px}
@@ -885,17 +886,25 @@ footer{background:#111827;padding:60px 0 32px}
     var heroEl = document.getElementById('hero');
     var visualEl = document.querySelector('.hero-visual');
     if (heroEl && visualEl) {
+      /* Jedna pętla rAF z płynnym dociąganiem — bez restartowania CSS transition
+         przy każdym zdarzeniu mousemove (to powodowało skakanie kafelków w Edge). */
+      var tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+      visualEl.style.transition = 'none';
+      function tick() {
+        cx += (tx - cx) * 0.08;
+        cy += (ty - cy) * 0.08;
+        if (Math.abs(tx - cx) < 0.05 && Math.abs(ty - cy) < 0.05) { cx = tx; cy = ty; raf = 0; }
+        visualEl.style.transform = 'translate3d(' + cx.toFixed(2) + 'px,' + cy.toFixed(2) + 'px,0)';
+        if (raf) raf = requestAnimationFrame(tick);
+      }
+      function kick() { if (!raf) raf = requestAnimationFrame(tick); }
       heroEl.addEventListener('mousemove', function(e) {
         var r = heroEl.getBoundingClientRect();
-        var x = (e.clientX - r.left) / r.width - 0.5;
-        var y = (e.clientY - r.top) / r.height - 0.5;
-        visualEl.style.transition = 'transform 0.25s var(--ease)';
-        visualEl.style.transform = 'translate(' + (x * -18) + 'px,' + (y * -10) + 'px)';
+        tx = ((e.clientX - r.left) / r.width - 0.5) * -18;
+        ty = ((e.clientY - r.top) / r.height - 0.5) * -10;
+        kick();
       });
-      heroEl.addEventListener('mouseleave', function() {
-        visualEl.style.transition = 'transform 1s ' + ease;
-        visualEl.style.transform = '';
-      });
+      heroEl.addEventListener('mouseleave', function() { tx = 0; ty = 0; kick(); });
     }
   }
 
