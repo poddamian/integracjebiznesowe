@@ -25,6 +25,70 @@
   "inLanguage": "pl-PL"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Gdzie są faktury zakupowe w KSeF?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "W Aplikacji Podatnika KSeF 2.0 (ap.ksef.mf.gov.pl), na liście faktur, po ustawieniu filtra na faktury zakupowe – czyli te, w których Twoja firma jest nabywcą."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy faktura z KSeF przyjdzie mi na e-mail?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nie automatycznie. Sprzedawca może dodatkowo wysłać wizualizację PDF, ale obowiązującą fakturą jest XML w KSeF. Żeby faktury przychodziły na e-mail, trzeba ustawić ich automatyczne pobieranie przez program albo API."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Kiedy faktura z KSeF jest uznana za otrzymaną?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "W dniu nadania jej numeru KSeF, a nie w dniu, w którym ją pobierzesz. Dlatego warto pobierać faktury regularnie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy w KSeF są faktury od zagranicznych dostawców?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zazwyczaj nie. Firmy bez siedziby ani stałego miejsca działalności w Polsce nie muszą korzystać z KSeF, więc ich faktury nadal przychodzą e-mailem lub papierowo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy do pobierania faktur przez API potrzebny jest certyfikat?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nie. Wystarczy token KSeF z uprawnieniem do przeglądania faktur. Ministerstwo Finansów zdecydowało, że tokeny zostaną utrzymane bezterminowo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy biuro rachunkowe może pobierać moje faktury z KSeF?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tak. Nadajesz biuru uprawnienie do dostępu do faktur w Aplikacji Podatnika. Biuro nie dostaje przy tym prawa do wystawiania faktur, chyba że je również nadasz."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy pobrana faktura w PDF wystarczy do archiwum?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oryginałem jest plik XML. PDF to tylko czytelna wizualizacja, dlatego warto przechowywać XML, a PDF traktować jako kopię dla ludzi."
+      }
+    }
+  ]
+}
+</script>
 <title>Jak pobrać faktury z KSeF – 3 sposoby | Integracje Biznesowe</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -102,27 +166,44 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 .footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
 .footer-links-sm a:hover{color:var(--lime-text)}
 .footer-cr{font-size:12px;color:var(--text3)}
+.table-wrap{overflow-x:auto;margin:28px 0}
+.compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.compare-table th,.compare-table td{border:1px solid var(--border);padding:10px 14px;text-align:left;vertical-align:top}
+.compare-table th{background:var(--surface);font-weight:600}
 </style>
 </head>
 <body>
 <div class="bg-grid"></div>
 
-<nav id="navbar">
-  <a href="../" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+<nav id="navbar" aria-label="Nawigacja główna">
+  <a href="../" class="nav-logo" aria-label="Integracje Biznesowe — strona główna"><div class="nav-logo-dot"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5" fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5" fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg></div>Integracje <span>Biznesowe</span></a>
   <div class="nav-links">
     <a href="../#usługi" class="nav-link">Usługi</a>
+    <a href="../#cennik" class="nav-link">Cennik</a>
+    <a href="../#oferta" class="nav-link">Oferta</a>
     <a href="../#jak-dziala" class="nav-link">Jak działam</a>
     <a href="../blog" class="nav-link">Blog</a>
     <a href="../#kontakt" class="nav-link">Kontakt</a>
   </div>
-  <a href="../#kontakt" class="btn-nav">Napisz do mnie</a>
+  <a href="../#cennik" class="btn-nav">Zobacz cennik</a>
   <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="../#usługi" class="mobile-link">Usługi</a>
+  <a href="../#cennik" class="mobile-link">Cennik</a>
+  <a href="../#oferta" class="mobile-link">Oferta</a>
   <a href="../#jak-dziala" class="mobile-link">Jak działam</a>
   <a href="../blog" class="mobile-link">Blog</a>
   <a href="../#kontakt" class="mobile-link">Kontakt</a>
+  <a href="../#cennik" class="mobile-link">Zobacz cennik →</a>
 </div>
 
 <header class="article-header">
@@ -130,7 +211,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <a href="../blog" class="back-link">← Wróć do bloga</a>
     <div class="article-tag">KSeF</div>
     <h1 class="article-title">Jak pobrać faktury z KSeF – 3 sposoby</h1>
-    <div class="article-meta">8 listopada 2026 · 7 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
+    <div class="article-meta">8 listopada 2026 · 10 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
   </div>
 </header>
 
@@ -203,6 +284,36 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
       <li><strong>Dużo faktur, kilka miejsc docelowych albo chcesz od razu kontrolować kontrahentów</strong> – automatyczne pobieranie przez API.</li>
     </ul>
 
+
+    <h2>Porównanie 3 sposobów w jednej tabeli</h2>
+    <div class="table-wrap"><table class="compare-table"><thead><tr><th></th><th>Aplikacja Podatnika</th><th>Program księgowy / bank</th><th>API KSeF 2.0</th></tr></thead><tbody><tr><td>Koszt</td><td>bezpłatna</td><td>w abonamencie programu</td><td>czas wdrożenia i utrzymania</td></tr><tr><td>Kto pobiera</td><td>człowiek, ręcznie</td><td>program, zwykle w tle</td><td>Twój proces, według harmonogramu</td></tr><tr><td>Uwierzytelnienie</td><td>Profil Zaufany, podpis kwalifikowany, pieczęć</td><td>token lub certyfikat w programie</td><td>token lub certyfikat</td></tr><tr><td>Dokąd trafiają faktury</td><td>na dysk osoby, która pobrała</td><td>do jednego programu</td><td>dokąd chcesz: dysk, e-mail, arkusz, ERP</td></tr><tr><td>Dla kogo</td><td>kilka faktur w miesiącu</td><td>firma księgująca w jednym systemie</td><td>dużo faktur, kilka miejsc docelowych</td></tr></tbody></table></div>
+
+    <h2>Kto może pobierać faktury z KSeF w imieniu firmy</h2>
+    <p>Do pobierania faktur zakupowych potrzebne jest <strong>uprawnienie do dostępu do faktur</strong>. To osobne uprawnienie, niezależne od wystawiania faktur. Możesz więc dać księgowej dostęp do odczytu bez prawa do wysyłania czegokolwiek w imieniu firmy.</p>
+    <ul>
+      <li><strong>Jednoosobowa działalność</strong> – właściciel loguje się od razu, Profilem Zaufanym albo podpisem kwalifikowanym.</li>
+      <li><strong>Spółka</strong> – loguje się pieczęcią kwalifikowaną. Jeśli jej nie ma, składa w urzędzie skarbowym zawiadomienie <strong>ZAW-FA</strong> i wskazuje pierwszą osobę, która będzie nadawać uprawnienia pozostałym.</li>
+      <li><strong>Biuro rachunkowe</strong> – dostaje uprawnienie od klienta w Aplikacji Podatnika. Może je dostać jako firma i wtedy samo rozdziela dostęp swoim pracownikom.</li>
+    </ul>
+    <div class="callout"><strong>Zasada najmniejszych uprawnień.</strong> Program albo automatyzacja, które tylko pobierają faktury, nie potrzebują prawa do wystawiania. Im węższy zakres, tym mniejsze szkody, gdyby dane dostępowe wyciekły.</div>
+
+    <h2>Najczęstsze problemy przy pobieraniu faktur</h2>
+    <ul>
+      <li><strong>„Brak uprawnień”</strong> – osoba albo token nie ma dostępu do faktur w kontekście tej firmy. Sprawdź uprawnienia w Aplikacji Podatnika.</li>
+      <li><strong>Token działa na teście, a na produkcji nie</strong> – to dwa osobne środowiska i każde ma swoje tokeny.</li>
+      <li><strong>Faktury „brakuje”, choć kontrahent ją wysłał</strong> – szukasz po dacie wystawienia, a faktura weszła do KSeF później. Filtruj po dacie przyjęcia do systemu.</li>
+      <li><strong>Te same faktury pobierają się dwa razy</strong> – automatyzacja nie pamięta, co już pobrała. Zapisuj numery KSeF pobranych faktur i pomijaj powtórki.</li>
+    </ul>
+
+    <h2>Co zrobić z fakturą po pobraniu</h2>
+    <p>Pobrany plik XML to oryginał faktury. Warto zachować go w niezmienionej postaci, a obok zapisać czytelną wersję PDF dla ludzi. W prostym procesie wygląda to tak:</p>
+    <ol>
+      <li>Zapisz XML w archiwum z numerem KSeF w nazwie pliku.</li>
+      <li>Wyciągnij najważniejsze pola: sprzedawca, NIP, kwota brutto, termin płatności, numer rachunku.</li>
+      <li>Sprawdź sprzedawcę i rachunek na Białej Liście VAT, zanim zlecisz przelew.</li>
+      <li>Przekaż dane dalej: do programu księgowego, arkusza płatności albo na e-mail osoby, która akceptuje koszty.</li>
+    </ol>
+
     <hr class="divider">
 
     <h2>Podsumowanie</h2>
@@ -241,6 +352,14 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
         <div class="faq-q">Czy do pobierania faktur przez API potrzebny jest certyfikat?</div>
         <div class="faq-a">Nie. Wystarczy token KSeF z uprawnieniem do przeglądania faktur. Ministerstwo Finansów zdecydowało, że tokeny zostaną utrzymane bezterminowo.</div>
       </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy biuro rachunkowe może pobierać moje faktury z KSeF?</div>
+        <div class="faq-a">Tak. Nadajesz biuru uprawnienie do dostępu do faktur w Aplikacji Podatnika. Biuro nie dostaje przy tym prawa do wystawiania faktur, chyba że je również nadasz.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy pobrana faktura w PDF wystarczy do archiwum?</div>
+        <div class="faq-a">Oryginałem jest plik XML. PDF to tylko czytelna wizualizacja, dlatego warto przechowywać XML, a PDF traktować jako kopię dla ludzi.</div>
+      </div>
     </div>
 
   </div>
@@ -248,7 +367,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-logo-sm">Integracje <span>Biznesowe</span></div>
     <div class="footer-links-sm">
       <a href="../">Strona główna</a>
       <a href="../blog">Blog</a>

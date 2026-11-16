@@ -32,6 +32,62 @@
   "inLanguage": "pl-PL"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Czym jest automatyzacja procesów biznesowych?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Automatyzacja procesów biznesowych (BPA) to przeniesienie powtarzalnych, opartych na regułach zadań z człowieka na system. Narzędzia takie jak n8n i Make.com łączą aplikacje, których już używasz, w automatyczne przepływy pracy — bez konieczności pisania kodu."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Ile kosztuje wdrożenie automatyzacji w małej firmie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Pierwsze automatyzacje można wdrożyć za kilkaset złotych jednorazowo. Pakiet Starter w Integracje Biznesowe kosztuje 490 zł i obejmuje automatyzację jednego procesu wraz z dokumentacją i 14 dniami wsparcia. Koszty rosną wraz ze złożonością procesów."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy automatyzacja wymaga umiejętności programowania?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nie. Narzędzia takie jak n8n i Make.com mają wizualny edytor — łączysz aplikacje poprzez przeciąganie bloków. Programowanie może być przydatne przy zaawansowanych scenariuszach, ale nie jest wymagane na starcie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jakie procesy można zautomatyzować z n8n lub Make.com?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Obsługę leadów i CRM, fakturowanie, powiadomienia e-mail i Telegram, raporty tygodniowe, onboarding klientów, zarządzanie opiniami Google Maps, weryfikację kontrahentów NIP, publikacje w mediach społecznościowych i wiele innych."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Od czego zacząć automatyzację w małej firmie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Przez tydzień zapisuj powtarzalne czynności zajmujące ponad 2 minuty. Wybierz jeden konkretny, dobrze zdefiniowany proces. Zmapuj każdy krok. Dopiero potem wybierz narzędzie i wdrożoną. Zaczynaj od prostego — nie od razu od automatyzacji całej firmy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy automatyzacja zagraża bezpieczeństwu danych firmy?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nie, jeśli jest dobrze zaprojektowana. Dane między aplikacjami są szyfrowane. n8n można hostować na własnym serwerze, co daje pełną kontrolę nad danymi. Dobrze skonfigurowana automatyzacja jest bezpieczniejsza niż procesy zależne wyłącznie od ludzkich działań."
+      }
+    }
+  ]
+}
+</script>
 <title>Automatyzacja procesów biznesowych — od czego zacząć? | Integracje Biznesowe</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -116,22 +172,35 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 <body>
 <div class="bg-grid"></div>
 
-<nav id="navbar">
-  <a href="../" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+<nav id="navbar" aria-label="Nawigacja główna">
+  <a href="../" class="nav-logo" aria-label="Integracje Biznesowe — strona główna"><div class="nav-logo-dot"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5" fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5" fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg></div>Integracje <span>Biznesowe</span></a>
   <div class="nav-links">
     <a href="../#usługi" class="nav-link">Usługi</a>
+    <a href="../#cennik" class="nav-link">Cennik</a>
+    <a href="../#oferta" class="nav-link">Oferta</a>
     <a href="../#jak-dziala" class="nav-link">Jak działam</a>
     <a href="../blog" class="nav-link">Blog</a>
     <a href="../#kontakt" class="nav-link">Kontakt</a>
   </div>
-  <a href="../#kontakt" class="btn-nav">Napisz do mnie</a>
-  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+  <a href="../#cennik" class="btn-nav">Zobacz cennik</a>
+  <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="../#usługi" class="mobile-link">Usługi</a>
+  <a href="../#cennik" class="mobile-link">Cennik</a>
+  <a href="../#oferta" class="mobile-link">Oferta</a>
   <a href="../#jak-dziala" class="mobile-link">Jak działam</a>
   <a href="../blog" class="mobile-link">Blog</a>
   <a href="../#kontakt" class="mobile-link">Kontakt</a>
+  <a href="../#cennik" class="mobile-link">Zobacz cennik →</a>
 </div>
 
 <header class="article-header">
@@ -313,7 +382,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-logo-sm">Integracje <span>Biznesowe</span></div>
     <div class="footer-links-sm">
       <a href="../">Strona główna</a>
       <a href="../blog">Blog</a>

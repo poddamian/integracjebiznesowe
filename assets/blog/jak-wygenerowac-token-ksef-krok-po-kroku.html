@@ -25,6 +25,62 @@
   "inLanguage": "pl-PL"
 }
 </script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Gdzie wygenerować token KSeF?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "W Aplikacji Podatnika KSeF 2.0 pod adresem ap.ksef.mf.gov.pl, w menu Tokeny → Generuj token."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Jakie uprawnienia nadać tokenowi do pobierania faktur?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Wystarczy „przeglądanie faktur”. Uprawnienie do wystawiania faktur nadaj tylko wtedy, gdy program ma też wysyłać Twoje faktury sprzedażowe."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Zgubiłem token KSeF. Co teraz?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tokena nie da się ponownie wyświetlić. Unieważnij go w Aplikacji Podatnika KSeF i wygeneruj nowy, a potem wklej nowy token w programie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy tokeny KSeF przestaną działać w 2027 roku?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Nie. Ministerstwo Finansów pierwotnie planowało wycofanie tokenów z końcem 2026 roku, ale zdecydowało, że zostaną utrzymane bezterminowo."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy mogę mieć kilka tokenów KSeF jednocześnie?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Tak. Możesz wygenerować osobny token dla każdego programu lub integracji, z innym zakresem uprawnień, i unieważniać je niezależnie."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy mogę wysłać token biuru rachunkowemu?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Lepiej tego nie robić. Bezpieczniej jest nadać biuru uprawnienia w Aplikacji Podatnika, a biuro wygeneruje własny token."
+      }
+    }
+  ]
+}
+</script>
 <title>Jak wygenerować token KSeF krok po kroku | Integracje Biznesowe</title>
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -102,27 +158,44 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 .footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
 .footer-links-sm a:hover{color:var(--lime-text)}
 .footer-cr{font-size:12px;color:var(--text3)}
+.table-wrap{overflow-x:auto;margin:28px 0}
+.compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.compare-table th,.compare-table td{border:1px solid var(--border);padding:10px 14px;text-align:left;vertical-align:top}
+.compare-table th{background:var(--surface);font-weight:600}
 </style>
 </head>
 <body>
 <div class="bg-grid"></div>
 
-<nav id="navbar">
-  <a href="../" class="nav-logo"><div class="nav-logo-dot">⚡</div>Integracje <span>Biznesowe</span></a>
+<nav id="navbar" aria-label="Nawigacja główna">
+  <a href="../" class="nav-logo" aria-label="Integracje Biznesowe — strona główna"><div class="nav-logo-dot"><svg width="16" height="16" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="16" cy="16" r="4.5" fill="#06070d"/>
+        <circle cx="16" cy="5"  r="2.5" fill="#06070d"/>
+        <circle cx="6"  cy="26" r="2.5" fill="#06070d"/>
+        <circle cx="26" cy="26" r="2.5" fill="#06070d"/>
+        <line x1="16" y1="11.5" x2="16" y2="7.5"  stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="13" y1="19.5" x2="8"  y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="19" y1="19.5" x2="24" y2="23.5" stroke="#06070d" stroke-width="2.5" stroke-linecap="round"/>
+      </svg></div>Integracje <span>Biznesowe</span></a>
   <div class="nav-links">
     <a href="../#usługi" class="nav-link">Usługi</a>
+    <a href="../#cennik" class="nav-link">Cennik</a>
+    <a href="../#oferta" class="nav-link">Oferta</a>
     <a href="../#jak-dziala" class="nav-link">Jak działam</a>
     <a href="../blog" class="nav-link">Blog</a>
     <a href="../#kontakt" class="nav-link">Kontakt</a>
   </div>
-  <a href="../#kontakt" class="btn-nav">Napisz do mnie</a>
+  <a href="../#cennik" class="btn-nav">Zobacz cennik</a>
   <button class="hamburger" id="hamburger" aria-label="Menu"><span></span><span></span><span></span></button>
 </nav>
 <div class="mobile-menu" id="mobileMenu">
   <a href="../#usługi" class="mobile-link">Usługi</a>
+  <a href="../#cennik" class="mobile-link">Cennik</a>
+  <a href="../#oferta" class="mobile-link">Oferta</a>
   <a href="../#jak-dziala" class="mobile-link">Jak działam</a>
   <a href="../blog" class="mobile-link">Blog</a>
   <a href="../#kontakt" class="mobile-link">Kontakt</a>
+  <a href="../#cennik" class="mobile-link">Zobacz cennik →</a>
 </div>
 
 <header class="article-header">
@@ -130,7 +203,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <a href="../blog" class="back-link">← Wróć do bloga</a>
     <div class="article-tag">KSeF</div>
     <h1 class="article-title">Jak wygenerować token KSeF krok po kroku</h1>
-    <div class="article-meta">8 listopada 2026 · 6 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
+    <div class="article-meta">8 listopada 2026 · 9 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
   </div>
 </header>
 
@@ -205,6 +278,32 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
       <li><strong>Zgubiony token</strong> – nie da się go odzyskać. Unieważnij stary i wygeneruj nowy.</li>
     </ul>
 
+
+    <h2>Token czy certyfikat: porównanie</h2>
+    <div class="table-wrap"><table class="compare-table"><thead><tr><th></th><th>Token KSeF</th><th>Certyfikat KSeF</th></tr></thead><tbody><tr><td>Do czego</td><td>logowanie programu lub integracji w API</td><td>logowanie w API i wystawianie faktur w trybie offline</td></tr><tr><td>Ważność</td><td>bez terminu, do unieważnienia</td><td>maksymalnie 2 lata</td></tr><tr><td>Zakres</td><td>tylko zaznaczone uprawnienia</td><td>zgodnie z uprawnieniami właściciela</td></tr><tr><td>Kiedy wybrać</td><td>pobieranie faktur, prosta integracja</td><td>gdy potrzebujesz trybu offline albo program tego wymaga</td></tr></tbody></table></div>
+
+    <h2>Jakie uprawnienia zaznaczyć przy generowaniu tokena</h2>
+    <p>Przy tworzeniu tokena wybierasz, co wolno zrobić programowi, który się nim posłuży. Zasada jest prosta: zaznacz tylko to, czego dana integracja naprawdę potrzebuje.</p>
+    <ul>
+      <li><strong>Tylko pobieranie faktur zakupowych</strong> – wystarczy dostęp do faktur.</li>
+      <li><strong>Program wysyła faktury sprzedażowe</strong> – potrzebne jest wystawianie faktur.</li>
+      <li><strong>Program robi jedno i drugie</strong> – rozważ dwa osobne tokeny. Łatwiej wtedy wyłączyć jedną funkcję bez psucia drugiej.</li>
+    </ul>
+    <div class="callout"><strong>Dobra praktyka:</strong> jeden token na jedną integrację. Gdy zmieniasz program albo kończysz współpracę z dostawcą, unieważniasz tylko jego token, a reszta działa dalej.</div>
+
+    <h2>Token dla biura rachunkowego lub dostawcy programu</h2>
+    <p>Nie wysyłaj nikomu tokena wygenerowanego na własne konto. Lepiej nadać biuru rachunkowemu uprawnienia w Aplikacji Podatnika, a biuro wygeneruje token we własnym kontekście. Dzięki temu w KSeF widać, kto działa w imieniu firmy, a odebranie dostępu sprowadza się do jednego kliknięcia.</p>
+    <p>Jeśli dostawca integracji prosi o token, przekaż go bezpiecznym kanałem, np. menedżerem haseł z udostępnianiem. Nigdy w treści maila ani w czacie.</p>
+
+    <h2>Kiedy unieważnić token</h2>
+    <ul>
+      <li>Pracownik, który znał token, odchodzi z firmy.</li>
+      <li>Zmieniasz program księgowy albo dostawcę integracji.</li>
+      <li>Token trafił tam, gdzie nie powinien: do maila, repozytorium kodu, zrzutu ekranu.</li>
+      <li>Robisz okresowy przegląd i widzisz token, którego nikt nie rozpoznaje.</li>
+    </ul>
+    <p>Unieważnienie działa od razu. Program, który korzystał z tokena, przestanie się łączyć, więc najpierw wygeneruj nowy i podmień go w ustawieniach, a dopiero potem unieważnij stary.</p>
+
     <hr class="divider">
 
     <h2>Podsumowanie</h2>
@@ -238,6 +337,14 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
         <div class="faq-q">Czy tokeny KSeF przestaną działać w 2027 roku?</div>
         <div class="faq-a">Nie. Ministerstwo Finansów pierwotnie planowało wycofanie tokenów z końcem 2026 roku, ale zdecydowało, że zostaną utrzymane bezterminowo.</div>
       </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy mogę mieć kilka tokenów KSeF jednocześnie?</div>
+        <div class="faq-a">Tak. Możesz wygenerować osobny token dla każdego programu lub integracji, z innym zakresem uprawnień, i unieważniać je niezależnie.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy mogę wysłać token biuru rachunkowemu?</div>
+        <div class="faq-a">Lepiej tego nie robić. Bezpieczniej jest nadać biuru uprawnienia w Aplikacji Podatnika, a biuro wygeneruje własny token.</div>
+      </div>
     </div>
 
   </div>
@@ -245,7 +352,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 
 <footer>
   <div class="footer-inner">
-    <div class="footer-logo-sm">⚡ Integracje <span>Biznesowe</span></div>
+    <div class="footer-logo-sm">Integracje <span>Biznesowe</span></div>
     <div class="footer-links-sm">
       <a href="../">Strona główna</a>
       <a href="../blog">Blog</a>
