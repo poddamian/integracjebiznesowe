@@ -15,14 +15,14 @@ Dlatego model AI **nie pisze całej strony**. Zwraca tylko treść i metadane w 
 2. **Plan** (Google Sheets) – pierwszy wiersz ze statusem „do napisania”. Kolumny: `tydzien`, `data` (RRRR-MM-DD), `tytul`, `fraza_glowna`, `long_tail`, `versus`, `autorska_tresc`, `cta_url` (np. `/ksef`), `slug`.
 3. **SERP** (opcjonalnie, DataForSEO lub Treg) – top 10 i pytania z sekcji „Podobne pytania” dla `fraza_glowna`. Sklej je w jeden tekst `serp_kontekst`.
 4. **AI** (OpenAI lub Anthropic) – wiadomość systemowa i użytkownika poniżej. Odpowiedź w trybie JSON, temperatura 0,5, limit tokenów wyjściowych min. 8 000.
-5. **Szablon / Pobierz blog / Pobierz sitemap / Pobierz llms** (4 × GitHub › File › Get, branch `main`, „As Binary Property” wyłączone) – pliki `n8n/szablon-wpisu.html`, `assets/blog.html`, `assets/sitemap.xml`, `assets/llms.txt`.
+5. **Szablon / Pobierz blog / Pobierz sitemap / Pobierz llms** (4 × GitHub › File › Get, branch `master`, „As Binary Property” wyłączone) – pliki `n8n/szablon-wpisu.html`, `assets/blog.html`, `assets/sitemap.xml`, `assets/llms.txt`.
 6. **Złóż wpis** (Code) – wklej `kod-n8n-zloz-wpis.js`. Nazwy węzłów w kodzie muszą się zgadzać z nazwami w workflow.
-7. **Utwórz gałąź** (HTTP Request, GitHub API) – `GET /repos/poddamian/integracjebiznesowe/git/ref/heads/main`, a potem `POST /repos/poddamian/integracjebiznesowe/git/refs` z `ref: refs/heads/{{ $json.branch }}` i SHA z main.
+7. **Utwórz gałąź** (HTTP Request, GitHub API) – `GET /repos/poddamian/integracjebiznesowe/git/ref/heads/master`, a potem `POST /repos/poddamian/integracjebiznesowe/git/refs` z `ref: refs/heads/{{ $json.branch }}` i SHA z master.
 8. **Zapisz pliki** (GitHub › File › Create dla nowego wpisu, Edit dla trzech pozostałych, branch = `{{ $json.branch }}`). Commit: `Wpis: {{ $json.title }}`.
-9. **Pull request** (HTTP Request) – `POST /repos/poddamian/integracjebiznesowe/pulls`, `head` = gałąź, `base` = `main`. W opisie wklej listę `todo`, czyli miejsca do uzupełnienia.
+9. **Pull request** (HTTP Request) – `POST /repos/poddamian/integracjebiznesowe/pulls`, `head` = gałąź, `base` = `master`. W opisie wklej listę `todo`, czyli miejsca do uzupełnienia.
 10. **Arkusz + Telegram** – status „szkic w PR”, link do PR, powiadomienie.
 
-Publikujesz, scalając PR po przeczytaniu i dopisaniu własnych danych. Jeśli Cloudflare buduje stronę automatycznie z gałęzi `main` (Workers Builds podpięte do GitHuba), wpis wejdzie sam. Jeśli wdrażasz ręcznie `wrangler deploy`, po scaleniu uruchom go jak zwykle. W repozytorium nie ma GitHub Actions, więc sprawdź w panelu Cloudflare, który wariant masz.
+Publikujesz, scalając PR po przeczytaniu i dopisaniu własnych danych. Jeśli Cloudflare buduje stronę automatycznie z gałęzi `master` (Workers Builds podpięte do GitHuba), wpis wejdzie sam. Jeśli wdrażasz ręcznie `wrangler deploy`, po scaleniu uruchom go jak zwykle. W repozytorium nie ma GitHub Actions, więc sprawdź w panelu Cloudflare, który wariant masz.
 
 Token GitHub do n8n: fine-grained, tylko to repozytorium, uprawnienia „Contents: Read and write” i „Pull requests: Read and write”.
 
