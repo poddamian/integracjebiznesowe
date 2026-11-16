@@ -69,6 +69,22 @@
         "@type": "Answer",
         "text": "Każda odpowiedź zawiera unikalny identyfikator zapytania (requestId) z datą. Warto przechowywać go razem z fakturą jako potwierdzenie weryfikacji."
       }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy próg 15 000 zł liczy się od przelewu czy od faktury?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Od wartości całej transakcji. Jeśli faktura przekracza 15 000 zł brutto, każda rata musi trafić na rachunek z Białej Listy, nawet jeśli pojedyncze przelewy są mniejsze."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Czy zapłata w split payment zwalnia z obowiązku sprawdzania rachunku?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Zapłata w mechanizmie podzielonej płatności chroni przed sankcjami za płatność na rachunek spoza wykazu. Sprawdzanie kontrahenta nadal jest dobrą praktyką."
+      }
     }
   ]
 }
@@ -153,6 +169,10 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
 .footer-links-sm a{color:var(--text3);text-decoration:none;font-size:12px;transition:color .2s}
 .footer-links-sm a:hover{color:var(--lime-text)}
 .footer-cr{font-size:12px;color:var(--text3)}
+.table-wrap{overflow-x:auto;margin:28px 0}
+.compare-table{width:100%;border-collapse:collapse;font-size:15px}
+.compare-table th,.compare-table td{border:1px solid var(--border);padding:10px 14px;text-align:left;vertical-align:top}
+.compare-table th{background:var(--surface);font-weight:600}
 </style>
 </head>
 <body>
@@ -194,7 +214,7 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     <a href="../blog" class="back-link">← Wróć do bloga</a>
     <div class="article-tag">KSeF · Biała Lista VAT</div>
     <h1 class="article-title">Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</h1>
-    <div class="article-meta">8 listopada 2026 · 7 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
+    <div class="article-meta">8 listopada 2026 · 9 min czytania · <a href="../" style="color:inherit;border:none">Integracje Biznesowe</a></div>
   </div>
 </header>
 
@@ -274,6 +294,26 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
     </ol>
     <p>Księgowa nie musi niczego sprawdzać ręcznie – dostaje gotową listę, na której od razu widać, które faktury wymagają uwagi. Tak działa <a href="../ksef">automatyczne pobieranie faktur zakupowych z KSeF</a>. Jeśli dopiero zaczynasz, przeczytaj też <a href="jak-pobrac-faktury-z-ksef-3-sposoby">jak pobrać faktury z KSeF – 3 sposoby</a>.</p>
 
+
+    <h2>Wyszukiwarka, API czy plik płaski: porównanie</h2>
+    <div class="table-wrap"><table class="compare-table"><thead><tr><th></th><th>Wyszukiwarka WWW</th><th>API Wykazu</th><th>Plik płaski</th></tr></thead><tbody><tr><td>Jak działa</td><td>ręczne wpisanie NIP lub rachunku</td><td>zapytanie z programu lub automatyzacji</td><td>codzienny plik do pobrania i sprawdzania u siebie</td></tr><tr><td>Limity</td><td>praca ręczna</td><td>dzienne limity zapytań</td><td>bez limitu pobrań</td></tr><tr><td>Dla kogo</td><td>pojedyncze przelewy</td><td>bieżąca weryfikacja kilkudziesięciu do kilkuset pozycji</td><td>duża baza kontrahentów, biura rachunkowe</td></tr></tbody></table></div>
+
+    <h2>Plik płaski – gdy zapytań jest bardzo dużo</h2>
+    <p>Ministerstwo Finansów udostępnia raz dziennie <strong>plik płaski</strong>: skompresowane archiwum z danymi Wykazu podatników VAT i plikiem sumy kontrolnej. Nie zawiera numerów rachunków jawnym tekstem, tylko ich skróty (hashe) połączone z NIP-em i datą. Żeby sprawdzić kontrahenta, liczysz taki sam skrót dla jego NIP-u i rachunku i szukasz go w pliku.</p>
+    <ul>
+      <li>Potwierdza wystąpienie pary <strong>NIP + rachunek</strong> na dany dzień.</li>
+      <li>Obsługuje także <strong>rachunki wirtualne</strong>, częste przy dużych dostawcach.</li>
+      <li>Nie ma limitu pobrań, a archiwa są dostępne z ostatnich 30 dni.</li>
+    </ul>
+    <p>W praktyce plik płaski sprawdza się jako podstawa przy dużej liczbie przelewów, a API jako uzupełnienie, gdy potrzebujesz potwierdzenia w dniu zlecenia przelewu.</p>
+
+    <h2>Próg 15 000 zł dotyczy transakcji, nie przelewu</h2>
+    <p>To częsty błąd. Jeśli usługa kosztuje 18 000 zł brutto i płacisz ją w trzech ratach po 6 000 zł, każda rata musi trafić na rachunek z Białej Listy. Liczy się wartość całej transakcji, a nie pojedynczej płatności. Automatyzacja powinna więc sprawdzać wartość faktury, a nie kwotę przelewu.</p>
+
+    <h2>Mechanizm podzielonej płatności jako zabezpieczenie</h2>
+    <p>Zapłata w <strong>mechanizmie podzielonej płatności (MPP, split payment)</strong> chroni przed sankcjami nawet wtedy, gdy rachunku nie ma w wykazie. Jeśli więc automatyzacja oznaczy rachunek na czerwono, a przelew jest pilny, jedną z opcji jest zapłata w MPP. Druga to zapłata zwykłym przelewem i złożenie ZAW-NR w ciągu 7 dni.</p>
+    <div class="callout"><strong>Dowód na później:</strong> zapisuj wynik każdej weryfikacji razem z datą i identyfikatorem zapytania. W razie kontroli pokażesz, że rachunek był w wykazie w dniu zlecenia przelewu.</div>
+
     <hr class="divider">
 
     <h2>Podsumowanie</h2>
@@ -311,6 +351,14 @@ footer{background:var(--bg);border-top:1px solid var(--border);padding:36px 0;po
       <div class="faq-item">
         <div class="faq-q">Czy wynik z API jest dowodem sprawdzenia kontrahenta?</div>
         <div class="faq-a">Każda odpowiedź zawiera unikalny identyfikator zapytania (requestId) z datą. Warto przechowywać go razem z fakturą jako potwierdzenie weryfikacji.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy próg 15 000 zł liczy się od przelewu czy od faktury?</div>
+        <div class="faq-a">Od wartości całej transakcji. Jeśli faktura przekracza 15 000 zł brutto, każda rata musi trafić na rachunek z Białej Listy, nawet jeśli pojedyncze przelewy są mniejsze.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Czy zapłata w split payment zwalnia z obowiązku sprawdzania rachunku?</div>
+        <div class="faq-a">Zapłata w mechanizmie podzielonej płatności chroni przed sankcjami za płatność na rachunek spoza wykazu. Sprawdzanie kontrahenta nadal jest dobrą praktyką.</div>
       </div>
     </div>
 
