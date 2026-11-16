@@ -233,6 +233,8 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .post-thumb{width:100%;aspect-ratio:4/3;border-radius:var(--r);background:linear-gradient(135deg,#dde3f5,#c8d5f0);display:flex;align-items:center;justify-content:center;overflow:hidden}
 .post-thumb img{width:100%;height:100%;object-fit:cover}
 .post-thumb svg{width:36px;height:36px;stroke:#7b93cc;stroke-width:1.5;fill:none}
+html[lang="pl"] .post-card.non-pl{display:none}
+html:not([lang="pl"]) .pl-only{display:none}
 .post-meta{font-size:12px;color:var(--text3);margin-bottom:8px}
 .post-title{font-family:var(--fd);font-size:19px;font-weight:700;margin-bottom:10px;line-height:1.32}
 .post-excerpt{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px}
@@ -283,6 +285,7 @@ footer{background:#111827;padding:60px 0 32px}
 /* ── OFERTA ── */
 #oferta{padding:96px 0;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .oferta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:24px}
+.oferta-grid:has(> .oferta-card:only-child){grid-template-columns:minmax(0,420px);justify-content:center}
 @media(max-width:900px) and (min-width:581px){.oferta-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:580px){.oferta-grid{grid-template-columns:1fr}}
 .oferta-card{background:#fff;border:1px solid var(--border);border-radius:var(--rlg);padding:28px 24px;display:flex;flex-direction:column;position:relative;transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s}
@@ -611,7 +614,7 @@ footer{background:#111827;padding:60px 0 32px}
 </section>
 
 <!-- CENNIK -->
-<!-- Stripe links: zamień STRIPE_URL_STARTER / STRIPE_URL_GROWTH / STRIPE_URL_PRO na swoje linki z buy.stripe.com -->
+<!-- Przyciski pakietów otwierają e-mail z zamówieniem. Gdy będą linki płatności Stripe, podmień href (data-pakiet) na https://buy.stripe.com/... i dodaj target="_blank" rel="noopener" -->
 <section id="cennik" aria-labelledby="cennik-heading">
   <div class="container">
     <div class="sec-header center reveal">
@@ -638,7 +641,7 @@ footer{background:#111827;padding:60px 0 32px}
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_s4">Dokumentacja wdrożenia</span></li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_s5">14 dni wsparcia</span></li>
         </ul>
-        <a href="STRIPE_URL_STARTER" class="pricing-cta" target="_blank" rel="noopener" data-i18n="pricing_cta_1">Zacznij od Starter →</a>
+        <a href="mailto:biuro@integracjebiznesowe.pl?subject=Zam%C3%B3wienie%20pakietu%20Starter&amp;body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20zam%C3%B3wi%C4%87%20pakiet%20Starter.%20Proces%2C%20kt%C3%B3ry%20chc%C4%99%20zautomatyzowa%C4%87%3A%0A%0A" class="pricing-cta" data-pakiet="Starter" data-i18n="pricing_cta_1">Zacznij od Starter →</a>
       </div>
 
       <!-- GROWTH (wyróżniony) -->
@@ -659,7 +662,7 @@ footer{background:#111827;padding:60px 0 32px}
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_g4">Powiadomienia e-mail / Telegram</span></li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_g5">30 dni wsparcia</span></li>
         </ul>
-        <a href="STRIPE_URL_GROWTH" class="pricing-cta" target="_blank" rel="noopener" data-i18n="pricing_cta_2">Wybierz Growth →</a>
+        <a href="mailto:biuro@integracjebiznesowe.pl?subject=Zam%C3%B3wienie%20pakietu%20Growth&amp;body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20zam%C3%B3wi%C4%87%20pakiet%20Growth.%20Proces%2C%20kt%C3%B3ry%20chc%C4%99%20zautomatyzowa%C4%87%3A%0A%0A" class="pricing-cta" data-pakiet="Growth" data-i18n="pricing_cta_2">Wybierz Growth →</a>
       </div>
 
       <!-- PRO -->
@@ -679,7 +682,7 @@ footer{background:#111827;padding:60px 0 32px}
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_p4">SLA — odpowiedź w 24h</span></li>
           <li><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span data-i18n="f_p5">90 dni wsparcia</span></li>
         </ul>
-        <a href="STRIPE_URL_PRO" class="pricing-cta" target="_blank" rel="noopener" data-i18n="pricing_cta_3">Wybierz Pro →</a>
+        <a href="mailto:biuro@integracjebiznesowe.pl?subject=Zam%C3%B3wienie%20pakietu%20Pro&amp;body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20zam%C3%B3wi%C4%87%20pakiet%20Pro.%20Proces%2C%20kt%C3%B3ry%20chc%C4%99%20zautomatyzowa%C4%87%3A%0A%0A" class="pricing-cta" data-pakiet="Pro" data-i18n="pricing_cta_3">Wybierz Pro →</a>
       </div>
 
     </div>
@@ -695,7 +698,34 @@ footer{background:#111827;padding:60px 0 32px}
       <h2 class="sec-title" id="blog-heading" data-i18n-html="sec_title_blog">Piszę o automatyzacji <em>dla małych firm</em></h2>
       <p class="sec-sub" data-i18n="sec_sub_blog">Praktyczne wpisy o automatyzacji procesów — bez żargonu, krok po kroku.</p>
     </div>
-    <a href="blog/n8n-vs-makecom-2025-ktore-narzedzie-wybrac-do-automatyzacji" class="post-card reveal">
+    <a href="blog/jak-pobrac-faktury-z-ksef-3-sposoby" class="post-card pl-only reveal">
+      <div class="post-thumb" style="font-size:44px" aria-hidden="true">📑</div>
+      <div>
+        <div class="post-meta">8 listopada 2026 · 7 min czytania</div>
+        <h3 class="post-title">Jak pobrać faktury z KSeF – 3 sposoby</h3>
+        <p class="post-excerpt">Ręcznie w Aplikacji Podatnika KSeF 2.0, przez program księgowy albo automatycznie przez API KSeF. Plusy, minusy i instrukcja dla każdego sposobu.</p>
+        <div class="post-link">Czytaj artykuł →</div>
+      </div>
+    </a>
+    <a href="blog/jak-wygenerowac-token-ksef-krok-po-kroku" class="post-card pl-only reveal">
+      <div class="post-thumb" style="font-size:44px" aria-hidden="true">🔑</div>
+      <div>
+        <div class="post-meta">8 listopada 2026 · 6 min czytania</div>
+        <h3 class="post-title">Jak wygenerować token KSeF krok po kroku</h3>
+        <p class="post-excerpt">Token KSeF w kilka minut: logowanie do Aplikacji Podatnika, wybór uprawnień i bezpieczne przechowywanie. Plus odpowiedź, czy tokeny zostaną wycofane.</p>
+        <div class="post-link">Czytaj artykuł →</div>
+      </div>
+    </a>
+    <a href="blog/jak-sprawdzic-kontrahenta-na-bialej-liscie-vat-automatycznie" class="post-card pl-only reveal">
+      <div class="post-thumb" style="font-size:44px" aria-hidden="true">✅</div>
+      <div>
+        <div class="post-meta">8 listopada 2026 · 7 min czytania</div>
+        <h3 class="post-title">Jak sprawdzić kontrahenta na Białej Liście VAT automatycznie</h3>
+        <p class="post-excerpt">Bezpłatne API Ministerstwa Finansów: przykłady zapytań, limity dzienne i jak automatycznie sprawdzać każdego sprzedawcę z faktur KSeF.</p>
+        <div class="post-link">Czytaj artykuł →</div>
+      </div>
+    </a>
+    <a href="blog/n8n-vs-makecom-2025-ktore-narzedzie-wybrac-do-automatyzacji" class="post-card non-pl reveal">
       <div class="post-thumb" style="padding:0;overflow:hidden">
         <img src="blog/images/n8n-vs-makecom-2025.svg" alt="n8n vs Make.com porównanie 2025" style="width:100%;height:100%;object-fit:cover" loading="lazy">
       </div>
@@ -706,7 +736,7 @@ footer{background:#111827;padding:60px 0 32px}
         <div class="post-link" data-i18n="post_link">Czytaj artykuł →</div>
       </div>
     </a>
-    <a href="blog/czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp" class="post-card reveal">
+    <a href="blog/czym-jest-agent-ai-dla-firmy-definicja-typy-i-zastosowania-w-msp" class="post-card non-pl reveal">
       <div class="post-thumb">
         <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><rect x="8" y="18" width="48" height="30" rx="7" stroke="#7b93cc" stroke-width="2"/><circle cx="21" cy="33" r="4" stroke="#7b93cc" stroke-width="2"/><circle cx="43" cy="33" r="4" stroke="#7b93cc" stroke-width="2"/><path d="M27 33h10" stroke="#c8f135" stroke-width="2.5" stroke-linecap="round"/><path d="M32 18v-7M28 11h8" stroke="#7b93cc" stroke-width="2" stroke-linecap="round"/><path d="M18 48v4M46 48v4" stroke="#7b93cc" stroke-width="2" stroke-linecap="round"/></svg>
       </div>
@@ -717,7 +747,7 @@ footer{background:#111827;padding:60px 0 32px}
         <div class="post-link" data-i18n="post_link">Czytaj artykuł →</div>
       </div>
     </a>
-    <a href="blog/automatyzacja-procesow-biznesowych-od-czego-zaczac" class="post-card reveal">
+    <a href="blog/automatyzacja-procesow-biznesowych-od-czego-zaczac" class="post-card non-pl reveal">
       <div class="post-thumb">
         <img src="picture/cover-artykulu.png" alt="Automatyzacja procesów biznesowych dla małych firm" loading="lazy">
       </div>
@@ -728,6 +758,7 @@ footer{background:#111827;padding:60px 0 32px}
         <div class="post-link" data-i18n="post_link">Czytaj artykuł →</div>
       </div>
     </a>
+    <p class="pl-only" style="text-align:center;margin-top:28px"><a href="blog" class="post-link" style="text-decoration:none">Zobacz wszystkie wpisy →</a></p>
   </div>
 </section>
 
