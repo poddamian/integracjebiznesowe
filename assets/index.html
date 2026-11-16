@@ -234,7 +234,7 @@ nav.scrolled{background:rgba(255,255,255,0.97);box-shadow:var(--sh-sm)}
 .post-thumb img{width:100%;height:100%;object-fit:cover}
 .post-thumb svg{width:36px;height:36px;stroke:#7b93cc;stroke-width:1.5;fill:none}
 html[lang="pl"] .post-card.non-pl{display:none}
-html:not([lang="pl"]) .pl-only{display:none}
+html:not([lang="pl"]) .pl-only{display:none!important}
 .post-meta{font-size:12px;color:var(--text3);margin-bottom:8px}
 .post-title{font-family:var(--fd);font-size:19px;font-weight:700;margin-bottom:10px;line-height:1.32}
 .post-excerpt{font-size:14px;color:var(--text2);line-height:1.7;margin-bottom:14px}
@@ -394,7 +394,7 @@ footer{background:#111827;padding:60px 0 32px}
   <div class="nav-links" role="list">
     <a href="#usługi"     class="nav-link" role="listitem" data-i18n="nav_services">Usługi</a>
     <a href="#cennik"     class="nav-link" role="listitem" data-i18n="nav_pricing">Cennik</a>
-    <a href="#oferta"     class="nav-link" role="listitem">Oferta</a>
+    <a href="#oferta"     class="nav-link pl-only" role="listitem">Oferta</a>
     <a href="#jak-dziala" class="nav-link" role="listitem" data-i18n="nav_process">Jak działam</a>
     <a href="blog"   class="nav-link" role="listitem" data-i18n="nav_blog">Blog</a>
     <a href="#kontakt"    class="nav-link" role="listitem" data-i18n="nav_contact">Kontakt</a>
@@ -423,7 +423,7 @@ footer{background:#111827;padding:60px 0 32px}
 <div class="mobile-menu" id="mobileMenu" aria-hidden="true" role="dialog" aria-label="Menu mobilne">
   <a href="#usługi"     class="mobile-link" data-i18n="nav_services">Usługi</a>
   <a href="#cennik"     class="mobile-link" data-i18n="nav_pricing">Cennik</a>
-  <a href="#oferta"     class="mobile-link">Oferta</a>
+  <a href="#oferta"     class="mobile-link pl-only">Oferta</a>
   <a href="#jak-dziala" class="mobile-link" data-i18n="nav_process">Jak działam</a>
   <a href="blog"   class="mobile-link" data-i18n="nav_blog">Blog</a>
   <a href="#kontakt"    class="mobile-link" data-i18n="nav_contact">Kontakt</a>
@@ -554,7 +554,7 @@ footer{background:#111827;padding:60px 0 32px}
 </section>
 
 <!-- OFERTA -->
-<section id="oferta" aria-labelledby="oferta-heading">
+<section id="oferta" class="pl-only" aria-labelledby="oferta-heading">
   <div class="container">
     <div class="sec-header center reveal">
       <div class="sec-tag">Oferta</div>
